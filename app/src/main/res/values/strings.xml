@@ -193,7 +193,60 @@
     <string name="dialog_btn_custom">自定义弹窗</string>
     <string name="dialog_btn_bottom_sheet">抽屉面板</string>
 
+    <!-- 设备在线状态 -->
+    <string name="status_online">在线</string>
+    <string name="status_offline">离线</string>
+
+    <!-- 网络诊断状态 -->
+    <string name="net_status_wifi">WIFI 局域网已连接</string>
+    <string name="net_status_ethernet">有线以太网 (Ethernet) 已连接</string>
+    <string name="net_status_cellular">移动蜂窝数据已连接</string>
+    <string name="net_status_other">其他网络连接已接入</string>
+    <string name="net_status_offline">未连接任何网络 (离线)</string>
+    <string name="net_status_unknown">未知网络状态</string>
+
+    <!-- IoT 通信任务提示文案 -->
+    <string name="op_http_get">HTTP GET 请求中...</string>
+    <string name="op_http_post">HTTP POST 提交中...</string>
+    <string name="op_http_put">HTTP PUT 更新中...</string>
+    <string name="op_http_delete">HTTP DELETE 删除中...</string>
+    <string name="op_http_upload">HTTP Multipart 文件上传中...</string>
+    <string name="op_http_download">HTTP 流式文件下载中...</string>
+    <string name="op_mqtt_connect">正在连接 MQTT Broker...</string>
+    <string name="op_redis_connect">正在连接 Redis 服务器...</string>
+    <string name="op_socket_connect">正在建立 TCP Socket 工业长连接...</string>
+
+    <!-- 演示任务与弹窗标题 -->
+    <string name="demo_task_handshake_title">安全握手与密钥分发</string>
+    <string name="demo_task_firmware_verify_title">后台固件包校验</string>
+    <string name="demo_task_ota_download_title">OTA 固件下载中</string>
+    <string name="demo_task_connect_gateway_title">正在连接工控网关...</string>
+    <string name="demo_task_check_protocol_title">检查协议运行状态...</string>
+
+    <!-- 终端日志常用中文提示 -->
+    <string name="demo_log_no_downloaded_file">暂无可分享的已下载文件，请先执行文件下载</string>
+    <string name="demo_log_no_crash_file">暂无崩溃日志记录</string>
+    <string name="demo_log_no_crash_file_share">暂无崩溃日志可分享</string>
+    <string name="demo_log_confirm_success">确认弹窗: 用户已确认执行核心物联网操作</string>
+    <string name="demo_log_input_success">输入弹窗: 用户已提交数据: %1$s</string>
+    <string name="demo_log_blocking_mode">耗时弹窗模式切换: %1$s</string>
+    <string name="demo_log_loading_switch">耗时进度弹窗开关: %1$s</string>
+    <string name="demo_log_blocking_task_start">测试【阻塞式加载弹窗】启动 (不可中断)...</string>
+    <string name="demo_log_blocking_task_done">测试【阻塞式加载弹窗】执行完毕</string>
+    <string name="demo_log_non_blocking_task_start">测试【非阻塞式加载弹窗】启动 (可轻触外部或点击取消)...</string>
+    <string name="demo_log_non_blocking_progress">非阻塞后台任务进度: %1$d%%</string>
+    <string name="demo_log_non_blocking_task_done">测试【非阻塞式加载弹窗】正常完成</string>
+    <string name="demo_log_percentage_task_start">测试【确定百分比进度弹窗】启动...</string>
+    <string name="demo_log_percentage_task_done">测试【确定百分比进度弹窗】下载完成</string>
+    <string name="demo_log_share_file">正在唤起系统分享: %1$s</string>
+    <string name="demo_log_cache_cleared">已清空当前缓存区，释放: %1$d 字节</string>
+    <string name="demo_log_crash_check">正在检查崩溃日志...</string>
+    <string name="demo_log_crash_found">找到崩溃日志: %1$s (%2$d 字节)</string>
+    <string name="demo_log_immersive">全屏沉浸式模式: %1$s</string>
+    <string name="demo_log_long_test_triggered">已触发超长日志测试，请查看 Logcat [LongLogTest]</string>
+
     <!-- 模板特性页面 -->
+    <string name="template_feature_title">业务功能模板</string>
     <string name="brvah_card_title">BRVAH 4 列表框架</string>
     <string name="template_execute_btn">执行示例任务</string>
     <string name="template_task_running">正在执行任务...</string>

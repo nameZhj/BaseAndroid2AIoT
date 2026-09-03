@@ -6,7 +6,7 @@ import com.base.iot.core.diagnostics.ParsedError
 import com.base.iot.core.ui.dialog.LoadingConfig
 
 data class TemplateUiState(
-    val title: String = "Template Feature",
+    @androidx.annotation.StringRes val titleRes: Int = com.base.iot.R.string.template_feature_title,
     val isProcessing: Boolean = false,
     override val loadingConfig: LoadingConfig = LoadingConfig(),
     override val parsedError: ParsedError? = null,

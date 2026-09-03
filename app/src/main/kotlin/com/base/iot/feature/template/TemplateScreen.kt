@@ -32,7 +32,7 @@ fun TemplateScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            AppCard(title = uiState.title) {
+            AppCard(title = androidx.compose.ui.res.stringResource(uiState.titleRes)) {
                 AppButton(
                     text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.template_execute_btn),
                     icon = Icons.Filled.PlayArrow,

@@ -193,7 +193,60 @@
     <string name="dialog_btn_custom">Custom Dialog</string>
     <string name="dialog_btn_bottom_sheet">Bottom Sheet</string>
 
+    <!-- Device Status -->
+    <string name="status_online">Online</string>
+    <string name="status_offline">Offline</string>
+
+    <!-- Network Diagnostics Status -->
+    <string name="net_status_wifi">WIFI LAN Connected</string>
+    <string name="net_status_ethernet">Wired Ethernet Connected</string>
+    <string name="net_status_cellular">Cellular Data Connected</string>
+    <string name="net_status_other">Other Network Connected</string>
+    <string name="net_status_offline">Offline (No network connected)</string>
+    <string name="net_status_unknown">Unknown network status</string>
+
+    <!-- IoT Operation Task Prompts -->
+    <string name="op_http_get">HTTP GET in progress...</string>
+    <string name="op_http_post">HTTP POST in progress...</string>
+    <string name="op_http_put">HTTP PUT in progress...</string>
+    <string name="op_http_delete">HTTP DELETE in progress...</string>
+    <string name="op_http_upload">HTTP Multipart Upload in progress...</string>
+    <string name="op_http_download">HTTP Stream Download in progress...</string>
+    <string name="op_mqtt_connect">Connecting to MQTT Broker...</string>
+    <string name="op_redis_connect">Connecting to Redis Server...</string>
+    <string name="op_socket_connect">Establishing TCP Socket Connection...</string>
+
+    <!-- Demo Tasks & Dialog Titles -->
+    <string name="demo_task_handshake_title">Security Handshake &amp; Key Distribution</string>
+    <string name="demo_task_firmware_verify_title">Firmware Verification</string>
+    <string name="demo_task_ota_download_title">OTA Firmware Download</string>
+    <string name="demo_task_connect_gateway_title">Connecting to Gateway...</string>
+    <string name="demo_task_check_protocol_title">Checking Protocol Status...</string>
+
+    <!-- Terminal Log Prompts -->
+    <string name="demo_log_no_downloaded_file">No downloaded file available to share, please download first</string>
+    <string name="demo_log_no_crash_file">No crash log records found</string>
+    <string name="demo_log_no_crash_file_share">No crash log available to share</string>
+    <string name="demo_log_confirm_success">Confirm Dialog: User confirmed core IoT operation</string>
+    <string name="demo_log_input_success">Input Dialog: User submitted data: %1$s</string>
+    <string name="demo_log_blocking_mode">Progress Dialog Mode: %1$s</string>
+    <string name="demo_log_loading_switch">Progress Dialog Switch: %1$s</string>
+    <string name="demo_log_blocking_task_start">Test [Blocking Progress Dialog] started (cannot interrupt)...</string>
+    <string name="demo_log_blocking_task_done">Test [Blocking Progress Dialog] completed</string>
+    <string name="demo_log_non_blocking_task_start">Test [Non-blocking Progress Dialog] started (tap outside to cancel)...</string>
+    <string name="demo_log_non_blocking_progress">Non-blocking background task progress: %1$d%%</string>
+    <string name="demo_log_non_blocking_task_done">Test [Non-blocking Progress Dialog] completed</string>
+    <string name="demo_log_percentage_task_start">Test [Percentage Progress Dialog] started...</string>
+    <string name="demo_log_percentage_task_done">Test [Percentage Progress Dialog] completed</string>
+    <string name="demo_log_share_file">Opening system share: %1$s</string>
+    <string name="demo_log_cache_cleared">Cleared cache directory, freed: %1$d bytes</string>
+    <string name="demo_log_crash_check">Checking crash logs...</string>
+    <string name="demo_log_crash_found">Found crash log: %1$s (%2$d bytes)</string>
+    <string name="demo_log_immersive">Fullscreen Immersive Mode: %1$s</string>
+    <string name="demo_log_long_test_triggered">Triggered long log test, check Logcat [LongLogTest]</string>
+
     <!-- Template Screen -->
+    <string name="template_feature_title">Template Feature</string>
     <string name="brvah_card_title">BRVAH 4 Recycler Framework</string>
     <string name="template_execute_btn">Execute Sample Task</string>
     <string name="template_task_running">Task in progress...</string>

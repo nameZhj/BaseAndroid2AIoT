@@ -115,18 +115,18 @@ object ErrorParser {
     private fun getNetworkStatus(context: Context): String {
         return try {
             val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
-                ?: return "Unknown (No ConnectivityManager)"
-            val network = cm.activeNetwork ?: return "Offline (No active network)"
-            val capabilities = cm.getNetworkCapabilities(network) ?: return "Unavailable (No capabilities)"
+                ?: return context.getString(com.base.iot.R.string.net_status_unknown)
+            val network = cm.activeNetwork ?: return context.getString(com.base.iot.R.string.net_status_offline)
+            val capabilities = cm.getNetworkCapabilities(network) ?: return context.getString(com.base.iot.R.string.net_status_unknown)
 
             when {
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "WIFI (Connected)"
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "Ethernet (Connected)"
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "Cellular (Connected)"
-                else -> "Other Transport"
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> context.getString(com.base.iot.R.string.net_status_wifi)
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> context.getString(com.base.iot.R.string.net_status_ethernet)
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> context.getString(com.base.iot.R.string.net_status_cellular)
+                else -> context.getString(com.base.iot.R.string.net_status_other)
             }
         } catch (e: Exception) {
-            "Error querying network: ${e.message}"
+            context.getString(com.base.iot.R.string.net_status_unknown) + ": ${e.message}"
         }
     }
 }

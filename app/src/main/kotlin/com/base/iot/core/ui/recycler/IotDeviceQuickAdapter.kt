@@ -103,6 +103,8 @@ class IotDeviceQuickAdapter(
         val ipColor = palette.textSecondary.toArgb()
         val protocolColor = palette.accentCyan.toArgb()
         val protocolBgColor = palette.accentCyan.copy(alpha = 0.15f).toArgb()
+        val context = holder.rootView.context
+        val statusText = if (item.status == "ONLINE") context.getString(com.base.iot.R.string.status_online) else context.getString(com.base.iot.R.string.status_offline)
         val statusColor = if (item.status == "ONLINE") palette.accentGreen.toArgb() else palette.accentRed.toArgb()
 
         holder.rootView.setBackgroundColor(bgColor)
@@ -113,7 +115,7 @@ class IotDeviceQuickAdapter(
         holder.tvProtocol.setTextColor(protocolColor)
         holder.tvProtocol.setBackgroundColor(protocolBgColor)
 
-        holder.tvStatus.text = "● ${item.status}"
+        holder.tvStatus.text = "● $statusText"
         holder.tvStatus.setTextColor(statusColor)
 
         holder.tvIp.text = "${item.ipAddress} (${item.deviceId})"
