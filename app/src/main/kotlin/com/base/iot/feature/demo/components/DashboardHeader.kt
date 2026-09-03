@@ -23,9 +23,6 @@ import com.base.iot.feature.demo.DashboardUiState
 import com.base.iot.feature.demo.DashboardViewModel
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 仪表盘顶部标题栏与主题切换行。
- */
 @Composable
 fun DashboardHeader(
     vm: DashboardViewModel,
@@ -39,7 +36,6 @@ fun DashboardHeader(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // 动态脉冲图标
             val infiniteTransition = rememberInfiniteTransition(label = "pulse")
             val scale by infiniteTransition.animateFloat(
                 initialValue = 1f,
@@ -73,7 +69,6 @@ fun DashboardHeader(
                 )
             }
 
-            // 主题切换快捷按钮 (普通模式 / 夜间模式)
             IconButton(
                 onClick = vm::toggleTheme,
                 modifier = Modifier

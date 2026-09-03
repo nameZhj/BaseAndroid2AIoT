@@ -23,8 +23,6 @@ import com.base.iot.feature.demo.DashboardUiState
 import com.base.iot.feature.demo.DashboardViewModel
 import com.base.iot.ui.theme.AppTheme
 
-// ==================== 缓存管理卡片 ====================
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
@@ -46,7 +44,6 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                 overflow = TextOverflow.Ellipsis
             )
 
-            // 策略单选 Chips
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -100,19 +97,12 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     }
 }
 
-// ==================== BRVAH 4 列表框架演示卡片 ====================
-
 @Composable
 fun BrvahRecyclerCard(uiState: DashboardUiState) {
     val colors = AppTheme.colors
 
-    AppCard(title = "BRVAH 4 顶流列表框架 (GitHub 24k+ ★)", icon = Icons.Filled.ListAlt, iconTint = colors.accentCyan) {
+    AppCard(title = "BRVAH 4 列表框架", icon = Icons.Filled.ListAlt, iconTint = colors.accentCyan) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                text = "集成 BaseRecyclerViewAdapterHelper 4，原生 RecyclerView 与 Compose 无缝混编展示设备状态：",
-                color = colors.textSecondary,
-                fontSize = 11.sp
-            )
             val isDark = colors.isDark
             AndroidView(
                 factory = { context ->

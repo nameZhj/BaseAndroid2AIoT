@@ -14,10 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 全局统一容器卡片 (AppCard)。
- * 严格遵循 AppTheme 设计系统与 WCAG AAA 对比度规范，普通模式纯白微边框，夜间模式极暗高亮。
- */
 @Composable
 fun AppCard(
     title: String,

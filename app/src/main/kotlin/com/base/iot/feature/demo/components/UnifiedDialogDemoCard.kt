@@ -14,9 +14,6 @@ import com.base.iot.feature.demo.DashboardUiState
 import com.base.iot.feature.demo.DashboardViewModel
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 统一风格弹窗体系 (XPopup / AppDialog) 演示卡片。
- */
 @Composable
 fun UnifiedDialogDemoCard(
     uiState: DashboardUiState,

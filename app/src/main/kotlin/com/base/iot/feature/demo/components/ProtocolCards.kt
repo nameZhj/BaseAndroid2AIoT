@@ -15,8 +15,6 @@ import com.base.iot.feature.demo.DashboardUiState
 import com.base.iot.feature.demo.DashboardViewModel
 import com.base.iot.ui.theme.AppTheme
 
-// ==================== 协议开关卡片 ====================
-
 @Composable
 fun ProtocolSwitchesCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
@@ -59,8 +57,6 @@ fun ProtocolSwitchesCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     }
 }
 
-// ==================== HTTP 测试卡片 ====================
-
 @Composable
 fun HttpTestCard(vm: DashboardViewModel) {
     val colors = AppTheme.colors
@@ -85,8 +81,6 @@ fun HttpTestCard(vm: DashboardViewModel) {
         }
     }
 }
-
-// ==================== MQTT 测试卡片 ====================
 
 @Composable
 fun MqttTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
@@ -119,8 +113,6 @@ fun MqttTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     }
 }
 
-// ==================== Redis 测试卡片 ====================
-
 @Composable
 fun RedisTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
@@ -144,8 +136,6 @@ fun RedisTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
         }
     }
 }
-
-// ==================== TCP Socket 测试卡片 ====================
 
 @Composable
 fun SocketTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {

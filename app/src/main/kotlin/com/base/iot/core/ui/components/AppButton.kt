@@ -17,10 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 全局统一高对比度操作按钮 (AppButton)。
- * 自动根据 AppTheme 亮暗模式调整背景半透明度与文本色彩，保证任何场景下字迹清晰。
- */
 @Composable
 fun AppButton(
     text: String,

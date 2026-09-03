@@ -11,15 +11,6 @@ import com.base.iot.core.ui.dialog.LoadingConfig
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-/**
- * 企业级 Agent 友好型 BaseViewModel 基类。
- *
- * 为所有子类提供统一基建，杜绝 Agent 开发新功能时重复编写样板代码：
- * 1. 响应式 StateFlow 状态管理与单次事件 SharedFlow 管道；
- * 2. 通用 launchWithLoading 异步执行器（自动进度上报、取消响应、异常拦截与弹窗驱动）；
- * 3. 真实错误诊断与一键系统分享；
- * 4. 规范化生命周期日志管理。
- */
 abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
     application: Application,
     protected val fileShareManager: FileShareManager,
@@ -34,28 +25,17 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
     protected val _events = MutableSharedFlow<EVENT>(extraBufferCapacity = 8)
     val events: SharedFlow<EVENT> = _events.asSharedFlow()
 
-    /**
-     * 发送单次 UI 事件（如 Toast、导航）
-     */
     protected fun emitEvent(event: EVENT) {
         viewModelScope.launch { _events.emit(event) }
     }
 
-    /**
-     * 更新当前 UI 状态
-     */
     protected fun updateState(reducer: (STATE) -> STATE) {
         _uiState.update(reducer)
     }
 
     /**
-     * 核心封装：发起带进度/等待弹窗的耗时异步操作。
-     *
-     * @param title 弹窗标题
-     * @param isBlocking 是否为阻塞式（true=防并发防穿透；false=可随时轻触外部取消）
-     * @param showLoading 是否展示进度弹窗（false=后台静默执行）
-     * @param onError 自定义错误回调（若为 null，则自动解析并呼出非阻塞式 AppErrorDialog）
-     * @param action 异步业务逻辑闭包，提供 updateProgress(percent, text) 动态更新百分比进度
+     * @param isBlocking true=不可取消防穿透, false=允许外部点击取消
+     * @param showLoading false=后台静默执行
      */
     fun launchWithLoading(
         title: String = "正在处理中...",
@@ -96,7 +76,7 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
             } catch (e: CancellationException) {
                 onOperationCancelled(title)
             } catch (t: Throwable) {
-                Lg.e(logTag, "耗时任务执行异常: ${t.message}", t)
+                Lg.e(logTag, "任务执行异常: ${t.message}", t)
                 if (onError != null) {
                     onError(t)
                 } else {
@@ -110,14 +90,7 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
         }
     }
 
-    /**
-     * 子类状态更新 LoadingConfig 的具体映射
-     */
     protected abstract fun updateLoadingConfig(reducer: (LoadingConfig) -> LoadingConfig)
-
-    /**
-     * 子类状态更新 ParsedError 的具体映射
-     */
     protected abstract fun updateErrorState(error: ParsedError?, visible: Boolean)
 
     fun dismissLoading() {

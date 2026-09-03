@@ -20,9 +20,6 @@ import com.base.iot.feature.demo.DashboardUiState
 import com.base.iot.feature.demo.DashboardViewModel
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 耗时操作进度与真实错误弹窗体系实测演示卡片。
- */
 @Composable
 fun LoadingAndErrorDemoCard(
     uiState: DashboardUiState,
@@ -42,7 +39,6 @@ fun LoadingAndErrorDemoCard(
                 fontSize = 11.sp
             )
 
-            // 开发者开关行 1: 启用进度弹窗
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -70,7 +66,6 @@ fun LoadingAndErrorDemoCard(
                 )
             }
 
-            // 开发者开关行 2: 阻塞式 vs 非阻塞式
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,7 +94,6 @@ fun LoadingAndErrorDemoCard(
                 )
             }
 
-            // 进度功能测试按钮
             Text("进度窗形态实测:", color = colors.textSecondary, fontSize = 11.sp)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppButton(
@@ -125,7 +119,6 @@ fun LoadingAndErrorDemoCard(
                 )
             }
 
-            // 真实错误与系统分享测试按钮
             Text("非阻塞真实错误诊断与一键分享实测:", color = colors.textSecondary, fontSize = 11.sp)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppButton(

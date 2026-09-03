@@ -1,6 +1,6 @@
 # BaseAndroid2AIoT — 企业级 Android IoT 快速开发框架
 
-
+ 本文档由AI生成
 ---
 
 ## 📐 架构概览

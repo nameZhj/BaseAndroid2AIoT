@@ -9,7 +9,6 @@ import com.base.iot.core.config.AppConfig
 import com.base.iot.core.config.IotProtocolSwitches
 import com.base.iot.core.config.ProtocolDisabledException
 import com.base.iot.core.diagnostics.Lg
-import com.base.iot.core.diagnostics.LogExporter
 import com.base.iot.core.diagnostics.ParsedError
 import com.base.iot.core.iot.IotHub
 import com.base.iot.core.network.*
@@ -25,8 +24,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.io.File
 import javax.inject.Inject
-
-// ==================== UI State ====================
 
 data class DashboardUiState(
     val switches: IotProtocolSwitches = IotProtocolSwitches(),
@@ -45,7 +42,6 @@ data class DashboardUiState(
     val showLoadingDialog: Boolean = false,
     val showInputDialog: Boolean = false,
     val showBottomSheet: Boolean = false,
-    // ===== 继承自 IUiState 的标准状态 =====
     override val loadingConfig: LoadingConfig = LoadingConfig(),
     override val parsedError: ParsedError? = null,
     override val showErrorDialog: Boolean = false,
@@ -53,18 +49,10 @@ data class DashboardUiState(
     val enableLoadingDialog: Boolean = true
 ) : IUiState
 
-// ==================== Events (One-shot) ====================
-
 sealed class DashboardEvent : IUiEvent {
     data class ShowSnackbar(val message: String) : DashboardEvent()
 }
 
-// ==================== ViewModel ====================
-
-/**
- * 仪表盘业务控制器。
- * 继承自 BaseViewModel，聚合 IotHub 门面，实现零样板代码接入进度与错误拦截。
- */
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     application: Application,
@@ -86,14 +74,12 @@ class DashboardViewModel @Inject constructor(
     }
 
     init {
-        // 监听协议开关变化
         viewModelScope.launch {
             iotHub.config.switchesFlow.collect { switches ->
                 _uiState.update { it.copy(switches = switches) }
             }
         }
 
-        // 监听缓存位置变化并刷新路径与文件统计
         viewModelScope.launch {
             cacheLocationManager.locationTypeFlow.collect { type ->
                 val dir = cacheLocationManager.getCacheDir(type)
@@ -109,14 +95,12 @@ class DashboardViewModel @Inject constructor(
             }
         }
 
-        // 监听主题模式变化
         viewModelScope.launch {
             themeManager.themeModeFlow.collect { mode ->
                 _uiState.update { it.copy(themeMode = mode) }
             }
         }
 
-        // 初始化 BRVAH 列表演示数据
         _uiState.update {
             it.copy(
                 brvahDevices = listOf(
@@ -128,7 +112,6 @@ class DashboardViewModel @Inject constructor(
             )
         }
 
-        // 监听 MQTT 连接状态
         viewModelScope.launch {
             iotHub.mqtt.connectionState.collect { state ->
                 _uiState.update {
@@ -137,7 +120,6 @@ class DashboardViewModel @Inject constructor(
             }
         }
 
-        // 监听 Socket 连接状态
         viewModelScope.launch {
             iotHub.socket.connectionState.collect { state ->
                 _uiState.update {
@@ -148,8 +130,6 @@ class DashboardViewModel @Inject constructor(
 
         appendLog("IoT 调试面板已就绪，所有协议与服务已初始化。")
     }
-
-    // ==================== 快捷耗时操作调用封装 ====================
 
     fun launchIotOperation(
         title: String,
@@ -163,8 +143,6 @@ class DashboardViewModel @Inject constructor(
         )
     }
 
-    // ==================== 终端日志 ====================
-
     fun appendLog(message: String) {
         val timestamp = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
         val logEntry = "[$timestamp] $message"
@@ -176,8 +154,6 @@ class DashboardViewModel @Inject constructor(
     fun clearTerminal() {
         _uiState.update { it.copy(terminalLogs = emptyList()) }
     }
-
-    // ==================== 协议开关切换 ====================
 
     fun toggleHttp(enabled: Boolean) = viewModelScope.launch {
         iotHub.config.setHttpEnabled(enabled)
@@ -198,8 +174,6 @@ class DashboardViewModel @Inject constructor(
         iotHub.config.setSocketEnabled(enabled)
         appendLog("Socket 协议开关: $enabled")
     }
-
-    // ==================== HTTP 测试 ====================
 
     fun testHttpGet() = launchIotOperation("HTTP GET 请求中...") {
         appendLog("HTTP GET → https://httpbin.org/get")
@@ -289,8 +263,6 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    // ==================== 缓存位置与文件分享 ====================
-
     fun setCacheLocationType(type: CacheLocationType) = viewModelScope.launch {
         cacheLocationManager.setLocationType(type)
         appendLog("缓存存储策略已切换: ${type.title}")
@@ -324,8 +296,6 @@ class DashboardViewModel @Inject constructor(
             )
         }
     }
-
-    // ==================== 主题与弹窗控制 ====================
 
     fun toggleTheme() = viewModelScope.launch {
         val next = when (_uiState.value.themeMode) {
@@ -376,8 +346,6 @@ class DashboardViewModel @Inject constructor(
         appendLog("耗时进度弹窗开关: " + if (_uiState.value.enableLoadingDialog) "启用" else "禁用 (后台静默执行)")
     }
 
-    // ==================== 进度与错误弹窗实测模拟 ====================
-
     fun testBlockingProgress() = launchWithLoading(
         title = "安全握手与密钥分发",
         isBlocking = true
@@ -404,7 +372,7 @@ class DashboardViewModel @Inject constructor(
         isBlocking = _uiState.value.isBlockingDefault
     ) { updateProgress ->
         appendLog("测试【确定百分比进度弹窗】启动...")
-        val totalBytes = 100 * 1024 * 1024L // 100MB
+        val totalBytes = 100 * 1024 * 1024L
         var currentBytes = 0L
         while (currentBytes < totalBytes) {
             delay(150)
@@ -433,8 +401,6 @@ class DashboardViewModel @Inject constructor(
         delay(600)
         throw ProtocolDisabledException("MQTT 工业总线协议已被管理员在后台禁用 (iot.protocol.mqtt.enabled=false)")
     }
-
-    // ==================== MQTT 测试 ====================
 
     fun connectMqtt() = launchIotOperation("正在连接 MQTT Broker...") {
         appendLog("MQTT 正在连接 ${AppConfig.MQTT_HOST}:${AppConfig.MQTT_PORT}...")
@@ -470,8 +436,6 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    // ==================== Redis 测试 ====================
-
     fun connectRedis() = launchIotOperation("正在连接 Redis 服务器...") {
         appendLog("Redis 正在连接 ${AppConfig.REDIS_HOST}:${AppConfig.REDIS_PORT}...")
         iotHub.redis.connect()
@@ -493,8 +457,6 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    // ==================== Socket 测试 ====================
-
     fun connectSocket() = launchIotOperation("正在建立 TCP Socket 工业长连接...") {
         appendLog("Socket 正在连接 ${AppConfig.SOCKET_HOST}:${AppConfig.SOCKET_PORT}...")
         iotHub.socket.connect(AppConfig.SOCKET_HOST, AppConfig.SOCKET_PORT)
@@ -511,8 +473,6 @@ class DashboardViewModel @Inject constructor(
             appendLog("Socket ❌ 发送失败: ${e.message}")
         }
     }
-
-    // ==================== 诊断与设置 ====================
 
     fun triggerLongLog() {
         val longText = (1..50).joinToString(separator = "\n") {

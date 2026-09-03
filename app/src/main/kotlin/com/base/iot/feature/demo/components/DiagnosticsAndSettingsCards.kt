@@ -2,6 +2,7 @@ package com.base.iot.feature.demo.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Subject
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,8 +18,6 @@ import com.base.iot.feature.demo.DashboardUiState
 import com.base.iot.feature.demo.DashboardViewModel
 import com.base.iot.ui.theme.AppTheme
 
-// ==================== 诊断卡片 ====================
-
 @Composable
 fun DiagnosticsCard(vm: DashboardViewModel) {
     val colors = AppTheme.colors
@@ -26,20 +25,20 @@ fun DiagnosticsCard(vm: DashboardViewModel) {
     AppCard(title = "日志与诊断", icon = Icons.Filled.BugReport, iconTint = colors.accentRed) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = "超长日志分段打印 (防止Logcat截断) & 异常捕捉与分享：",
+                text = "超长日志分段打印 (防截断/防OOM) & 异常捕捉与分享：",
                 color = colors.textSecondary,
                 fontSize = 11.sp
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 AppButton(
                     text = "超长日志打印",
-                    icon = Icons.Filled.Subject,
+                    icon = Icons.AutoMirrored.Filled.Subject,
                     color = colors.accentCyan,
                     modifier = Modifier.weight(1f),
                     onClick = vm::triggerLongLog
                 )
                 AppButton(
-                    text = "导出崩溃日志",
+                    text = "检查崩溃日志",
                     icon = Icons.Filled.FileDownload,
                     color = colors.accentAmber,
                     modifier = Modifier.weight(1f),
@@ -56,8 +55,6 @@ fun DiagnosticsCard(vm: DashboardViewModel) {
         }
     }
 }
-
-// ==================== UI 设置卡片 ====================
 
 @Composable
 fun UiSettingsCard(uiState: DashboardUiState, vm: DashboardViewModel) {

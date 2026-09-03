@@ -17,10 +17,6 @@ import com.base.iot.core.ui.dialog.*
 import com.base.iot.feature.demo.components.*
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 仪表盘主界面。
- * 遵循组件化解耦原则，作为高层布局编排器，负责自适应双栏分发与统一弹窗挂载。
- */
 @Composable
 fun DashboardScreen(
     windowWidthSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
@@ -28,7 +24,6 @@ fun DashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // 动态沉浸式状态栏与导航栏管理
     val isLight = !AppTheme.colors.isDark
     SystemBarEffect(
         darkStatusBarIcons = isLight,
@@ -50,8 +45,6 @@ fun DashboardScreen(
                 SinglePaneContent(uiState, viewModel, contentModifier)
             }
         }
-
-        // ==================== 统一弹窗与抽屉面板挂载 ====================
 
         AppConfirmDialog(
             visible = uiState.showConfirmDialog,
@@ -97,8 +90,6 @@ fun DashboardScreen(
             }
         }
 
-        // ==================== 耗时操作进度与真实错误分享弹窗挂载 ====================
-
         AppProgressDialog(
             config = uiState.loadingConfig,
             onDismissRequest = viewModel::dismissLoading
@@ -112,8 +103,6 @@ fun DashboardScreen(
         )
     }
 }
-
-// ==================== 单栏布局 (竖屏 / 手机) ====================
 
 @Composable
 private fun SinglePaneContent(
@@ -148,8 +137,6 @@ private fun SinglePaneContent(
     }
 }
 
-// ==================== 双栏布局 (横屏 / 平板 / 车机大屏) ====================
-
 @Composable
 private fun TwoPaneContent(
     uiState: DashboardUiState,
@@ -157,11 +144,9 @@ private fun TwoPaneContent(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier
-            .padding(16.dp),
+        modifier = modifier.padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // 左栏：业务控制面板
         LazyColumn(
             modifier = Modifier
                 .weight(1.1f)
@@ -183,7 +168,6 @@ private fun TwoPaneContent(
             item { UiSettingsCard(uiState, viewModel) }
         }
 
-        // 右栏：高内聚工控终端控制台
         TerminalLogCard(
             logs = uiState.terminalLogs,
             onClear = viewModel::clearTerminal,

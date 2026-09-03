@@ -14,9 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 全局通用带状态胶囊的开关控制行。
- */
 @Composable
 fun AppSwitchRow(
     label: String,
@@ -48,7 +45,6 @@ fun AppSwitchRow(
                 fontWeight = FontWeight.Medium
             )
 
-            // 编译状态标签
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
@@ -66,7 +62,6 @@ fun AppSwitchRow(
                 )
             }
 
-            // 连接状态指示
             if (connected != null) {
                 Box(
                     modifier = Modifier

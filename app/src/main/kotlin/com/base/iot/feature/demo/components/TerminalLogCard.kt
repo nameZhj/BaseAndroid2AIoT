@@ -23,9 +23,6 @@ import androidx.compose.ui.unit.sp
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 实时工控终端控制台日志卡片。
- */
 @Composable
 fun TerminalLogCard(
     logs: List<String>,
@@ -53,7 +50,6 @@ fun TerminalLogCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // 标题与清空
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -85,7 +81,6 @@ fun TerminalLogCard(
                 )
             }
 
-            // 黑色终端内容区
             val heightModifier = if (fillHeight) Modifier.weight(1f) else Modifier.height(200.dp)
             Box(
                 modifier = Modifier
