@@ -202,9 +202,8 @@ Android 系统对网络通信有严格的沙箱与安全限制，本项目针对
    - 将卡片与按钮全面标准化下沉为 `AppCard`、`AppButton`、`AppSwitchRow`，暗/日间模式自适应与高对比度开箱即用。
 4. **大文件组件化解耦 (`feature/demo/components/`)**：
    - 将原 1080 行的 `DashboardScreen.kt` 彻底拆解为若干 50~80 行的独立微组件，主屏幕瘦身为仅 180 行的高层骨架编排器；
-   - **Agent 在后续迭代或修改某个业务卡片时，单次操作上下文 Token 消耗骤降 80% 以上！**
-5. **极速导航手册 (`AGENT_ARCHITECTURE.md`)**：
-   - 在根目录下提供极速架构导航与 3 步起手式开发指南，包含包结构映射、起手模板与五大工程。
+5. **AI Agent 唯一权威开发手册 (`AGENTS.md`)**：
+   - 根目录下唯一面向 AI Agent 的开发规范与架构速查手册，包含四大工程铁律、Token 经济学、拓扑索引、3 步起手式模板与自检清单。
 
 ---
 
@@ -217,8 +216,7 @@ BaseAndroid2AIoT/
 ├── build.gradle.kts                   # 根项目构建脚本
 ├── settings.gradle.kts                # 仓库配置（阿里镜像加速 + JitPack）
 ├── gradle.properties                  # 编译期协议裁剪开关与 Gradle 优化
-├── AGENT_ARCHITECTURE.md              # ★ 面向 Agent 的极速架构导航与开发手册
-├── agent开发行为准则.md                 # ★ 专属 Agent 行为准则与 Token 经济学规范
+├── AGENTS.md                          # ★ 面向 Agent 的唯一权威开发架构与行为准则手册
 └── app/
     ├── build.gradle.kts               # 应用模块构建脚本（动态依赖与 SourceSets）
     └── src/
