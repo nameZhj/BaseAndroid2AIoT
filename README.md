@@ -184,6 +184,27 @@ Android 系统对网络通信有严格的沙箱与安全限制，本项目针对
   - 弹窗内嵌高对比度工控终端风格的“详细诊断报告展开面板”，完整列出：发生时间戳、设备品牌型号、Android 系统与 API 版本、当前真实网络（WIFI/蜂窝/有线）、核心根因堆栈；
   - 显式配置“**分享错误报告**”高亮按钮，点击后一键唤起系统原生分享面板（微信、QQ、钉钉、邮件、备忘录等），支持现场实施人员秒级将真实错误堆栈发送给后端或研发团队。
 
+---
+
+### 10. 面向 AI Agent 深度优化的工程架构与组件下沉
+为让 AI Agent 能够以极高的能效读懂代码、检索资产并零样板代码复用搭建新功能，工程进行了深度架构重构：
+
+1. **统一基类层沉淀 (`core/base/BaseViewModel.kt`)**：
+   - 自动维护 `StateFlow<STATE>` 与 `SharedFlow<EVENT>`；
+   - 通用集成 `launchWithLoading`、`ErrorParser` 错误拦截、非阻塞式错误弹窗驱动与系统一键分享；
+   - Agent 新建页面仅需 10 行代码继承基类，无需写任何重复的基础设施样板代码。
+2. **物联网多协议统一门面 (`core/iot/IotHub.kt`)**：
+   - 集中聚合 `http`, `mqtt`, `redis`, `socket`, `config`，避免繁琐的多对象注入，一行注入即可调动全局协议通信。
+3. **全局原子化 UI 组件库 (`core/ui/components/`)**：
+   - 将卡片与按钮全面标准化下沉为 `AppCard`、`AppButton`、`AppSwitchRow`，暗/日间模式自适应与高对比度开箱即用。
+4. **巨石文件组件化解耦 (`feature/demo/components/`)**：
+   - 将原 1080 行的 `DashboardScreen.kt` 彻底拆解为若干 50~80 行的独立微组件，主屏幕瘦身为仅 180 行的高层骨架编排器；
+   - **Agent 在后续迭代或修改某个业务卡片时，单次操作上下文 Token 消耗骤降 80% 以上！**
+5. **极速导航手册 (`AGENT_ARCHITECTURE.md`)**：
+   - 在根目录下提供极速架构导航与 3 步起手式开发指南，包含包结构映射、起手模板与五大工程红线。
+
+---
+
 ## 🗂️ 项目目录结构
 
 ```
@@ -193,6 +214,8 @@ BaseAndroid2AIoT/
 ├── build.gradle.kts                   # 根项目构建脚本
 ├── settings.gradle.kts                # 仓库配置（阿里镜像加速 + JitPack）
 ├── gradle.properties                  # 编译期协议裁剪开关与 Gradle 优化
+├── AGENT_ARCHITECTURE.md              # ★ 面向 Agent 的极速架构导航与开发手册
+├── agent开发行为准则.md                 # ★ 专属 Agent 行为准则与 Token 经济学规范
 └── app/
     ├── build.gradle.kts               # 应用模块构建脚本（动态依赖与 SourceSets）
     └── src/
@@ -206,23 +229,28 @@ BaseAndroid2AIoT/
         │       ├── MainActivity.kt    # 单 Activity 挂载与状态栏动态适配
         │       ├── ui/theme/          # AppTheme 令牌体系 (Light & Dark 高对比度)
         │       ├── core/
+        │       │   ├── base/          # ★ 统一基类 (BaseViewModel / UiContract)
         │       │   ├── config/        # 运行时 DataStore 开关与 AppConfig 常量
-        │       │   ├── diagnostics/   # 超长日志分段 (Lg)、崩溃抓取 (CrashHandler)
+        │       │   ├── diagnostics/   # 超长日志分段 (Lg)、错误解析 (ErrorParser)、崩溃抓取
         │       │   ├── storage/       # 缓存位置切换 (CacheLocationManager)、文件分享
         │       │   ├── ui/
-        │       │   │   ├── dialog/    # 统一弹窗组件 (AppDialog.kt / XPopupBridge.kt)
+        │       │   │   ├── components/# ★ 原子化通用组件 (AppCard / AppButton / AppSwitchRow)
+        │       │   │   ├── dialog/    # 统一弹窗组件 (AppProgressDialog / AppErrorDialog / XPopupBridge)
         │       │   │   ├── theme/     # 主题模式持久化管理 (ThemeManager.kt)
         │       │   │   └── recycler/  # BRVAH 4 设备列表适配器 (IotDeviceQuickAdapter)
         │       │   ├── network/       # HTTP 通用接口定义 (HttpManager)
-        │       │   └── iot/           # MQTT / Redis / Socket 接口抽象
-        │       └── feature/demo/      # Compose 仪表盘控制面板 (DashboardScreen/VM)
+        │       │   └── iot/           # ★ 物联网统一门面 (IotHub) 与 MQTT/Redis/Socket 抽象
+        │       └── feature/demo/      # 业务特性模块
+        │           ├── DashboardScreen.kt    # 纯轻量骨架编排器 (~180行)
+        │           ├── DashboardViewModel.kt # 继承 BaseViewModel 的业务控制器
+        │           └── components/           # ★ 业务卡片微组件集 (高内聚、微体积、低 Token)
         ├── protocol_http/             # HTTP 真实驱动 (Retrofit + OkHttp + Okio)
         ├── protocol_http_stub/        # HTTP 零依赖 Stub 占位实现
         ├── protocol_mqtt/             # MQTT 真实驱动 (HiveMQ 异步客户端)
         ├── protocol_mqtt_stub/        # MQTT 零依赖 Stub 占位实现
         ├── protocol_redis/            # Redis 真实驱动 (Jedis 连接池与心跳)
         ├── protocol_redis_stub/       # Redis 零依赖 Stub 占位实现
-        ├── protocol_socket/           # TCP Socket 真实长连接与心跳驱动
+        ├── protocol_socket/           # TCP Socket 原生工业长连接驱动
         └── protocol_socket_stub/      # TCP Socket 零依赖 Stub 占位实现
 ```
 

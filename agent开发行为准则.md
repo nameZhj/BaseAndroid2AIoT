@@ -1,13 +1,15 @@
 # BaseAndroid2AIoT 专属 Agent 开发行为准则 (Project-Specific Behavioral Directives)
 
-> **定位与目标**：本文件为 `BaseAndroid2AIoT` 企业级 Android 物联网脚手架工程专属的资深架构师兼高级开发 Agent 行为规范。所有参与本工程代码编写、缺陷修复、架构重构或功能迭代的 Agent 必须无条件严格遵守。核心理念：**极简主义、Token 经济学、100% 工程架构贴合、高对比度可读性、零编译破坏**。
+> **定位与目标**：本文件为 `BaseAndroid2AIoT` 企业级 Android 物联网脚手架工程专属的资深架构师兼高级开发 Agent 行为规范。所有参与本工程代码编写、缺陷修复、架构重构或功能迭代的 Agent 必须无条件严格遵守。**首次进入项目请优先阅读 [AGENT_ARCHITECTURE.md](file:///e:/code/Android/BaseAndroid2AIoT/AGENT_ARCHITECTURE.md)**。核心理念：**极简主义、Token 经济学、100% 工程架构贴合、高对比度可读性、零编译破坏**。
 
 ---
 
 ### 1. Token 经济学与高能效精准检索 (Token Economy & Precision Retrieval)
-- **切片探索，严禁盲目全读**：
-  - 严禁动辄全量加载大文件（如 `DashboardScreen.kt`, `DashboardViewModel.kt`）。必须配合 `grep_search` 定位目标行号，使用 `StartLine` 与 `EndLine` 精准按需读取，杜绝挤占上下文 Token。
+- **微组件切片探索，严禁盲目全读**：
+  - 业务模块已全部拆分为 `feature/demo/components/` 下的微组件（每个仅 50~80 行）。Agent 维护或扩展业务时，**只能定向加载具体的微组件文件**，严禁一次性加载大文件，单次操作节约 80% 以上 Token。
   - 检索代码时必须指定精确关键字与通配过滤（如限定 `*.kt` 或特定目录 `app/src/main/`），严禁进行宽泛无差别的全盘扫描。
+- **基类复用，零影子代码**：
+  - 新建任何页面必须继承 `BaseViewModel` 并注入 `IotHub`，必须复用全局通用组件 `AppCard` 与 `AppButton`，严禁重复编写加载弹窗控制或私有组件。
 - **外科手术式精确改动 (Surgical Edits)**：
   - 严禁对大文件进行全量覆盖重写，必须使用 `replace_file_content` 定向替换差异代码块，最大限度节约 Diff 与文件 I/O 带来的 Token 消耗。
 - **高信噪比交付 (High Signal-to-Noise Communication)**：

@@ -1,21 +1,22 @@
 package com.base.iot.feature.demo
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.base.iot.core.base.BaseViewModel
+import com.base.iot.core.base.IUiEvent
+import com.base.iot.core.base.IUiState
 import com.base.iot.core.config.AppConfig
-import com.base.iot.core.config.IotProtocolConfig
 import com.base.iot.core.config.IotProtocolSwitches
 import com.base.iot.core.config.ProtocolDisabledException
 import com.base.iot.core.diagnostics.Lg
 import com.base.iot.core.diagnostics.LogExporter
-import com.base.iot.core.iot.MqttManager
-import com.base.iot.core.iot.RedisManager
-import com.base.iot.core.iot.SocketManager
+import com.base.iot.core.diagnostics.ParsedError
+import com.base.iot.core.iot.IotHub
 import com.base.iot.core.network.*
 import com.base.iot.core.storage.CacheLocationManager
 import com.base.iot.core.storage.CacheLocationType
 import com.base.iot.core.storage.FileShareManager
+import com.base.iot.core.ui.dialog.LoadingConfig
 import com.base.iot.core.ui.recycler.IotDeviceItem
 import com.base.iot.core.ui.theme.ThemeManager
 import com.base.iot.core.ui.theme.ThemeMode
@@ -26,10 +27,6 @@ import java.io.File
 import javax.inject.Inject
 
 // ==================== UI State ====================
-
-import com.base.iot.core.diagnostics.ErrorParser
-import com.base.iot.core.diagnostics.ParsedError
-import com.base.iot.core.ui.dialog.LoadingConfig
 
 data class DashboardUiState(
     val switches: IotProtocolSwitches = IotProtocolSwitches(),
@@ -48,47 +45,50 @@ data class DashboardUiState(
     val showLoadingDialog: Boolean = false,
     val showInputDialog: Boolean = false,
     val showBottomSheet: Boolean = false,
-    // ===== 耗时操作进度与错误弹窗体系 =====
-    val loadingConfig: LoadingConfig = LoadingConfig(),
-    val parsedError: ParsedError? = null,
-    val showErrorDialog: Boolean = false,
+    // ===== 继承自 IUiState 的标准状态 =====
+    override val loadingConfig: LoadingConfig = LoadingConfig(),
+    override val parsedError: ParsedError? = null,
+    override val showErrorDialog: Boolean = false,
     val isBlockingDefault: Boolean = true,
     val enableLoadingDialog: Boolean = true
-)
+) : IUiState
 
 // ==================== Events (One-shot) ====================
 
-sealed class DashboardEvent {
+sealed class DashboardEvent : IUiEvent {
     data class ShowSnackbar(val message: String) : DashboardEvent()
 }
 
 // ==================== ViewModel ====================
 
+/**
+ * 仪表盘业务控制器。
+ * 继承自 BaseViewModel，聚合 IotHub 门面，实现零样板代码接入进度与错误拦截。
+ */
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     application: Application,
-    private val protocolConfig: IotProtocolConfig,
-    private val httpManager: HttpManager,
-    private val mqttManager: MqttManager,
-    private val redisManager: RedisManager,
-    private val socketManager: SocketManager,
+    val iotHub: IotHub,
     private val cacheLocationManager: CacheLocationManager,
-    private val fileShareManager: FileShareManager,
+    fileShareManager: FileShareManager,
     private val themeManager: ThemeManager
-) : AndroidViewModel(application) {
+) : BaseViewModel<DashboardUiState, DashboardEvent>(
+    application = application,
+    fileShareManager = fileShareManager,
+    initialState = DashboardUiState()
+) {
+    override fun updateLoadingConfig(reducer: (LoadingConfig) -> LoadingConfig) {
+        _uiState.update { it.copy(loadingConfig = reducer(it.loadingConfig)) }
+    }
 
-    private val TAG = "DashboardVM"
-
-    private val _uiState = MutableStateFlow(DashboardUiState())
-    val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
-
-    private val _events = MutableSharedFlow<DashboardEvent>(extraBufferCapacity = 8)
-    val events: SharedFlow<DashboardEvent> = _events.asSharedFlow()
+    override fun updateErrorState(error: ParsedError?, visible: Boolean) {
+        _uiState.update { it.copy(parsedError = error, showErrorDialog = visible) }
+    }
 
     init {
         // 监听协议开关变化
         viewModelScope.launch {
-            protocolConfig.switchesFlow.collect { switches ->
+            iotHub.config.switchesFlow.collect { switches ->
                 _uiState.update { it.copy(switches = switches) }
             }
         }
@@ -130,7 +130,7 @@ class DashboardViewModel @Inject constructor(
 
         // 监听 MQTT 连接状态
         viewModelScope.launch {
-            mqttManager.connectionState.collect { state ->
+            iotHub.mqtt.connectionState.collect { state ->
                 _uiState.update {
                     it.copy(mqttConnected = state == com.base.iot.core.iot.MqttConnectionState.CONNECTED)
                 }
@@ -139,103 +139,107 @@ class DashboardViewModel @Inject constructor(
 
         // 监听 Socket 连接状态
         viewModelScope.launch {
-            socketManager.connectionState.collect { state ->
+            iotHub.socket.connectionState.collect { state ->
                 _uiState.update {
                     it.copy(socketConnected = state == com.base.iot.core.iot.SocketConnectionState.CONNECTED)
                 }
             }
         }
 
-        // 监听 Socket 接收数据
-        viewModelScope.launch {
-            socketManager.incomingData.collect { data ->
-                appendLog("Socket RECV: $data")
-            }
+        appendLog("IoT 调试面板已就绪，所有协议与服务已初始化。")
+    }
+
+    // ==================== 快捷耗时操作调用封装 ====================
+
+    fun launchIotOperation(
+        title: String,
+        action: suspend CoroutineScope.(updateProgress: (Float?, String?) -> Unit) -> Unit
+    ): Job {
+        return launchWithLoading(
+            title = title,
+            isBlocking = _uiState.value.isBlockingDefault,
+            showLoading = _uiState.value.enableLoadingDialog,
+            action = action
+        )
+    }
+
+    // ==================== 终端日志 ====================
+
+    fun appendLog(message: String) {
+        val timestamp = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
+        val logEntry = "[$timestamp] $message"
+        _uiState.update {
+            it.copy(terminalLogs = (it.terminalLogs + logEntry).takeLast(200))
         }
     }
 
-    // ==================== 协议开关 ====================
+    fun clearTerminal() {
+        _uiState.update { it.copy(terminalLogs = emptyList()) }
+    }
+
+    // ==================== 协议开关切换 ====================
 
     fun toggleHttp(enabled: Boolean) = viewModelScope.launch {
-        try {
-            protocolConfig.setHttpEnabled(enabled)
-            appendLog("HTTP 开关: ${if (enabled) "✅ 已开启" else "❌ 已关闭"}")
-        } catch (e: Exception) {
-            appendLog("HTTP ❌ 操作失败: ${e.message}")
-        }
+        iotHub.config.setHttpEnabled(enabled)
+        appendLog("HTTP 协议开关: $enabled")
     }
 
     fun toggleMqtt(enabled: Boolean) = viewModelScope.launch {
-        try {
-            protocolConfig.setMqttEnabled(enabled)
-            appendLog("MQTT 开关: ${if (enabled) "✅ 已开启" else "❌ 已关闭"}")
-            if (!enabled) mqttManager.disconnect()
-        } catch (e: Exception) {
-            appendLog("MQTT ❌ 操作失败: ${e.message}")
-        }
+        iotHub.config.setMqttEnabled(enabled)
+        appendLog("MQTT 协议开关: $enabled")
     }
 
     fun toggleRedis(enabled: Boolean) = viewModelScope.launch {
-        try {
-            protocolConfig.setRedisEnabled(enabled)
-            appendLog("Redis 开关: ${if (enabled) "✅ 已开启" else "❌ 已关闭"}")
-            if (!enabled) redisManager.disconnect()
-        } catch (e: Exception) {
-            appendLog("Redis ❌ 操作失败: ${e.message}")
-        }
+        iotHub.config.setRedisEnabled(enabled)
+        appendLog("Redis 协议开关: $enabled")
     }
 
     fun toggleSocket(enabled: Boolean) = viewModelScope.launch {
-        try {
-            protocolConfig.setSocketEnabled(enabled)
-            appendLog("Socket 开关: ${if (enabled) "✅ 已开启" else "❌ 已关闭"}")
-            if (!enabled) socketManager.disconnect()
-        } catch (e: Exception) {
-            appendLog("Socket ❌ 操作失败: ${e.message}")
-        }
+        iotHub.config.setSocketEnabled(enabled)
+        appendLog("Socket 协议开关: $enabled")
     }
 
     // ==================== HTTP 测试 ====================
 
-    fun testHttpGet() = launchWithLoading(title = "HTTP GET 请求中...") {
+    fun testHttpGet() = launchIotOperation("HTTP GET 请求中...") {
         appendLog("HTTP GET → https://httpbin.org/get")
-        val result = httpManager.get<Map<String, Any>>("https://httpbin.org/get")
+        val result = iotHub.http.get<Map<String, Any>>("https://httpbin.org/get")
         when (result) {
             is HttpResult.Success<*> -> appendLog("HTTP ✅ ${result.code}: ${result.data.toString().take(200)}")
             is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
         }
     }
 
-    fun testHttpPost() = launchWithLoading(title = "HTTP POST 提交中...") {
+    fun testHttpPost() = launchIotOperation("HTTP POST 提交中...") {
         appendLog("HTTP POST → https://httpbin.org/post")
         val body = mapOf("key" to "value", "timestamp" to System.currentTimeMillis())
-        val result = httpManager.post<Map<String, Any>>("https://httpbin.org/post", body)
+        val result = iotHub.http.post<Map<String, Any>>("https://httpbin.org/post", body)
         when (result) {
             is HttpResult.Success<*> -> appendLog("HTTP ✅ ${result.code}: OK")
             is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
         }
     }
 
-    fun testHttpPut() = launchWithLoading(title = "HTTP PUT 更新中...") {
+    fun testHttpPut() = launchIotOperation("HTTP PUT 更新中...") {
         appendLog("HTTP PUT → https://httpbin.org/put")
         val body = mapOf("deviceStatus" to "ONLINE", "updatedAt" to System.currentTimeMillis())
-        val result = httpManager.put<Map<String, Any>>("https://httpbin.org/put", body)
+        val result = iotHub.http.put<Map<String, Any>>("https://httpbin.org/put", body)
         when (result) {
             is HttpResult.Success<*> -> appendLog("HTTP PUT ✅ ${result.code}: 更新成功")
             is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
         }
     }
 
-    fun testHttpDelete() = launchWithLoading(title = "HTTP DELETE 删除中...") {
+    fun testHttpDelete() = launchIotOperation("HTTP DELETE 删除中...") {
         appendLog("HTTP DELETE → https://httpbin.org/delete")
-        val result = httpManager.delete<Map<String, Any>>("https://httpbin.org/delete", mapOf("id" to "1001"))
+        val result = iotHub.http.delete<Map<String, Any>>("https://httpbin.org/delete", mapOf("id" to "1001"))
         when (result) {
             is HttpResult.Success<*> -> appendLog("HTTP DELETE ✅ ${result.code}: 删除成功")
             is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
         }
     }
 
-    fun testHttpUpload() = launchWithLoading(title = "HTTP Multipart 文件上传中") { updateProgress ->
+    fun testHttpUpload() = launchIotOperation("HTTP Multipart 文件上传中") { updateProgress ->
         val cacheDir = cacheLocationManager.getCurrentCacheDir()
         val sampleFile = File(cacheDir, "upload_sample_${System.currentTimeMillis()}.txt").apply {
             writeText("Hello IoT Cloud Server! Multipart payload test. Timestamp=${System.currentTimeMillis()}")
@@ -243,7 +247,7 @@ class DashboardViewModel @Inject constructor(
         appendLog("HTTP UPLOAD → https://httpbin.org/post")
         appendLog("HTTP UPLOAD [文件] 名称: ${sampleFile.name}, 大小: ${sampleFile.length()}B, 路径: ${sampleFile.absolutePath}")
 
-        val result = httpManager.upload<Map<String, Any>>(
+        val result = iotHub.http.upload<Map<String, Any>>(
             url = "https://httpbin.org/post",
             file = sampleFile,
             paramName = "file",
@@ -262,12 +266,12 @@ class DashboardViewModel @Inject constructor(
         refreshCacheStats()
     }
 
-    fun testHttpDownload() = launchWithLoading(title = "HTTP 流式文件下载中") { updateProgress ->
+    fun testHttpDownload() = launchIotOperation("HTTP 流式文件下载中") { updateProgress ->
         val destFile = cacheLocationManager.createCacheFile("download_iot_${System.currentTimeMillis()}.bin")
         appendLog("HTTP DOWNLOAD → 开始流式下载...")
         appendLog("HTTP DOWNLOAD [目标] 名称: ${destFile.name}, 存储路径: ${destFile.absolutePath}")
 
-        httpManager.download("https://httpbin.org/bytes/65536", destFile).collect { state ->
+        iotHub.http.download("https://httpbin.org/bytes/65536", destFile).collect { state ->
             when (state) {
                 is DownloadState.Idle -> appendLog("HTTP 下载准备中...")
                 is DownloadState.Progress -> {
@@ -362,8 +366,6 @@ class DashboardViewModel @Inject constructor(
         appendLog("输入弹窗 ✍️ 用户已提交数据: $text")
     }
 
-    // ==================== 通用耗时操作进度与错误弹窗架构 ====================
-
     fun toggleBlockingDefault() {
         _uiState.update { it.copy(isBlockingDefault = !it.isBlockingDefault) }
         appendLog("耗时弹窗模式切换: " + if (_uiState.value.isBlockingDefault) "阻塞式（禁止取消/点击穿透）" else "非阻塞式（可取消/外部关闭）")
@@ -372,95 +374,6 @@ class DashboardViewModel @Inject constructor(
     fun toggleEnableLoadingDialog() {
         _uiState.update { it.copy(enableLoadingDialog = !it.enableLoadingDialog) }
         appendLog("耗时进度弹窗开关: " + if (_uiState.value.enableLoadingDialog) "启用" else "禁用 (后台静默执行)")
-    }
-
-    /**
-     * 核心封装：执行带进度或等待弹窗的耗时异步操作。
-     *
-     * @param title 弹窗标题
-     * @param isBlocking 是否阻塞交互（不可穿透、不可取消），默认为当前全局配置
-     * @param showLoading 是否显示弹窗（开发者可自由选择每项任务是否展示）
-     * @param action 异步执行闭包，提供 updateProgress(percent, text) 动态更新百分比进度
-     */
-    fun launchWithLoading(
-        title: String = "正在处理中...",
-        isBlocking: Boolean = _uiState.value.isBlockingDefault,
-        showLoading: Boolean = _uiState.value.enableLoadingDialog,
-        action: suspend CoroutineScope.(updateProgress: (Float?, String?) -> Unit) -> Unit
-    ): Job {
-        return viewModelScope.launch {
-            var currentJob: Job? = null
-            if (showLoading) {
-                _uiState.update {
-                    it.copy(
-                        loadingConfig = LoadingConfig(
-                            visible = true,
-                            title = title,
-                            isBlocking = isBlocking,
-                            progress = null,
-                            progressText = null,
-                            cancelable = true,
-                            onCancel = {
-                                currentJob?.cancel()
-                                dismissLoading()
-                                appendLog("用户已主动取消操作: $title")
-                            }
-                        )
-                    )
-                }
-            }
-
-            try {
-                currentJob = coroutineContext[Job]
-                action { progress, text ->
-                    if (showLoading) {
-                        _uiState.update { state ->
-                            state.copy(
-                                loadingConfig = state.loadingConfig.copy(
-                                    progress = progress,
-                                    progressText = text
-                                )
-                            )
-                        }
-                    }
-                }
-            } catch (e: CancellationException) {
-                appendLog("操作已安全中断: ${e.message ?: "用户取消"}")
-            } catch (t: Throwable) {
-                Lg.e(TAG, "耗时任务执行失败: ${t.message}", t)
-                appendLog("❌ 执行异常: ${t.javaClass.simpleName} - ${t.message}")
-                showError(t)
-            } finally {
-                if (showLoading) {
-                    dismissLoading()
-                }
-            }
-        }
-    }
-
-    fun dismissLoading() {
-        _uiState.update { it.copy(loadingConfig = it.loadingConfig.copy(visible = false)) }
-    }
-
-    fun showError(throwable: Throwable) {
-        val parsed = ErrorParser.parse(getApplication(), throwable)
-        _uiState.update {
-            it.copy(
-                parsedError = parsed,
-                showErrorDialog = true
-            )
-        }
-    }
-
-    fun dismissError() {
-        _uiState.update { it.copy(showErrorDialog = false) }
-    }
-
-    fun shareErrorReport(error: ParsedError) {
-        fileShareManager.shareText(
-            text = error.fullDiagnosticReport,
-            shareTitle = "分享错误报告 - ${error.errorType}"
-        )
     }
 
     // ==================== 进度与错误弹窗实测模拟 ====================
@@ -509,7 +422,6 @@ class DashboardViewModel @Inject constructor(
         appendLog("故意连接超时不可达 IP (10.255.255.1:80)...")
         withContext(Dispatchers.IO) {
             val socket = java.net.Socket()
-            // 设置 1.5 秒超时，必触发 SocketTimeoutException
             socket.connect(java.net.InetSocketAddress("10.255.255.1", 80), 1500)
             socket.close()
         }
@@ -524,9 +436,9 @@ class DashboardViewModel @Inject constructor(
 
     // ==================== MQTT 测试 ====================
 
-    fun connectMqtt() = launchWithLoading(title = "正在连接 MQTT Broker...") {
+    fun connectMqtt() = launchIotOperation("正在连接 MQTT Broker...") {
         appendLog("MQTT 正在连接 ${AppConfig.MQTT_HOST}:${AppConfig.MQTT_PORT}...")
-        mqttManager.connect()
+        iotHub.mqtt.connect()
         appendLog("MQTT ✅ 连接成功")
     }
 
@@ -535,7 +447,7 @@ class DashboardViewModel @Inject constructor(
         val payload = """{"msg":"hello","ts":${System.currentTimeMillis()}}"""
         appendLog("MQTT PUBLISH → $topic: $payload")
         try {
-            mqttManager.publish(topic, payload)
+            iotHub.mqtt.publish(topic, payload)
             appendLog("MQTT ✅ 发布成功")
         } catch (e: ProtocolDisabledException) {
             appendLog("MQTT ❌ 协议已禁用: ${e.message}")
@@ -548,8 +460,8 @@ class DashboardViewModel @Inject constructor(
         val topic = "iot/test/android"
         appendLog("MQTT 订阅 → $topic")
         try {
-            mqttManager.subscribe(topic)
-                .take(3) // 最多接收 3 条消息后自动取消
+            iotHub.mqtt.subscribe(topic)
+                .take(3)
                 .onEach { msg -> appendLog("MQTT RECV ← $msg") }
                 .catch { e -> appendLog("MQTT ❌ 订阅异常: ${e.message}") }
                 .launchIn(this)
@@ -560,9 +472,9 @@ class DashboardViewModel @Inject constructor(
 
     // ==================== Redis 测试 ====================
 
-    fun connectRedis() = launchWithLoading(title = "正在连接 Redis 服务器...") {
+    fun connectRedis() = launchIotOperation("正在连接 Redis 服务器...") {
         appendLog("Redis 正在连接 ${AppConfig.REDIS_HOST}:${AppConfig.REDIS_PORT}...")
-        redisManager.connect()
+        iotHub.redis.connect()
         _uiState.update { it.copy(redisConnected = true) }
         appendLog("Redis ✅ 连接成功")
     }
@@ -570,9 +482,9 @@ class DashboardViewModel @Inject constructor(
     fun redisSendCommand() = viewModelScope.launch {
         appendLog("Redis SET iot:test:key → 'hello_from_android'")
         try {
-            val result = redisManager.set("iot:test:key", "hello_from_android", 60)
+            val result = iotHub.redis.set("iot:test:key", "hello_from_android", 60)
             appendLog("Redis SET 结果: $result")
-            val value = redisManager.get("iot:test:key")
+            val value = iotHub.redis.get("iot:test:key")
             appendLog("Redis GET iot:test:key = $value")
         } catch (e: ProtocolDisabledException) {
             appendLog("Redis ❌ 协议已禁用: ${e.message}")
@@ -583,16 +495,16 @@ class DashboardViewModel @Inject constructor(
 
     // ==================== Socket 测试 ====================
 
-    fun connectSocket() = launchWithLoading(title = "正在建立 TCP Socket 工业连接...") {
+    fun connectSocket() = launchIotOperation("正在建立 TCP Socket 工业长连接...") {
         appendLog("Socket 正在连接 ${AppConfig.SOCKET_HOST}:${AppConfig.SOCKET_PORT}...")
-        socketManager.connect(AppConfig.SOCKET_HOST, AppConfig.SOCKET_PORT)
+        iotHub.socket.connect(AppConfig.SOCKET_HOST, AppConfig.SOCKET_PORT)
         appendLog("Socket ✅ 连接成功")
     }
 
     fun socketPingPong() = viewModelScope.launch {
         appendLog("Socket SEND → PING")
         try {
-            socketManager.send("PING")
+            iotHub.socket.send("PING")
         } catch (e: ProtocolDisabledException) {
             appendLog("Socket ❌ 协议已禁用: ${e.message}")
         } catch (e: Exception) {
@@ -600,9 +512,8 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    // ==================== 诊断测试 ====================
+    // ==================== 诊断与设置 ====================
 
-    /** 触发超长日志测试 */
     fun triggerLongLog() {
         val longText = (1..50).joinToString(separator = "\n") {
             "[$it] 这是第 $it 行超长日志测试数据，用于验证 Lg 工具的分段打印功能是否正常工作。" +
@@ -612,42 +523,29 @@ class DashboardViewModel @Inject constructor(
         appendLog("已触发超长日志测试，请查看 Logcat [LongLogTest]")
     }
 
-    /** 主动触发崩溃（用于测试 CrashHandler） */
-    fun triggerCrash() {
-        appendLog("⚠️ 即将触发崩溃，请查看 logs/ 目录下的崩溃日志文件")
-        viewModelScope.launch {
-            delay(500) // 让日志先显示
-            throw RuntimeException("手动触发的崩溃 —— IoT Dashboard 崩溃测试")
+    fun exportCrashLogs() = viewModelScope.launch {
+        appendLog("正在检查崩溃日志...")
+        val files = com.base.iot.core.diagnostics.CrashHandler.getCrashLogFiles(getApplication())
+        if (files.isNotEmpty()) {
+            val file = files.first()
+            appendLog("找到崩溃日志: ${file.name} (${file.length()}B)")
+            _uiState.update { it.copy(latestDownloadedFile = file) }
+        } else {
+            appendLog("暂无崩溃日志记录")
         }
     }
 
-    /** 分享日志文件 */
-    fun shareLogFiles() {
-        LogExporter.shareLogFiles(getApplication())
-        appendLog("已调用系统分享面板，请选择分享目标")
-    }
-
-    // ==================== 沉浸式开关 ====================
-
-    fun toggleImmersive() {
-        _uiState.update { it.copy(isImmersive = !it.isImmersive) }
-        appendLog("沉浸式模式: ${if (!_uiState.value.isImmersive) "❌ 已关闭" else "✅ 已开启"}")
-    }
-
-    // ==================== 工具 ====================
-
-    private fun appendLog(msg: String) {
-        val timestamp = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault())
-            .format(java.util.Date())
-        val line = "[$timestamp] $msg"
-        Lg.d(TAG, line)
-        _uiState.update { state ->
-            val logs = (state.terminalLogs + line).takeLast(200) // 最多保留 200 条
-            state.copy(terminalLogs = logs)
+    fun shareCrashLog() = viewModelScope.launch {
+        val files = com.base.iot.core.diagnostics.CrashHandler.getCrashLogFiles(getApplication())
+        if (files.isNotEmpty()) {
+            fileShareManager.shareFile(files.first(), "分享崩溃日志")
+        } else {
+            appendLog("暂无崩溃日志可分享")
         }
     }
 
-    fun clearTerminal() {
-        _uiState.update { it.copy(terminalLogs = emptyList()) }
+    fun toggleImmersive(enable: Boolean) {
+        _uiState.update { it.copy(isImmersive = enable) }
+        appendLog("全屏沉浸式已切换: $enable")
     }
 }
