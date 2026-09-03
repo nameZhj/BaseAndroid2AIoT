@@ -25,7 +25,9 @@ data class IotDeviceItem(
  * 基于 GitHub 24k+ Star 最流行 RecyclerView 框架 BRVAH 4 (BaseRecyclerViewAdapterHelper4)
  * 极简打造的企业级物联网设备列表适配器。
  */
-class IotDeviceQuickAdapter : BaseQuickAdapter<IotDeviceItem, IotDeviceQuickAdapter.VH>() {
+class IotDeviceQuickAdapter(
+    var isDark: Boolean = true
+) : BaseQuickAdapter<IotDeviceItem, IotDeviceQuickAdapter.VH>() {
 
     class VH(
         val rootView: View,
@@ -36,7 +38,6 @@ class IotDeviceQuickAdapter : BaseQuickAdapter<IotDeviceItem, IotDeviceQuickAdap
     ) : RecyclerView.ViewHolder(rootView)
 
     override fun onCreateViewHolder(context: Context, parent: ViewGroup, viewType: Int): VH {
-        // 使用代码构建布局或 XML 均可，此处代码构建免去额外 XML 开销并保持 100% 独立可运行
         val layout = android.widget.LinearLayout(context).apply {
             orientation = android.widget.LinearLayout.VERTICAL
             setPadding(32, 24, 32, 24)
@@ -46,7 +47,6 @@ class IotDeviceQuickAdapter : BaseQuickAdapter<IotDeviceItem, IotDeviceQuickAdap
             ).apply {
                 setMargins(0, 8, 0, 8)
             }
-            setBackgroundColor(0xFF1E2640.toInt()) // 深色卡片背景
         }
 
         val row1 = android.widget.LinearLayout(context).apply {
@@ -55,15 +55,12 @@ class IotDeviceQuickAdapter : BaseQuickAdapter<IotDeviceItem, IotDeviceQuickAdap
 
         val tvName = TextView(context).apply {
             textSize = 15f
-            setTextColor(0xFFFFFFFF.toInt())
             layoutParams = android.widget.LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         }
 
         val tvProtocol = TextView(context).apply {
             textSize = 12f
             setPadding(16, 4, 16, 4)
-            setTextColor(0xFF00E5FF.toInt())
-            setBackgroundColor(0x2200E5FF)
         }
 
         row1.addView(tvName)
@@ -81,13 +78,11 @@ class IotDeviceQuickAdapter : BaseQuickAdapter<IotDeviceItem, IotDeviceQuickAdap
 
         val tvStatus = TextView(context).apply {
             textSize = 13f
-            setTextColor(0xFF00E676.toInt())
             layoutParams = android.widget.LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         }
 
         val tvIp = TextView(context).apply {
             textSize = 12f
-            setTextColor(0xFF94A3B8.toInt())
         }
 
         row2.addView(tvStatus)
@@ -101,12 +96,30 @@ class IotDeviceQuickAdapter : BaseQuickAdapter<IotDeviceItem, IotDeviceQuickAdap
 
     override fun onBindViewHolder(holder: VH, position: Int, item: IotDeviceItem?) {
         if (item == null) return
+
+        val bgColor = if (isDark) 0xFF161B26.toInt() else 0xFFF1F5F9.toInt()
+        val nameColor = if (isDark) 0xFFF8FAFC.toInt() else 0xFF0F172A.toInt()
+        val ipColor = if (isDark) 0xFF94A3B8.toInt() else 0xFF64748B.toInt()
+        val protocolColor = if (isDark) 0xFF00E5FF.toInt() else 0xFF0284C7.toInt()
+
+        holder.rootView.setBackgroundColor(bgColor)
         holder.tvName.text = item.name
+        holder.tvName.setTextColor(nameColor)
+
         holder.tvProtocol.text = item.protocol
+        holder.tvProtocol.setTextColor(protocolColor)
+        holder.tvProtocol.setBackgroundColor(if (isDark) 0x2200E5FF else 0x1A0284C7)
+
         holder.tvStatus.text = "● ${item.status}"
         holder.tvStatus.setTextColor(
-            if (item.status == "ONLINE") 0xFF00E676.toInt() else 0xFFFF5252.toInt()
+            if (item.status == "ONLINE") {
+                if (isDark) 0xFF10B981.toInt() else 0xFF059669.toInt()
+            } else {
+                if (isDark) 0xFFEF4444.toInt() else 0xFFDC2626.toInt()
+            }
         )
+
         holder.tvIp.text = "${item.ipAddress} (${item.deviceId})"
+        holder.tvIp.setTextColor(ipColor)
     }
 }

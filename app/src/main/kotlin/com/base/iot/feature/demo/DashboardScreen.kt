@@ -30,19 +30,22 @@ import com.base.iot.core.ui.AdaptiveContentLayout
 import com.base.iot.core.ui.SystemBarEffect
 import com.base.iot.core.ui.recycler.IotDeviceQuickAdapter
 
-// ==================== 调色板 ====================
-private val DarkBg = Color(0xFF0D1117)
-private val CardBg = Color(0xFF161B22)
-private val CardBorder = Color(0xFF30363D)
-private val AccentCyan = Color(0xFF00D4FF)
-private val AccentPurple = Color(0xFF7C3AED)
-private val AccentGreen = Color(0xFF10B981)
-private val AccentAmber = Color(0xFFF59E0B)
-private val AccentRed = Color(0xFFEF4444)
-private val TextPrimary = Color(0xFFE6EDF3)
-private val TextSecondary = Color(0xFF8B949E)
-private val TerminalBg = Color(0xFF010409)
-private val TerminalText = Color(0xFF39D353)
+import com.base.iot.core.ui.dialog.*
+import com.base.iot.ui.theme.AppTheme
+
+// ==================== 统一色彩设计系统令牌映射 ====================
+private val DarkBg @Composable get() = AppTheme.colors.background
+private val CardBg @Composable get() = AppTheme.colors.surface
+private val CardBorder @Composable get() = AppTheme.colors.cardBorder
+private val AccentCyan @Composable get() = AppTheme.colors.accentCyan
+private val AccentPurple @Composable get() = AppTheme.colors.accentPurple
+private val AccentGreen @Composable get() = AppTheme.colors.accentGreen
+private val AccentAmber @Composable get() = AppTheme.colors.accentAmber
+private val AccentRed @Composable get() = AppTheme.colors.accentRed
+private val TextPrimary @Composable get() = AppTheme.colors.textPrimary
+private val TextSecondary @Composable get() = AppTheme.colors.textSecondary
+private val TerminalBg @Composable get() = AppTheme.colors.terminalBg
+private val TerminalText @Composable get() = AppTheme.colors.terminalText
 
 // ==================== DashboardScreen ====================
 
@@ -66,10 +69,12 @@ fun DashboardScreen(
             .background(DarkBg)
     ) {
         // 顶部光晕装饰
+        val purpleColor = AccentPurple
+        val cyanColor = AccentCyan
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(AccentPurple.copy(alpha = 0.15f), Color.Transparent),
+                    colors = listOf(purpleColor.copy(alpha = 0.15f), Color.Transparent),
                     center = Offset(0f, 0f),
                     radius = 600f
                 ),
@@ -78,7 +83,7 @@ fun DashboardScreen(
             )
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(AccentCyan.copy(alpha = 0.08f), Color.Transparent),
+                    colors = listOf(cyanColor.copy(alpha = 0.08f), Color.Transparent),
                     center = Offset(size.width, size.height * 0.3f),
                     radius = 400f
                 ),
@@ -127,7 +132,8 @@ fun DashboardScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    item { DashboardHeader() }
+                    item { DashboardHeader(viewModel, uiState) }
+                    item { UnifiedDialogDemoCard(uiState, viewModel) }
                     item { ProtocolSwitchesCard(uiState, viewModel) }
                     item { HttpTestCard(viewModel) }
                     item { CacheManagementCard(uiState, viewModel) }
@@ -148,6 +154,52 @@ fun DashboardScreen(
                 }
             }
         }
+
+        // ==================== 统一设计规范弹窗挂载 ====================
+
+        AppConfirmDialog(
+            visible = uiState.showConfirmDialog,
+            title = "核心协议复位确认",
+            message = "您正在请求重置物联网核心连接池与网关通道，操作将重新协商握手密钥，请确认是否执行？",
+            confirmText = "确认复位",
+            isDanger = true,
+            onConfirm = viewModel::onConfirmDialogConfirmed,
+            onDismiss = { viewModel.setConfirmDialog(false) }
+        )
+
+        AppLoadingDialog(
+            visible = uiState.showLoadingDialog,
+            message = "正在与物联网网关建立安全长连接..."
+        )
+        if (uiState.showLoadingDialog) {
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(2000)
+                viewModel.setLoadingDialog(false)
+            }
+        }
+
+        AppInputDialog(
+            visible = uiState.showInputDialog,
+            title = "修改边缘节点标识",
+            hint = "如: ANDROID_AIOT_NODE_01",
+            initialText = "IOT_EDGE_DEV_ALPHA",
+            confirmText = "保存更改",
+            onConfirm = viewModel::onInputDialogConfirmed,
+            onDismiss = { viewModel.setInputDialog(false) }
+        )
+
+        AppBottomSheetDialog(
+            visible = uiState.showBottomSheet,
+            title = "物联网实时监控抽屉面板",
+            onDismiss = { viewModel.setBottomSheet(false) }
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text("● 当前生效协议: HTTP(REST), MQTT, TCP Socket", color = TextPrimary, fontSize = 14.sp)
+                Text("● 缓存策略: ${uiState.currentCacheType.title}", color = TextSecondary, fontSize = 13.sp)
+                Text("● 当前显示模式: ${uiState.themeMode.title}", color = AccentCyan, fontSize = 13.sp)
+                Text("● 弹窗技术方案: XPopup 4 + Compose AppDialog 统一设计标准", color = TextSecondary, fontSize = 12.sp)
+            }
+        }
     }
 }
 
@@ -164,7 +216,8 @@ private fun ControlPanel(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        item { DashboardHeader() }
+        item { DashboardHeader(viewModel, uiState) }
+        item { UnifiedDialogDemoCard(uiState, viewModel) }
         item { ProtocolSwitchesCard(uiState, viewModel) }
         item { HttpTestCard(viewModel) }
         item { CacheManagementCard(uiState, viewModel) }
@@ -195,9 +248,12 @@ private fun TerminalPanel(
 // ==================== Header ====================
 
 @Composable
-private fun DashboardHeader() {
+private fun DashboardHeader(vm: DashboardViewModel, uiState: DashboardUiState) {
     Column(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             // 动态脉冲图标
             val infiniteTransition = rememberInfiniteTransition(label = "pulse")
             val scale by infiniteTransition.animateFloat(
@@ -218,17 +274,85 @@ private fun DashboardHeader() {
                     .scale(scale)
             )
             Spacer(Modifier.width(10.dp))
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "IoT 调试控制面板",
                     color = TextPrimary,
-                    fontSize = 22.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "BaseAndroid2AIoT · Enterprise Scaffold",
+                    text = "${uiState.themeMode.title} · Enterprise AIoT",
                     color = TextSecondary,
                     fontSize = 12.sp
+                )
+            }
+
+            // 主题切换快捷按钮 (普通模式 / 夜间模式)
+            IconButton(
+                onClick = vm::toggleTheme,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(AppTheme.colors.surfaceVariant)
+                    .border(1.dp, CardBorder, CircleShape)
+            ) {
+                Icon(
+                    imageVector = if (AppTheme.colors.isDark) Icons.Filled.LightMode else Icons.Filled.DarkMode,
+                    contentDescription = "切换显示模式",
+                    tint = if (AppTheme.colors.isDark) AccentAmber else AccentPurple,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+    }
+}
+
+// ==================== 统一风格弹窗展示卡片 ====================
+
+@Composable
+private fun UnifiedDialogDemoCard(uiState: DashboardUiState, vm: DashboardViewModel) {
+    IotCard(
+        title = "统一风格弹窗体系 (XPopup / AppDialog)",
+        icon = Icons.Filled.SmartButton,
+        iconTint = AccentPurple
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(
+                text = "针对物联网业务场景统一封装，在普通模式与夜间模式下均保证高对比度视觉质感：",
+                color = TextSecondary,
+                fontSize = 12.sp
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                IotButton(
+                    text = "确认/高危弹窗",
+                    icon = Icons.Filled.CheckCircle,
+                    color = AccentRed,
+                    modifier = Modifier.weight(1f),
+                    onClick = { vm.setConfirmDialog(true) }
+                )
+                IotButton(
+                    text = "加载等待弹窗",
+                    icon = Icons.Filled.HourglassTop,
+                    color = AccentCyan,
+                    modifier = Modifier.weight(1f),
+                    onClick = { vm.setLoadingDialog(true) }
+                )
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                IotButton(
+                    text = "参数输入弹窗",
+                    icon = Icons.Filled.EditNote,
+                    color = AccentAmber,
+                    modifier = Modifier.weight(1f),
+                    onClick = { vm.setInputDialog(true) }
+                )
+                IotButton(
+                    text = "底部抽屉面板",
+                    icon = Icons.Filled.VerticalAlignTop,
+                    color = AccentGreen,
+                    modifier = Modifier.weight(1f),
+                    onClick = { vm.setBottomSheet(true) }
                 )
             }
         }
@@ -793,17 +917,21 @@ private fun BrvahRecyclerCard(uiState: DashboardUiState) {
                 color = TextSecondary,
                 fontSize = 11.sp
             )
+            val isDark = AppTheme.colors.isDark
             AndroidView(
                 factory = { context ->
                     RecyclerView(context).apply {
                         layoutManager = LinearLayoutManager(context)
-                        val adapter = IotDeviceQuickAdapter()
+                        val adapter = IotDeviceQuickAdapter(isDark = isDark)
                         this.adapter = adapter
                         adapter.submitList(uiState.brvahDevices)
                     }
                 },
                 update = { recyclerView ->
-                    (recyclerView.adapter as? IotDeviceQuickAdapter)?.submitList(uiState.brvahDevices)
+                    (recyclerView.adapter as? IotDeviceQuickAdapter)?.let { adapter ->
+                        adapter.isDark = isDark
+                        adapter.submitList(uiState.brvahDevices)
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

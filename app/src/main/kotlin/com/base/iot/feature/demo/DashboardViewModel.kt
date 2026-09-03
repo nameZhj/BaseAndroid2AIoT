@@ -17,6 +17,8 @@ import com.base.iot.core.storage.CacheLocationManager
 import com.base.iot.core.storage.CacheLocationType
 import com.base.iot.core.storage.FileShareManager
 import com.base.iot.core.ui.recycler.IotDeviceItem
+import com.base.iot.core.ui.theme.ThemeManager
+import com.base.iot.core.ui.theme.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -36,7 +38,12 @@ data class DashboardUiState(
     val currentCachePath: String = "",
     val cacheFilesCount: Int = 0,
     val latestDownloadedFile: File? = null,
-    val brvahDevices: List<IotDeviceItem> = emptyList()
+    val brvahDevices: List<IotDeviceItem> = emptyList(),
+    val themeMode: ThemeMode = ThemeMode.DARK,
+    val showConfirmDialog: Boolean = false,
+    val showLoadingDialog: Boolean = false,
+    val showInputDialog: Boolean = false,
+    val showBottomSheet: Boolean = false
 )
 
 // ==================== Events (One-shot) ====================
@@ -56,7 +63,8 @@ class DashboardViewModel @Inject constructor(
     private val redisManager: RedisManager,
     private val socketManager: SocketManager,
     private val cacheLocationManager: CacheLocationManager,
-    private val fileShareManager: FileShareManager
+    private val fileShareManager: FileShareManager,
+    private val themeManager: ThemeManager
 ) : AndroidViewModel(application) {
 
     private val TAG = "DashboardVM"
@@ -88,6 +96,13 @@ class DashboardViewModel @Inject constructor(
                         latestDownloadedFile = files.firstOrNull()
                     )
                 }
+            }
+        }
+
+        // 监听主题模式变化
+        viewModelScope.launch {
+            themeManager.themeModeFlow.collect { mode ->
+                _uiState.update { it.copy(themeMode = mode) }
             }
         }
 
@@ -307,6 +322,47 @@ class DashboardViewModel @Inject constructor(
                 latestDownloadedFile = files.firstOrNull()
             )
         }
+    }
+
+    // ==================== 主题与弹窗控制 ====================
+
+    fun toggleTheme() = viewModelScope.launch {
+        val next = when (_uiState.value.themeMode) {
+            ThemeMode.DARK -> ThemeMode.LIGHT
+            ThemeMode.LIGHT -> ThemeMode.DARK
+            ThemeMode.SYSTEM -> ThemeMode.LIGHT
+        }
+        themeManager.setThemeMode(next)
+        appendLog("切换显示模式: ${next.title}")
+    }
+
+    fun setThemeMode(mode: ThemeMode) = viewModelScope.launch {
+        themeManager.setThemeMode(mode)
+        appendLog("主题模式设置为: ${mode.title}")
+    }
+
+    fun setConfirmDialog(visible: Boolean) {
+        _uiState.update { it.copy(showConfirmDialog = visible) }
+    }
+
+    fun setLoadingDialog(visible: Boolean) {
+        _uiState.update { it.copy(showLoadingDialog = visible) }
+    }
+
+    fun setInputDialog(visible: Boolean) {
+        _uiState.update { it.copy(showInputDialog = visible) }
+    }
+
+    fun setBottomSheet(visible: Boolean) {
+        _uiState.update { it.copy(showBottomSheet = visible) }
+    }
+
+    fun onConfirmDialogConfirmed() {
+        appendLog("确认弹窗 ✅ 用户已确认执行核心物联网操作")
+    }
+
+    fun onInputDialogConfirmed(text: String) {
+        appendLog("输入弹窗 ✍️ 用户已提交数据: $text")
     }
 
     // ==================== MQTT 测试 ====================

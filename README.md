@@ -101,7 +101,43 @@ Android 系统对网络通信有严格的沙箱与安全限制，本项目针对
 ### 5. 集成 GitHub Star 最高的 RecyclerView 适配器框架 (BRVAH 4)
 - **选型**：GitHub 拥有 24.3k+ Stars 的 `BaseRecyclerViewAdapterHelper4` (`io.github.cymchad:BaseRecyclerViewAdapterHelper4:4.1.4`)。
 - **原生与 Compose 混编**：
-  在保持现代 Jetpack Compose 架构的同时，提供 `IotDeviceQuickAdapter` 演示原生高效列表开发，并通过 Compose `AndroidView` 实现顺畅混编与双向状态响应。
+  在保持现代 Jetpack Compose 架构的同时，提供 `IotDeviceQuickAdapter` 演示原生高效列表开发，并通过 Compose `AndroidView` 实现顺畅混编与双向状态响应，支持普通模式与夜间模式色彩动态适配。
+
+---
+
+### 6. 全局统一设计系统 (Design System) 与普通/夜间双模式
+为了让后续所有开发严格遵循统一的视觉基调，并彻底解决“文字/按钮/背景颜色相近而无法看清”的问题，项目严格遵循 **WCAG AAA 顶级对比度规范** 建立了全局设计系统令牌体系（Design Tokens）：
+
+- **色彩令牌设计表**：
+  | 视觉元素 (Design Tokens) | 普通模式 (Light Mode) | 夜间模式 (Dark Mode) | 对比度与可读性保障 |
+  | :--- | :--- | :--- | :--- |
+  | **主页面底色 (`background`)** | `#F1F5F9` (Slate-100) | `#0B0F19` (Obsidian) | 柔和浅青灰消除刺眼白光，夜间深邃黑曜石低功耗护眼 |
+  | **卡片/容器 (`surface`)** | `#FFFFFF` (纯白 + 边框) | `#161B26` (Slate-900) | 容器与背景层次分明，绝不泛灰混淆 |
+  | **主要标题字 (`textPrimary`)** | `#0F172A` (Slate-900) | `#F8FAFC` (Slate-50) | **对比度 > 15:1**，极其清晰锐利 |
+  | **次要描述字 (`textSecondary`)**| `#334155` (Slate-700) | `#94A3B8` (Slate-400) | **对比度 > 7:1**，层级分明不刺眼 |
+  | **主科技强调色 (`accentPrimary`)**| `#0284C7` (Sky-600) | `#00D4FF` (Neon Cyan) | 日间稳重深蓝，夜间高饱和电光青 |
+  | **成功/在线色 (`accentGreen`)** | `#059669` (Emerald-600) | `#10B981` (Emerald-400) | 物联网在线与连接就绪指示 |
+  | **危险/告警色 (`accentRed`)** | `#DC2626` (Red-600) | `#EF4444` (Red-500) | 核心复位、断开与删除操作高亮 |
+  | **卡片轮廓描边 (`cardBorder`)** | `#CBD5E1` (Slate-300) | `#263346` | 明确边界，防止光线干扰下轮廓消融 |
+  | **控制台终端 (`terminalBg/Text`)**| `#0F172A` / `#34D399` | `#010409` / `#39D353` | 保持工控专业沉浸感 |
+
+- **全应用统一访问与持久化**：
+  - 核心组件统一使用 `AppTheme.colors.*` 提取色彩；
+  - `ThemeManager` 支持 `ThemeMode.LIGHT`、`ThemeMode.DARK`、`ThemeMode.SYSTEM`，通过 Jetpack DataStore 持久化保存；
+  - 控制面板顶部提供**一键切换图标按钮**，动态自适应 Android 系统状态栏图标（深底配浅色图标，浅底配深色图标）。
+
+---
+
+### 7. 引入 GitHub 顶流 Dialog 框架 XPopup (15.2k+ ★) 与统一弹窗体系
+针对 Android 物联网操作中频繁的确认、等待、参数配置与面板交互，引入 GitHub 截至 2026 年最流行的弹窗框架 **XPopup** (`com.github.li-xiaojun:XPopup:2.10.0`)，并封装全应用风格统一的弹窗体系：
+
+1. **统一设计规范 Compose 弹窗组件 (`AppDialog.kt`)**：
+   - **`AppConfirmDialog`**：二次确认与高危操作防误触弹窗（支持主色/危险红高亮按钮）；
+   - **`AppLoadingDialog`**：沉浸式阻塞加载弹窗，专为物联网握手、OTA 下载等长耗时操作提供安全防护；
+   - **`AppInputDialog`**：设备标识、参数配置输入弹窗，自带清空按钮与校验；
+   - **`AppBottomSheetDialog`**：底部展开式设备抽屉，带手势拖拽条。
+2. **原生 View / Activity 统一门面 (`XPopupBridge.kt`)**：
+   - 封装 `XPopupBridge.showConfirm()`、`XPopupBridge.showLoading()`、`XPopupBridge.showInput()`，确保在混合栈或非 Compose 页面中呼出弹窗依然保持 100% 相同的设计规范与 Dark/Light 主题。
 
 ---
 
@@ -112,24 +148,28 @@ BaseAndroid2AIoT/
 ├── gradle/
 │   └── libs.versions.toml             # 统一 Version Catalog 版本目录
 ├── build.gradle.kts                   # 根项目构建脚本
-├── settings.gradle.kts                # 仓库配置（已配置国内阿里镜像加速）
-├── gradle.properties                  # 编译期协议开关与 Gradle 优化配置
+├── settings.gradle.kts                # 仓库配置（阿里镜像加速 + JitPack）
+├── gradle.properties                  # 编译期协议裁剪开关与 Gradle 优化
 └── app/
     ├── build.gradle.kts               # 应用模块构建脚本（动态依赖与 SourceSets）
     └── src/
         ├── main/
-        │   ├── AndroidManifest.xml    # 权限、网络安全配置与 FileProvider
+        │   ├── AndroidManifest.xml    # 权限、明文网络放行、FileProvider
         │   ├── res/
         │   │   ├── xml/network_security_config.xml # 明文与自签名证书安全配置
         │   │   └── xml/file_paths.xml              # FileProvider 安全共享路径
         │   └── kotlin/com/base/iot/
         │       ├── App.kt
-        │       ├── MainActivity.kt
+        │       ├── MainActivity.kt    # 单 Activity 挂载与状态栏动态适配
+        │       ├── ui/theme/          # AppTheme 令牌体系 (Light & Dark 高对比度)
         │       ├── core/
         │       │   ├── config/        # 运行时 DataStore 开关与 AppConfig 常量
         │       │   ├── diagnostics/   # 超长日志分段 (Lg)、崩溃抓取 (CrashHandler)
         │       │   ├── storage/       # 缓存位置切换 (CacheLocationManager)、文件分享
-        │       │   ├── ui/recycler/   # BRVAH 4 设备列表适配器 (IotDeviceQuickAdapter)
+        │       │   ├── ui/
+        │       │   │   ├── dialog/    # 统一弹窗组件 (AppDialog.kt / XPopupBridge.kt)
+        │       │   │   ├── theme/     # 主题模式持久化管理 (ThemeManager.kt)
+        │       │   │   └── recycler/  # BRVAH 4 设备列表适配器 (IotDeviceQuickAdapter)
         │       │   ├── network/       # HTTP 通用接口定义 (HttpManager)
         │       │   └── iot/           # MQTT / Redis / Socket 接口抽象
         │       └── feature/demo/      # Compose 仪表盘控制面板 (DashboardScreen/VM)
@@ -152,13 +192,15 @@ BaseAndroid2AIoT/
 | **语言** | Kotlin | `2.0.21` | 100% 现代 Kotlin 编写 |
 | **构建体系** | Gradle / AGP | `8.11.1` / `8.5.2` | Gradle 8+ 增量构建与配置缓存 |
 | **UI 体系** | Jetpack Compose + M3 | BOM `2024.09.03` | 响应式 Material 3 设计 |
-| **列表框架** | BRVAH 4 (BaseQuickAdapter) | `4.1.4` | GitHub 顶流强大列表适配器 |
+| **弹窗框架** | XPopup | `2.10.0` | GitHub 15k+ 顶流通用弹窗库 |
+| **列表框架** | BRVAH 4 (BaseQuickAdapter) | `4.1.4` | GitHub 24k+ 顶流列表适配器 |
 | **架构组件** | ViewModel + Coroutines + Flow | `2.8.3` / `1.8.1` | MVVM 单向数据流架构 |
 | **依赖注入** | Google Hilt | `2.51.1` | 依赖注入与组件生命周期管理 |
-| **配置存储** | Jetpack DataStore | `1.1.1` | 响应式配置与缓存策略持久化 |
+| **配置存储** | Jetpack DataStore | `1.1.1` | 响应式配置、主题模式与缓存策略持久化 |
 | **HTTP 传输** | Retrofit + OkHttp + Okio | `2.11.0` / `4.12.0` | 支持 GET/POST/PUT/DELETE 及大文件流式上传下载 |
 | **MQTT 协议** | HiveMQ MQTT Client | `1.3.3` | 高性能反应式 MQTT 3.1.1 客户端 |
-| **Redis 协议**| Jedis | `5.1.3` | 远控、参数下发与心跳检测 |
+| **Redis 协议** | Jedis (BOM 精简版) | `5.1.5` | 物联网控制指令与键值操作 |
+| **TCP Socket** | 原生 NIO SocketChannel | JDK 17 | 工业级长连接心跳与断线重连 |
 | **网络诊断** | 自研分段日志 + CrashHandler | 原生扩展 | 防止 Logcat 截断与本地异常落盘 |
 
 ---

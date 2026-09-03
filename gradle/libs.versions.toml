@@ -44,9 +44,10 @@ m3-window-size = "1.2.1"
 # Serialization
 kotlinx-serialization = "1.7.1"
 
-# RecyclerView & BRVAH
+# RecyclerView & BRVAH & Dialog
 recyclerview = "1.3.2"
 brvah = "4.1.4"
+xpopup = "2.10.0"
 
 # Gson
 gson = "2.11.0"
@@ -109,9 +110,10 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 # Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
-# RecyclerView & BRVAH
+# RecyclerView & BRVAH & Dialog
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 brvah = { group = "io.github.cymchad", name = "BaseRecyclerViewAdapterHelper4", version.ref = "brvah" }
+xpopup = { group = "com.github.li-xiaojun", name = "XPopup", version.ref = "xpopup" }
 
 # Gson
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }

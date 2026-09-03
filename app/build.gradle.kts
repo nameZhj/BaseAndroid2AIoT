@@ -146,6 +146,9 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.brvah)
 
+    // XPopup (GitHub 顶级弹窗库)
+    implementation(libs.xpopup)
+
     // DataStore
     implementation(libs.datastore.preferences)
 
