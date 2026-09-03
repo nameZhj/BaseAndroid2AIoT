@@ -191,6 +191,20 @@ class DashboardViewModel @Inject constructor(
         appendLog("Socket 协议开关: $enabled")
     }
 
+    fun showLicensesDialog() {
+        appendLog("=== 开源许可证与法律合规清单 (Apache 2.0 / MIT) ===")
+        appendLog("1. XPopup (Apache-2.0) - https://github.com/li-xiaojun/XPopup")
+        appendLog("2. BRVAH 4 (Apache-2.0) - https://github.com/CymChad/BaseRecyclerViewAdapterHelper")
+        appendLog("3. Retrofit & OkHttp (Apache-2.0) - https://github.com/square/retrofit")
+        appendLog("4. HiveMQ MQTT Client (Apache-2.0) - https://github.com/hivemq/hivemq-mqtt-client")
+        appendLog("5. Jedis (MIT) - https://github.com/redis/jedis")
+        appendLog("6. Coil (Apache-2.0) - https://github.com/coil-kt/coil")
+        appendLog("7. Dagger Hilt (Apache-2.0) - https://github.com/google/dagger")
+        appendLog("8. Google Gson (Apache-2.0) - https://github.com/google/gson")
+        appendLog("9. Kotlinx Coroutines (Apache-2.0) - https://github.com/Kotlin/kotlinx.coroutines")
+        appendLog("合规说明: 本项目所有三方依赖均为宽松开源许可，无 GPL 传染性，完全允许闭源商业使用。详见 OPEN_SOURCE_LICENSES.md 与 NOTICE。")
+    }
+
     fun testHttpGet() = launchIotOperation("HTTP GET 请求中...") {
         appendLog("HTTP GET → https://httpbin.org/get")
         val result = iotHub.http.get<Map<String, Any>>("https://httpbin.org/get")

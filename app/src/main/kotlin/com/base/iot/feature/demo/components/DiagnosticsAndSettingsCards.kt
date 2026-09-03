@@ -88,5 +88,33 @@ fun UiSettingsCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                 )
             )
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column {
+                Text(
+                    text = "开源许可与法律合规",
+                    color = colors.textPrimary,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = "所有依赖均为宽松商业许可 (Apache-2.0 / MIT)",
+                    color = colors.textSecondary,
+                    fontSize = 11.sp
+                )
+            }
+            AppButton(
+                text = "查看清单",
+                icon = Icons.Filled.Info,
+                color = colors.accentGreen,
+                onClick = vm::showLicensesDialog
+            )
+        }
     }
 }

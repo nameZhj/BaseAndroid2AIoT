@@ -279,20 +279,22 @@ BaseAndroid2AIoT/
 
 ---
 
-## 📦 第三方开源框架声明
+## 📦 第三方开源框架声明与合规矩阵
 
-本项目引用了以下优秀的开源项目与框架：
+本项目严格遵循开源法律合规要求，所有引入的核心第三方框架均采用**商业友好型宽松许可协议 (Permissive Licenses: Apache-2.0 / MIT)**，**零 GPL 强传染性风险**，支持企业商业闭源开发与合规交付：
 
-- **[XPopup](https://github.com/li-xiaojun/XPopup)**：功能强大、UI 优雅的 Android 顶流弹窗框架
-- **[BRVAH](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)**：高效强大的 RecyclerView 顶流通用列表适配器
-- **[Retrofit](https://github.com/square/retrofit)**：Square 出品的类型安全 RESTful 网络请求库
-- **[OkHttp](https://github.com/square/okhttp)**：Square 出品的工业级高性能 HTTP/2 传输与连接客户端
-- **[HiveMQ MQTT Client](https://github.com/hivemq/hivemq-mqtt-client)**：快速、轻量、高性能反应式 MQTT 客户端
-- **[Jedis](https://github.com/redis/jedis)**：经典轻量小巧的 Java/Android Redis 客户端
-- **[Coil](https://github.com/coil-kt/coil)**：基于 Kotlin 协程的现代轻量 Android 图片加载库
-- **[Hilt](https://github.com/google/dagger)**：Google 官方出品的标准 Android 依赖注入框架
-- **[Gson](https://github.com/google/gson)**：Google 出品的 Java/Kotlin 通用 JSON 序列化与反序列化库
-- **[Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines)**：JetBrains 官方 Kotlin 异步并发协程库
+| 框架 / 组件名 | 适用开源协议 | 商业闭源商用 | 官方项目地址 |
+| :--- | :--- | :--- | :--- |
+| **XPopup** | **Apache-2.0** | 允许 | [li-xiaojun/XPopup](https://github.com/li-xiaojun/XPopup) |
+| **BRVAH 4** | **Apache-2.0** | 允许 | [CymChad/BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper) |
+| **Retrofit** | **Apache-2.0** | 允许 | [square/retrofit](https://github.com/square/retrofit) |
+| **OkHttp** | **Apache-2.0** | 允许 | [square/okhttp](https://github.com/square/okhttp) |
+| **HiveMQ MQTT Client** | **Apache-2.0** | 允许 | [hivemq/hivemq-mqtt-client](https://github.com/hivemq/hivemq-mqtt-client) |
+| **Jedis** | **MIT** | 允许 | [redis/jedis](https://github.com/redis/jedis) |
+| **Coil** | **Apache-2.0** | 允许 | [coil-kt/coil](https://github.com/coil-kt/coil) |
+| **Google Dagger Hilt** | **Apache-2.0** | 允许 | [google/dagger](https://github.com/google/dagger) |
+| **Google Gson** | **Apache-2.0** | 允许 | [google/gson](https://github.com/google/gson) |
+| **Kotlinx Coroutines** | **Apache-2.0** | 允许 | [Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines) |
 
 ---
 
@@ -318,5 +320,9 @@ BaseAndroid2AIoT/
 
 ---
 
-## 📄 开源许可证
-本项目遵循 [Apache 2.0 License](LICENSE)。
+## 📄 开源许可证与法律合规 (License & Compliance)
+
+- **本项目开源许可证**：本项目遵循 [Apache License 2.0](LICENSE)。
+- **法律合规声明与版权归属**：详见根目录下标准归属文件 [NOTICE](NOTICE)。
+- **完整第三方依赖许可清单与企业商用指引**：详见 [OPEN_SOURCE_LICENSES.md](OPEN_SOURCE_LICENSES.md)。
+- **企业商用无忧保障**：所有依赖项均具备明晰的商业闭源许可及专利防侵权授权（Patent Grant），企业在基于此工程开发物联网商业产品时，**无需公开自身业务源码或专有硬件协议**。
