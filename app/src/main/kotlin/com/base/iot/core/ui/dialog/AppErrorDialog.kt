@@ -29,14 +29,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.base.iot.core.diagnostics.ParsedError
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 统一风格非阻塞式真实错误诊断与分享弹窗。
- *
- * 特性：
- * 1. 【非阻塞设计】：用户点击外部或返回键随时可关闭，绝不阻断界面操作；
- * 2. 【真实可靠诊断】：拒绝模糊“操作失败”，明确呈现异常分类、根因、网络状况与全量堆栈；
- * 3. 【一键系统级分享】：内置高亮分享操作按钮，点击直接唤起系统分享面板（微信/QQ/钉钉/邮件等）。
- */
 @Composable
 fun AppErrorDialog(
     visible: Boolean,
@@ -73,7 +65,6 @@ fun AppErrorDialog(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                // 顶部标题与错误分类标签
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -109,7 +100,6 @@ fun AppErrorDialog(
                     }
                 }
 
-                // 友好通俗描述
                 Text(
                     text = error.friendlyMessage,
                     color = colors.textPrimary,
@@ -117,7 +107,6 @@ fun AppErrorDialog(
                     lineHeight = 20.sp
                 )
 
-                // 核心技术摘要
                 Text(
                     text = "根因: ${error.technicalSummary}",
                     color = colors.textSecondary,
@@ -125,7 +114,6 @@ fun AppErrorDialog(
                     lineHeight = 16.sp
                 )
 
-                // 详细堆栈折叠开关
                 TextButton(
                     onClick = { showStackDetails = !showStackDetails },
                     contentPadding = PaddingValues(0.dp)
@@ -145,7 +133,6 @@ fun AppErrorDialog(
                     )
                 }
 
-                // 诊断报告与真实堆栈展示框（工控终端风格）
                 AnimatedVisibility(
                     visible = showStackDetails,
                     enter = expandVertically(),
@@ -172,7 +159,6 @@ fun AppErrorDialog(
                     }
                 }
 
-                // 底部操作按钮行：分享报告与关闭
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

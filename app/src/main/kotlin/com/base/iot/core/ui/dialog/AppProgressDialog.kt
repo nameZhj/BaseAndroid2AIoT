@@ -23,31 +23,17 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 耗时操作加载与进度配置模型
- */
 data class LoadingConfig(
     val visible: Boolean = false,
     val title: String = "正在处理中...",
     val message: String? = null,
-    val isBlocking: Boolean = true,       // 开发者自主选择：阻塞式 vs 非阻塞式
-    val progress: Float? = null,          // null = 不确定进度(菊花转圈)；0.0f..1.0f = 确定百分比
-    val progressText: String? = null,     // 进度辅助说明 (如 "45.2 MB / 100 MB")
-    val cancelable: Boolean = true,       // 非阻塞模式下是否允许取消
-    val onCancel: (() -> Unit)? = null    // 取消回调
+    val isBlocking: Boolean = true,
+    val progress: Float? = null,
+    val progressText: String? = null,
+    val cancelable: Boolean = true,
+    val onCancel: (() -> Unit)? = null
 )
 
-/**
- * 统一风格通用耗时操作加载与进度弹窗。
- *
- * 特性：
- * 1. 【自主选择阻塞与非阻塞】：
- *    - 阻塞式：禁止点击外部与返回键，屏蔽界面触摸，确保核心物联网通信事务不被并发破坏；
- *    - 非阻塞式：允许点击外部或底部“取消”按钮退出，协同取消协程；
- * 2. 【进度无缝双模】：
- *    - 循环转圈模式 (Indeterminate) 与 精准百分比模式 (0%~100% 带速度与字节统计) 动态自适应；
- * 3. 【高对比度主题保障】：完全遵循 AppTheme 设计系统，在普通与夜间模式下清晰可见。
- */
 @Composable
 fun AppProgressDialog(
     config: LoadingConfig,
@@ -84,7 +70,6 @@ fun AppProgressDialog(
                 modifier = Modifier.padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // 顶部标题与模式标签行
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
@@ -118,7 +103,6 @@ fun AppProgressDialog(
                         }
                     }
 
-                    // 非阻塞模式下右上角允许快捷关闭
                     if (!config.isBlocking && config.cancelable) {
                         IconButton(
                             onClick = {
@@ -136,9 +120,7 @@ fun AppProgressDialog(
                     }
                 }
 
-                // 进度与状态区
                 if (config.progress != null) {
-                    // ================= 确定百分比进度模式 =================
                     val p = config.progress.coerceIn(0f, 1f)
                     val percentInt = (p * 100).toInt()
 
@@ -172,7 +154,6 @@ fun AppProgressDialog(
                         }
                     }
                 } else {
-                    // ================= 循环转圈等待模式 =================
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -194,7 +175,6 @@ fun AppProgressDialog(
                     }
                 }
 
-                // 非阻塞模式下的显式取消按钮
                 if (!config.isBlocking && config.cancelable) {
                     OutlinedButton(
                         onClick = {

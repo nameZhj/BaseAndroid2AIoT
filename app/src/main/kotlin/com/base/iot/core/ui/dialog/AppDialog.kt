@@ -22,10 +22,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.base.iot.ui.theme.AppTheme
 
-/**
- * 统一风格确认弹窗 (Confirm Dialog)
- * 支持普通操作或高危危险操作（红色高亮主按钮），具备极致清晰的高对比度排版。
- */
 @Composable
 fun AppConfirmDialog(
     visible: Boolean,
@@ -59,7 +55,6 @@ fun AppConfirmDialog(
                 modifier = Modifier.padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // 标题行
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -78,7 +73,6 @@ fun AppConfirmDialog(
                     )
                 }
 
-                // 说明正文
                 Text(
                     text = message,
                     color = colors.textSecondary,
@@ -88,7 +82,6 @@ fun AppConfirmDialog(
 
                 Spacer(Modifier.height(8.dp))
 
-                // 底部操作按钮行
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -129,10 +122,6 @@ fun AppConfirmDialog(
     }
 }
 
-/**
- * 统一风格加载等待弹窗 (Loading Dialog)
- * 支持阻止用户点击外部与穿透，保证物联网长耗时任务（连接、握手、OTA更新）的安全性。
- */
 @Composable
 fun AppLoadingDialog(
     visible: Boolean,
@@ -176,9 +165,6 @@ fun AppLoadingDialog(
     }
 }
 
-/**
- * 统一风格输入弹窗 (Input Dialog)
- */
 @Composable
 fun AppInputDialog(
     visible: Boolean,
@@ -288,9 +274,6 @@ fun AppInputDialog(
     }
 }
 
-/**
- * 统一风格底部抽屉弹窗 (Bottom Sheet Dialog)
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBottomSheetDialog(

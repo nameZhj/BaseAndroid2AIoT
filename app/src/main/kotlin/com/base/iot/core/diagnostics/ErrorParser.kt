@@ -14,9 +14,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.net.ssl.SSLException
 
-/**
- * 结构化解析后的错误信息模型
- */
 data class ParsedError(
     val errorType: String,
     val friendlyMessage: String,
@@ -25,15 +22,7 @@ data class ParsedError(
     val rawThrowable: Throwable
 )
 
-/**
- * 真实可靠的全局异常解析与诊断报告生成器。
- * 针对物联网与工业互联网场景，精准归类网络故障与执行异常，杜绝模糊错误提示。
- */
 object ErrorParser {
-
-    /**
-     * 将任意 Throwable 转换为结构化的诊断信息
-     */
     fun parse(context: Context, throwable: Throwable): ParsedError {
         val rootCause = getRootCause(throwable)
         val stackTraceString = getStackTraceString(throwable)

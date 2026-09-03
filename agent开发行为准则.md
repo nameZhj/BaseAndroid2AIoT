@@ -4,6 +4,12 @@
 
 ---
 
+### 0. 远端推送铁律 (Git Remote Restriction)
+- **未经用户明确要求，严禁执行 `git push`**：
+  所有代码修改仅在本地完成编写、测试验证（`compileDebugKotlin` / `assembleDebug`）并在必要时进行本地 git commit。**绝对禁止擅自执行 `git push`**，除非且仅当用户在当前指令中显式要求（如“推送到远端”）。
+
+---
+
 ### 1. Token 经济学与高能效精准检索 (Token Economy & Precision Retrieval)
 - **微组件切片探索，严禁盲目全读**：
   - 业务模块已全部拆分为 `feature/demo/components/` 下的微组件（每个仅 50~80 行）。Agent 维护或扩展业务时，**只能定向加载具体的微组件文件**，严禁一次性加载大文件，单次操作节约 80% 以上 Token。
