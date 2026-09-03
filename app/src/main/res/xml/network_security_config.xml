@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 全局配置：针对物联网设备通信场景允许明文 HTTP 传输，并支持用户安装的自签名证书与调试抓包证书 -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <!-- 信任系统预置受信任证书 -->
+            <certificates src="system" />
+            <!-- 信任用户安装证书（支持抓包调试与物联网自建 CA / 自签名证书） -->
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- 局域网与常用私网 IP 段明文传输白名单保障 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

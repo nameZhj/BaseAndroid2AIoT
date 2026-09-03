@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">BaseAndroid2AIoT</string>
+    <string name="app_desc">企业级 Android IoT 快速开发脚手架</string>
+    <string name="dashboard_title">IoT 调试控制面板</string>
+    <string name="protocol_switches">协议开关</string>
+    <string name="share_log">分享日志</string>
+    <string name="trigger_crash">触发崩溃</string>
+    <string name="trigger_long_log">超长日志测试</string>
+    <string name="fileprovider_authority">${applicationId}.fileprovider</string>
+</resources>
