@@ -27,6 +27,14 @@ object AppConfig {
     const val HTTP_WRITE_TIMEOUT_SEC = 30L
     const val HTTP_FILE_TRANSFER_TIMEOUT_SEC = 3600L // 大文件上传下载超时：1小时 (3600秒)
 
+    // ==================== 演示与测试端点 (收拢防硬编码) ====================
+    const val DEMO_HTTP_GET_URL = "https://httpbin.org/get"
+    const val DEMO_HTTP_POST_URL = "https://httpbin.org/post"
+    const val DEMO_DOWNLOAD_URL = "http://speedtest.tele2.net/100KB.zip"
+    const val DEMO_MQTT_PUB_TOPIC = "iot/device/telemetry"
+    const val DEMO_MQTT_SUB_TOPIC = "iot/device/cmd"
+    const val DEMO_REDIS_KEY = "device:status"
+
     // ==================== MQTT 配置 ====================
     const val MQTT_HOST = "broker.hivemq.com"
     const val MQTT_PORT = 1883

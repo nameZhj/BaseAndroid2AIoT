@@ -22,7 +22,7 @@ fun UnifiedDialogDemoCard(
     val colors = AppTheme.colors
 
     AppCard(
-        title = "统一风格弹窗体系 (XPopup / AppDialog)",
+        title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_demo_title),
         icon = Icons.Filled.SmartButton,
         iconTint = colors.accentPurple
     ) {
@@ -34,14 +34,14 @@ fun UnifiedDialogDemoCard(
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 AppButton(
-                    text = "确认/高危弹窗",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_btn_confirm),
                     icon = Icons.Filled.CheckCircle,
                     color = colors.accentRed,
                     modifier = Modifier.weight(1f),
                     onClick = { vm.setConfirmDialog(true) }
                 )
                 AppButton(
-                    text = "加载等待弹窗",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_btn_loading),
                     icon = Icons.Filled.HourglassTop,
                     color = colors.accentCyan,
                     modifier = Modifier.weight(1f),
@@ -50,14 +50,14 @@ fun UnifiedDialogDemoCard(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 AppButton(
-                    text = "参数输入弹窗",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_btn_custom),
                     icon = Icons.Filled.EditNote,
                     color = colors.accentAmber,
                     modifier = Modifier.weight(1f),
                     onClick = { vm.setInputDialog(true) }
                 )
                 AppButton(
-                    text = "底部抽屉面板",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_confirm),
                     icon = Icons.Filled.VerticalAlignTop,
                     color = colors.accentGreen,
                     modifier = Modifier.weight(1f),

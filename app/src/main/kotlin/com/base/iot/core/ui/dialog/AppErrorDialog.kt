@@ -86,7 +86,7 @@ fun AppErrorDialog(
 
                     Column {
                         Text(
-                            text = "操作执行异常",
+                            text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.error_dialog_title),
                             color = colors.textPrimary,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold
@@ -108,7 +108,7 @@ fun AppErrorDialog(
                 )
 
                 Text(
-                    text = "根因: ${error.technicalSummary}",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.error_root_cause_prefix, error.technicalSummary),
                     color = colors.textSecondary,
                     fontSize = 12.sp,
                     lineHeight = 16.sp
@@ -126,7 +126,9 @@ fun AppErrorDialog(
                     )
                     Spacer(Modifier.width(6.dp))
                     Text(
-                        text = if (showStackDetails) "收起诊断报告与堆栈" else "展开完整诊断报告与堆栈",
+                        text = androidx.compose.ui.res.stringResource(
+                            if (showStackDetails) com.base.iot.R.string.error_collapse_report else com.base.iot.R.string.error_expand_report
+                        ),
                         color = colors.accentPrimary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
@@ -176,7 +178,7 @@ fun AppErrorDialog(
                             contentColor = colors.textSecondary
                         )
                     ) {
-                        Text(text = "我知道了", fontSize = 13.sp)
+                        Text(text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_i_know), fontSize = 13.sp)
                     }
 
                     Button(
@@ -192,11 +194,15 @@ fun AppErrorDialog(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Share,
-                            contentDescription = "分享报告",
+                            contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.error_btn_share_report),
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(Modifier.width(6.dp))
-                        Text(text = "分享错误报告", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.error_btn_share_report),
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }

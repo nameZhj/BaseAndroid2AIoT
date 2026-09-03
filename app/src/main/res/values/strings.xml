@@ -1,10 +1,123 @@
 <resources>
     <string name="app_name">BaseAndroid2AIoT</string>
     <string name="app_desc">企业级 Android IoT 快速开发脚手架</string>
-    <string name="dashboard_title">IoT 调试控制面板</string>
-    <string name="protocol_switches">协议开关</string>
-    <string name="share_log">分享日志</string>
-    <string name="trigger_crash">触发崩溃</string>
-    <string name="trigger_long_log">超长日志测试</string>
+    <string name="dashboard_title">BaseAndroid2AIoT</string>
+    <string name="dashboard_subtitle">企业级 Android 物联网开发基座</string>
     <string name="fileprovider_authority">${applicationId}.fileprovider</string>
+
+    <!-- 通用操作与提示 -->
+    <string name="btn_confirm">确认</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_close">关闭</string>
+    <string name="btn_clear">清空</string>
+    <string name="btn_i_know">我知道了</string>
+    <string name="btn_share">分享</string>
+    <string name="loading">加载中...</string>
+    <string name="processing">正在处理中...</string>
+
+    <!-- 异常与错误弹窗 -->
+    <string name="error_dialog_title">操作执行异常</string>
+    <string name="error_root_cause_prefix">根因: %1$s</string>
+    <string name="error_collapse_report">收起诊断报告与堆栈</string>
+    <string name="error_expand_report">展开完整诊断报告与堆栈</string>
+    <string name="error_btn_share_report">分享诊断报告</string>
+
+    <!-- 耗时进度弹窗 -->
+    <string name="progress_default_title">正在处理中...</string>
+    <string name="progress_blocking_hint">阻塞式（防并发防重复）</string>
+    <string name="progress_non_blocking_hint">非阻塞式（可随时中断）</string>
+    <string name="progress_default_message">正在与边缘设备同步，请稍候...</string>
+    <string name="progress_completed_format">已完成 %1$d%%</string>
+    <string name="progress_cancel_action">取消本次操作</string>
+
+    <!-- 协议开关与状态 -->
+    <string name="protocol_switches_title">协议开关</string>
+    <string name="protocol_compiled">已编入</string>
+    <string name="protocol_not_compiled">未编译·已裁剪</string>
+    <string name="protocol_locked_on">常开锁定</string>
+    <string name="protocol_connected">已连接</string>
+    <string name="protocol_disconnected">未连接</string>
+    <string name="protocol_http">HTTP</string>
+    <string name="protocol_mqtt">MQTT</string>
+    <string name="protocol_redis">Redis</string>
+    <string name="protocol_socket">Socket</string>
+
+    <!-- 主题模式 -->
+    <string name="theme_light">普通模式</string>
+    <string name="theme_dark">夜间模式</string>
+    <string name="theme_system">跟随系统</string>
+
+    <!-- 诊断与设置卡片 -->
+    <string name="diag_card_title">日志与诊断</string>
+    <string name="diag_card_desc">超长日志分段打印 (防截断/防OOM) &amp; 异常捕捉与分享：</string>
+    <string name="diag_btn_long_log">超长日志打印</string>
+    <string name="diag_btn_check_crash">检查崩溃日志</string>
+    <string name="diag_btn_share_log">分享日志</string>
+    <string name="settings_card_title">系统栏与界面设置</string>
+    <string name="settings_immersive_title">全屏沉浸式模式</string>
+    <string name="settings_immersive_on">已隐藏系统栏，边缘滑动呼出</string>
+    <string name="settings_immersive_off">已显示系统栏，透明背景</string>
+    <string name="settings_licenses_title">开源许可与法律合规</string>
+    <string name="settings_licenses_desc">所有依赖均为宽松商业许可 (Apache-2.0 / MIT)</string>
+    <string name="settings_licenses_btn">查看清单</string>
+
+    <!-- HTTP 通信卡片 -->
+    <string name="http_card_title">HTTP 通信</string>
+    <string name="http_btn_get">GET 请求</string>
+    <string name="http_btn_post">POST 请求</string>
+    <string name="http_btn_download">文件下载</string>
+
+    <!-- MQTT 通信卡片 -->
+    <string name="mqtt_card_title">MQTT 通信</string>
+    <string name="mqtt_btn_connect">连接 Broker</string>
+    <string name="mqtt_btn_publish">发布消息</string>
+    <string name="mqtt_btn_subscribe">订阅主题</string>
+    <string name="mqtt_btn_disconnect">断开连接</string>
+
+    <!-- Redis 远控卡片 -->
+    <string name="redis_card_title">Redis 远控</string>
+    <string name="redis_btn_ping">PONG 测试</string>
+    <string name="redis_btn_set">写入键值</string>
+    <string name="redis_btn_get">读取键值</string>
+    <string name="redis_btn_disconnect">断开 Redis</string>
+
+    <!-- Socket 工业长连接卡片 -->
+    <string name="socket_card_title">Socket 工业长连接</string>
+    <string name="socket_btn_connect">建立连接</string>
+    <string name="socket_btn_send">发送数据</string>
+    <string name="socket_btn_disconnect">断开连接</string>
+
+    <!-- 存储与缓存卡片 -->
+    <string name="storage_card_title">缓存与系统分享</string>
+    <string name="storage_location_section">自定义缓存位置切换（持久化到 DataStore）：</string>
+    <string name="storage_loc_internal">内部私有缓存</string>
+    <string name="storage_loc_external">外部私有缓存</string>
+    <string name="storage_loc_downloads">系统下载目录</string>
+    <string name="storage_current_dir_prefix">当前缓存目录: %1$s</string>
+    <string name="storage_file_ops_section">文件操作与分享：</string>
+    <string name="storage_btn_download_test">下载 100KB 测试包</string>
+    <string name="storage_btn_share_file">分享下载的文件</string>
+    <string name="storage_btn_share_report">分享诊断报告文本</string>
+
+    <!-- 耗时与错误模拟演示卡片 -->
+    <string name="loading_demo_title">耗时进度弹窗 &amp; 真实错误诊断</string>
+    <string name="loading_demo_desc">支持百分比上报，自主选择阻塞/非阻塞模式。各种错误弹窗均包含真实根因诊断与系统一键分享：</string>
+    <string name="loading_btn_blocking">阻塞式耗时任务</string>
+    <string name="loading_btn_non_blocking">非阻塞耗时任务</string>
+    <string name="loading_btn_mock_timeout">模拟网络超时错误</string>
+    <string name="loading_btn_mock_unknown">模拟未知异常</string>
+    <string name="loading_btn_mock_http404">模拟 404 业务错误</string>
+
+    <!-- 时序终端日志卡片 -->
+    <string name="terminal_title">时序运行日志</string>
+    <string name="terminal_empty">暂无时序日志，请点击上方功能按钮发起通信</string>
+
+    <!-- 通用弹窗卡片 -->
+    <string name="dialog_demo_title">XPopup 顶流通用弹窗套件</string>
+    <string name="dialog_btn_confirm">确认弹窗</string>
+    <string name="dialog_btn_loading">XPopup 加载窗</string>
+    <string name="dialog_btn_custom">自定义弹窗</string>
+
+    <!-- 模板特性页面 -->
+    <string name="template_execute_btn">执行示例任务</string>
 </resources>

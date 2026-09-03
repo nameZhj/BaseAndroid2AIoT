@@ -6,8 +6,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.base.iot.R
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.core.ui.components.AppCard
 import com.base.iot.core.ui.components.AppSwitchRow
@@ -19,10 +21,10 @@ import com.base.iot.ui.theme.AppTheme
 fun ProtocolSwitchesCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = "协议开关", icon = Icons.Filled.ToggleOn, iconTint = colors.accentPurple) {
+    AppCard(title = stringResource(R.string.protocol_switches_title), icon = Icons.Filled.ToggleOn, iconTint = colors.accentPurple) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             AppSwitchRow(
-                label = "HTTP",
+                label = stringResource(R.string.protocol_http),
                 compiled = uiState.switches.isHttpCompiled,
                 enabled = uiState.switches.isHttpEnabled,
                 connected = null,
@@ -30,7 +32,7 @@ fun ProtocolSwitchesCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                 activeColor = colors.accentCyan
             )
             AppSwitchRow(
-                label = "MQTT",
+                label = stringResource(R.string.protocol_mqtt),
                 compiled = uiState.switches.isMqttCompiled,
                 enabled = uiState.switches.isMqttEnabled,
                 connected = uiState.mqttConnected,
@@ -38,7 +40,7 @@ fun ProtocolSwitchesCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                 activeColor = colors.accentPurple
             )
             AppSwitchRow(
-                label = "Redis",
+                label = stringResource(R.string.protocol_redis),
                 compiled = uiState.switches.isRedisCompiled,
                 enabled = uiState.switches.isRedisEnabled,
                 connected = uiState.redisConnected,
@@ -46,7 +48,7 @@ fun ProtocolSwitchesCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                 activeColor = colors.accentRed
             )
             AppSwitchRow(
-                label = "Socket",
+                label = stringResource(R.string.protocol_socket),
                 compiled = uiState.switches.isSocketCompiled,
                 enabled = uiState.switches.isSocketEnabled,
                 connected = uiState.socketConnected,
@@ -61,22 +63,17 @@ fun ProtocolSwitchesCard(uiState: DashboardUiState, vm: DashboardViewModel) {
 fun HttpTestCard(vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = "HTTP 交互与文件传输 (Retrofit)", icon = Icons.Filled.Http, iconTint = colors.accentCyan) {
+    AppCard(title = stringResource(R.string.http_card_title), icon = Icons.Filled.Http, iconTint = colors.accentCyan) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
-                text = "全类型支持：GET / POST / PUT / DELETE 及大文件流式上传下载：",
-                color = colors.textSecondary,
-                fontSize = 11.sp
-            )
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                AppButton(text = "GET", icon = Icons.Filled.Refresh, color = colors.accentCyan, modifier = Modifier.weight(1f), onClick = vm::testHttpGet)
-                AppButton(text = "POST", icon = Icons.Filled.Send, color = colors.accentPurple, modifier = Modifier.weight(1f), onClick = vm::testHttpPost)
+                AppButton(text = stringResource(R.string.http_btn_get), icon = Icons.Filled.Refresh, color = colors.accentCyan, modifier = Modifier.weight(1f), onClick = vm::testHttpGet)
+                AppButton(text = stringResource(R.string.http_btn_post), icon = Icons.Filled.Send, color = colors.accentPurple, modifier = Modifier.weight(1f), onClick = vm::testHttpPost)
                 AppButton(text = "PUT", icon = Icons.Filled.Edit, color = colors.accentAmber, modifier = Modifier.weight(1f), onClick = vm::testHttpPut)
                 AppButton(text = "DEL", icon = Icons.Filled.Delete, color = colors.accentRed, modifier = Modifier.weight(1f), onClick = vm::testHttpDelete)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                AppButton(text = "大文件分块上传", icon = Icons.Filled.FileUpload, color = colors.accentPurple, modifier = Modifier.weight(1f), onClick = vm::testHttpUpload)
-                AppButton(text = "流式下载 (防OOM)", icon = Icons.Filled.FileDownload, color = colors.accentGreen, modifier = Modifier.weight(1f), onClick = vm::testHttpDownload)
+                AppButton(text = stringResource(R.string.storage_btn_download_test), icon = Icons.Filled.FileUpload, color = colors.accentPurple, modifier = Modifier.weight(1f), onClick = vm::testHttpUpload)
+                AppButton(text = stringResource(R.string.http_btn_download), icon = Icons.Filled.FileDownload, color = colors.accentGreen, modifier = Modifier.weight(1f), onClick = vm::testHttpDownload)
             }
         }
     }
@@ -86,24 +83,24 @@ fun HttpTestCard(vm: DashboardViewModel) {
 fun MqttTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = "MQTT 客户端 (HiveMQ)", icon = Icons.Filled.Sensors, iconTint = colors.accentPurple) {
+    AppCard(title = stringResource(R.string.mqtt_card_title), icon = Icons.Filled.Sensors, iconTint = colors.accentPurple) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             AppButton(
-                text = if (uiState.mqttConnected) "已连接" else "连接 Broker",
+                text = if (uiState.mqttConnected) stringResource(R.string.protocol_connected) else stringResource(R.string.mqtt_btn_connect),
                 icon = if (uiState.mqttConnected) Icons.Filled.CheckCircle else Icons.Filled.PowerSettingsNew,
                 color = if (uiState.mqttConnected) colors.accentGreen else colors.accentPurple,
                 modifier = Modifier.weight(1f),
                 onClick = vm::connectMqtt
             )
             AppButton(
-                text = "发布主题",
+                text = stringResource(R.string.mqtt_btn_publish),
                 icon = Icons.Filled.Send,
                 color = colors.accentCyan,
                 modifier = Modifier.weight(1f),
                 onClick = vm::mqttPublish
             )
             AppButton(
-                text = "订阅监听",
+                text = stringResource(R.string.mqtt_btn_subscribe),
                 icon = Icons.Filled.CallReceived,
                 color = colors.accentAmber,
                 modifier = Modifier.weight(1f),
@@ -117,17 +114,17 @@ fun MqttTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
 fun RedisTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = "Redis 远控与键值缓存", icon = Icons.Filled.Storage, iconTint = colors.accentRed) {
+    AppCard(title = stringResource(R.string.redis_card_title), icon = Icons.Filled.Storage, iconTint = colors.accentRed) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             AppButton(
-                text = if (uiState.redisConnected) "已连接" else "连接 Redis",
+                text = if (uiState.redisConnected) stringResource(R.string.protocol_connected) else stringResource(R.string.redis_btn_ping),
                 icon = if (uiState.redisConnected) Icons.Filled.CheckCircle else Icons.Filled.PowerSettingsNew,
                 color = if (uiState.redisConnected) colors.accentGreen else colors.accentRed,
                 modifier = Modifier.weight(1f),
                 onClick = vm::connectRedis
             )
             AppButton(
-                text = "下发控制指令",
+                text = stringResource(R.string.redis_btn_set),
                 icon = Icons.Filled.Send,
                 color = colors.accentAmber,
                 modifier = Modifier.weight(1f),
@@ -141,17 +138,17 @@ fun RedisTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
 fun SocketTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = "TCP Socket 原生工业长连接", icon = Icons.Filled.ElectricalServices, iconTint = colors.accentGreen) {
+    AppCard(title = stringResource(R.string.socket_card_title), icon = Icons.Filled.ElectricalServices, iconTint = colors.accentGreen) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             AppButton(
-                text = if (uiState.socketConnected) "已连接" else "建立长连接",
+                text = if (uiState.socketConnected) stringResource(R.string.protocol_connected) else stringResource(R.string.socket_btn_connect),
                 icon = if (uiState.socketConnected) Icons.Filled.CheckCircle else Icons.Filled.PowerSettingsNew,
                 color = if (uiState.socketConnected) colors.accentGreen else colors.accentCyan,
                 modifier = Modifier.weight(1f),
                 onClick = vm::connectSocket
             )
             AppButton(
-                text = "心跳 PING-PONG",
+                text = stringResource(R.string.socket_btn_send),
                 icon = Icons.Filled.Sensors,
                 color = colors.accentAmber,
                 modifier = Modifier.weight(1f),

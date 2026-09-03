@@ -28,7 +28,7 @@ import com.base.iot.ui.theme.AppTheme
 fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = "自定义缓存位置与系统分享", icon = Icons.Filled.FolderZip, iconTint = colors.accentAmber) {
+    AppCard(title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_card_title), icon = Icons.Filled.FolderZip, iconTint = colors.accentAmber) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
                 text = "当前策略: ${uiState.currentCacheType.title}",
@@ -56,9 +56,9 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                         label = {
                             Text(
                                 text = when (type) {
-                                    CacheLocationType.INTERNAL -> "内部缓存"
-                                    CacheLocationType.EXTERNAL -> "外部缓存"
-                                    CacheLocationType.EXTERNAL_DOWNLOADS -> "专属下载区"
+                                    CacheLocationType.INTERNAL -> androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_loc_internal)
+                                    CacheLocationType.EXTERNAL -> androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_loc_external)
+                                    CacheLocationType.EXTERNAL_DOWNLOADS -> androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_loc_downloads)
                                 },
                                 fontSize = 11.sp
                             )
@@ -79,14 +79,14 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 AppButton(
-                    text = "系统分享下载文件",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_btn_share_file),
                     icon = Icons.Filled.Share,
                     color = colors.accentGreen,
                     modifier = Modifier.weight(1f),
                     onClick = vm::shareLatestDownloadedFile
                 )
                 AppButton(
-                    text = "清空当前缓存区",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_clear),
                     icon = Icons.Filled.DeleteSweep,
                     color = colors.accentRed,
                     modifier = Modifier.weight(1f),

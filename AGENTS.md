@@ -4,7 +4,7 @@
 
 ---
 
-## 🛑 一、四大核心工程铁律 (Non-Negotiable Directives)
+## 🛑 一、五大核心工程铁律 (Non-Negotiable Directives)
 
 ### 1. 远端推送铁律 (Git Remote Restriction)
 - **未经用户在当前会话中明确要求，绝对禁止执行 `git push`**。
@@ -27,6 +27,11 @@
 - **四段生命周期时序**：协议收发必须按时序记录：`[1/4 CONNECTING]` ➔ `[2/4 CONNECTED]` ➔ `[3/4 TRANSFER]` ➔ `[4/4 CLOSED/DISCONNECTED]`。
 - **严禁在 Logcat 中打印二进制、音视频流、大文件或 Base64 字节**，防止内存溢出与 GC 停顿。
 - 文件上传与下载仅允许记录：**文件名、文件字节大小、缓存路径、耗时与 HTTP 状态码**。超长文本必须调用 `Lg` 分段打印。
+
+### 5. 零硬编码与多语言国际化红线 (Zero Hardcoding & I18n Directives)
+- **UI 文本字典化 (Zero Hardcoded String)**：所有呈现给用户的界面文本、弹窗提示、按钮标签与状态说明，**绝对严禁**在 Composable 或 Java/Kotlin 逻辑中硬编码字面量！必须录入 `res/values/strings.xml`（默认中文）并在 `res/values-en/strings.xml`（英文）中对齐，在 Compose 中统一调用 `stringResource(R.string.xxx)` 读取。
+- **视觉色彩令牌化 (Zero Hardcoded Color)**：无论是 Compose 组件还是原生 View / Adapter，严禁硬编码颜色值（`Color(0xFF...)` 或十六进制整型 `0xFF...`），必须统一读取 `AppTheme.colors.*` 语义令牌（原生 View 可使用 `palette.xxx.toArgb()`）。
+- **配置与端点收拢 (Centralized Configuration)**：严禁在业务逻辑与 ViewModel 中散落硬编码 URL、IP、Port、MQTT Topic 或超时数值，必须统一下沉至 `AppConfig` 单一权威配置类中统一管理。
 
 ---
 
@@ -179,6 +184,7 @@ fun MyFeatureScreen(viewModel: MyFeatureViewModel = hiltViewModel()) {
 在向用户交付成果前，必须逐项自检：
 - [ ] **远端推送检查**：是否确认**未擅自执行 `git push`**（除非用户在当前提示词中显式明确要求）？
 - [ ] **检索与能效检查**：是否精准定向切片阅读？是否使用了 `replace_file_content` 外科手术式改动？
+- [ ] **零硬编码与国际化检查**：是否确认 UI 文本 100% 抽取至 `strings.xml`（中英双语对齐）？是否杜绝了颜色与端点硬编码？
 - [ ] **编译隔离检查**：`src/main/` 是否 100% 零具体协议驱动三方库 import？
 - [ ] **代码风格与注释检查**：是否清理了所有自解释废话注释与无用符号分割线？
 - [ ] **设计系统对比度检查**：所有 UI 是否统一读取 `AppTheme.colors.*`？在普通与夜间模式下对比度是否均 > 7:1？

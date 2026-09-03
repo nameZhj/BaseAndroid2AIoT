@@ -57,13 +57,13 @@ fun DashboardHeader(
             Spacer(Modifier.width(10.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "IoT 调试控制面板",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dashboard_title),
                     color = colors.textPrimary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "${uiState.themeMode.title} · Enterprise AIoT Scaffold",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dashboard_subtitle),
                     color = colors.textSecondary,
                     fontSize = 12.sp
                 )
@@ -79,7 +79,9 @@ fun DashboardHeader(
             ) {
                 Icon(
                     imageVector = if (colors.isDark) Icons.Filled.LightMode else Icons.Filled.DarkMode,
-                    contentDescription = "切换显示模式",
+                    contentDescription = androidx.compose.ui.res.stringResource(
+                        if (colors.isDark) com.base.iot.R.string.theme_light else com.base.iot.R.string.theme_dark
+                    ),
                     tint = if (colors.isDark) colors.accentAmber else colors.accentPurple,
                     modifier = Modifier.size(20.dp)
                 )

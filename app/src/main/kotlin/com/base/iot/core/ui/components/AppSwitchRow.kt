@@ -57,7 +57,9 @@ fun AppSwitchRow(
                     .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
-                    text = if (compiled) "已编入" else "未编译·已裁剪",
+                    text = androidx.compose.ui.res.stringResource(
+                        if (compiled) com.base.iot.R.string.protocol_compiled else com.base.iot.R.string.protocol_not_compiled
+                    ),
                     color = if (compiled) colors.accentGreen else colors.textSecondary,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.SemiBold
@@ -71,12 +73,12 @@ fun AppSwitchRow(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Lock,
-                        contentDescription = "常开锁定",
+                        contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.protocol_locked_on),
                         tint = colors.accentGreen,
                         modifier = Modifier.size(11.dp)
                     )
                     Text(
-                        text = "常开锁定",
+                        text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.protocol_locked_on),
                         color = colors.accentGreen,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium
@@ -95,7 +97,9 @@ fun AppSwitchRow(
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        text = if (connected) "已连接" else "未连接",
+                        text = androidx.compose.ui.res.stringResource(
+                            if (connected) com.base.iot.R.string.protocol_connected else com.base.iot.R.string.protocol_disconnected
+                        ),
                         color = if (connected) colors.accentGreen else colors.accentRed,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.SemiBold

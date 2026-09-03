@@ -1,0 +1,123 @@
+<resources>
+    <string name="app_name">BaseAndroid2AIoT</string>
+    <string name="app_desc">Enterprise Android IoT Rapid Development Framework</string>
+    <string name="dashboard_title">BaseAndroid2AIoT</string>
+    <string name="dashboard_subtitle">Enterprise Android IoT Architecture</string>
+    <string name="fileprovider_authority">${applicationId}.fileprovider</string>
+
+    <!-- Generic Actions & Prompts -->
+    <string name="btn_confirm">Confirm</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_close">Close</string>
+    <string name="btn_clear">Clear</string>
+    <string name="btn_i_know">Understood</string>
+    <string name="btn_share">Share</string>
+    <string name="loading">Loading...</string>
+    <string name="processing">Processing...</string>
+
+    <!-- Error Dialog -->
+    <string name="error_dialog_title">Operation Exception</string>
+    <string name="error_root_cause_prefix">Root Cause: %1$s</string>
+    <string name="error_collapse_report">Collapse Diagnostic Report &amp; Stack</string>
+    <string name="error_expand_report">Expand Full Diagnostic Report &amp; Stack</string>
+    <string name="error_btn_share_report">Share Diagnostic Report</string>
+
+    <!-- Progress Dialog -->
+    <string name="progress_default_title">Processing...</string>
+    <string name="progress_blocking_hint">Blocking (Anti-concurrency &amp; Duplicate Protected)</string>
+    <string name="progress_non_blocking_hint">Non-blocking (Interruptible)</string>
+    <string name="progress_default_message">Synchronizing with edge device, please wait...</string>
+    <string name="progress_completed_format">%1$d%% Completed</string>
+    <string name="progress_cancel_action">Cancel Operation</string>
+
+    <!-- Protocol Switches -->
+    <string name="protocol_switches_title">Protocol Switches</string>
+    <string name="protocol_compiled">Compiled</string>
+    <string name="protocol_not_compiled">Trimmed (Not Compiled)</string>
+    <string name="protocol_locked_on">Locked On</string>
+    <string name="protocol_connected">Connected</string>
+    <string name="protocol_disconnected">Disconnected</string>
+    <string name="protocol_http">HTTP</string>
+    <string name="protocol_mqtt">MQTT</string>
+    <string name="protocol_redis">Redis</string>
+    <string name="protocol_socket">Socket</string>
+
+    <!-- Theme Modes -->
+    <string name="theme_light">Light Mode</string>
+    <string name="theme_dark">Dark Mode</string>
+    <string name="theme_system">System Default</string>
+
+    <!-- Diagnostics & Settings Card -->
+    <string name="diag_card_title">Logs &amp; Diagnostics</string>
+    <string name="diag_card_desc">Long Log Chunking (Anti-OOM) &amp; Exception Capture:</string>
+    <string name="diag_btn_long_log">Print Long Log</string>
+    <string name="diag_btn_check_crash">Check Crash Logs</string>
+    <string name="diag_btn_share_log">Share Log</string>
+    <string name="settings_card_title">System Bar &amp; UI Settings</string>
+    <string name="settings_immersive_title">Fullscreen Immersive Mode</string>
+    <string name="settings_immersive_on">System bar hidden, swipe edge to reveal</string>
+    <string name="settings_immersive_off">System bar visible with transparent background</string>
+    <string name="settings_licenses_title">Open Source Licenses &amp; Compliance</string>
+    <string name="settings_licenses_desc">All dependencies use permissive licenses (Apache-2.0 / MIT)</string>
+    <string name="settings_licenses_btn">View List</string>
+
+    <!-- HTTP Card -->
+    <string name="http_card_title">HTTP Communication</string>
+    <string name="http_btn_get">GET Request</string>
+    <string name="http_btn_post">POST Request</string>
+    <string name="http_btn_download">Download File</string>
+
+    <!-- MQTT Card -->
+    <string name="mqtt_card_title">MQTT Communication</string>
+    <string name="mqtt_btn_connect">Connect Broker</string>
+    <string name="mqtt_btn_publish">Publish Message</string>
+    <string name="mqtt_btn_subscribe">Subscribe Topic</string>
+    <string name="mqtt_btn_disconnect">Disconnect</string>
+
+    <!-- Redis Card -->
+    <string name="redis_card_title">Redis Remote Control</string>
+    <string name="redis_btn_ping">PING Test</string>
+    <string name="redis_btn_set">SET Key</string>
+    <string name="redis_btn_get">GET Key</string>
+    <string name="redis_btn_disconnect">Disconnect</string>
+
+    <!-- Socket Card -->
+    <string name="socket_card_title">TCP Socket Industrial Long-Connection</string>
+    <string name="socket_btn_connect">Connect</string>
+    <string name="socket_btn_send">Send Data</string>
+    <string name="socket_btn_disconnect">Disconnect</string>
+
+    <!-- Storage Card -->
+    <string name="storage_card_title">Cache &amp; Sharing</string>
+    <string name="storage_location_section">Switch Cache Location (Persisted to DataStore):</string>
+    <string name="storage_loc_internal">Internal Private</string>
+    <string name="storage_loc_external">External Private</string>
+    <string name="storage_loc_downloads">Public Downloads</string>
+    <string name="storage_current_dir_prefix">Current Cache: %1$s</string>
+    <string name="storage_file_ops_section">File Operations &amp; Sharing:</string>
+    <string name="storage_btn_download_test">Download 100KB Test File</string>
+    <string name="storage_btn_share_file">Share Downloaded File</string>
+    <string name="storage_btn_share_report">Share Diagnostic Text</string>
+
+    <!-- Loading & Error Demo Card -->
+    <string name="loading_demo_title">Progress Dialog &amp; Root Cause Diagnostics</string>
+    <string name="loading_demo_desc">Supports percentage reporting, blocking/non-blocking modes, and one-tap root cause sharing:</string>
+    <string name="loading_btn_blocking">Blocking Task Demo</string>
+    <string name="loading_btn_non_blocking">Non-blocking Task Demo</string>
+    <string name="loading_btn_mock_timeout">Mock Network Timeout</string>
+    <string name="loading_btn_mock_unknown">Mock Unknown Exception</string>
+    <string name="loading_btn_mock_http404">Mock HTTP 404 Error</string>
+
+    <!-- Terminal Log Card -->
+    <string name="terminal_title">Sequential Execution Logs</string>
+    <string name="terminal_empty">No logs yet. Tap any button above to initiate communication.</string>
+
+    <!-- Unified Dialog Demo Card -->
+    <string name="dialog_demo_title">XPopup Universal Dialog Suite</string>
+    <string name="dialog_btn_confirm">Confirm Dialog</string>
+    <string name="dialog_btn_loading">XPopup Loading</string>
+    <string name="dialog_btn_custom">Custom Dialog</string>
+
+    <!-- Template Screen -->
+    <string name="template_execute_btn">Execute Sample Task</string>
+</resources>

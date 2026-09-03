@@ -66,14 +66,14 @@ fun TerminalLogCard(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = "实时运行日志 (Terminal)",
+                        text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.terminal_title),
                         color = colors.textPrimary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
                 AppButton(
-                    text = "清空",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_clear),
                     icon = Icons.Filled.ClearAll,
                     color = colors.textSecondary,
                     modifier = Modifier.height(30.dp),
@@ -93,7 +93,7 @@ fun TerminalLogCard(
             ) {
                 if (logs.isEmpty()) {
                     Text(
-                        text = "> 等待协议事件或操作触发...",
+                        text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.terminal_empty),
                         color = colors.terminalText.copy(alpha = 0.5f),
                         fontSize = 11.sp,
                         fontFamily = FontFamily.Monospace,

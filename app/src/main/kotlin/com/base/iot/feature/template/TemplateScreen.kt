@@ -34,7 +34,7 @@ fun TemplateScreen(
         ) {
             AppCard(title = uiState.title) {
                 AppButton(
-                    text = "执行示例任务",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.template_execute_btn),
                     icon = Icons.Filled.PlayArrow,
                     color = AppTheme.colors.accentPrimary,
                     onClick = viewModel::executeSampleTask

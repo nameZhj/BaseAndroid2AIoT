@@ -95,7 +95,9 @@ fun AppProgressDialog(
                                 modifier = Modifier.size(12.dp)
                             )
                             Text(
-                                text = if (config.isBlocking) "阻塞式（防并发防重复）" else "非阻塞式（可随时中断）",
+                                text = androidx.compose.ui.res.stringResource(
+                                    if (config.isBlocking) com.base.iot.R.string.progress_blocking_hint else com.base.iot.R.string.progress_non_blocking_hint
+                                ),
                                 color = if (config.isBlocking) colors.accentAmber else colors.accentPrimary,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Medium
@@ -113,7 +115,7 @@ fun AppProgressDialog(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
-                                contentDescription = "取消操作",
+                                contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_cancel),
                                 tint = colors.textSecondary
                             )
                         }
@@ -141,7 +143,7 @@ fun AppProgressDialog(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = config.progressText ?: "已完成 $percentInt%",
+                                text = config.progressText ?: androidx.compose.ui.res.stringResource(com.base.iot.R.string.progress_completed_format, percentInt),
                                 color = colors.textSecondary,
                                 fontSize = 12.sp
                             )
@@ -167,7 +169,7 @@ fun AppProgressDialog(
                             modifier = Modifier.size(36.dp)
                         )
                         Text(
-                            text = config.message ?: "正在与边缘设备同步，请稍候...",
+                            text = config.message ?: androidx.compose.ui.res.stringResource(com.base.iot.R.string.progress_default_message),
                             color = colors.textSecondary,
                             fontSize = 14.sp,
                             lineHeight = 20.sp
@@ -190,7 +192,7 @@ fun AppProgressDialog(
                             contentColor = colors.textSecondary
                         )
                     ) {
-                        Text(text = "取消本次操作", fontSize = 13.sp)
+                        Text(text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.progress_cancel_action), fontSize = 13.sp)
                     }
                 }
             }

@@ -206,8 +206,8 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun testHttpGet() = launchIotOperation("HTTP GET 请求中...") {
-        appendLog("HTTP GET → https://httpbin.org/get")
-        val result = iotHub.http.get<Map<String, Any>>("https://httpbin.org/get")
+        appendLog("HTTP GET → ${AppConfig.DEMO_HTTP_GET_URL}")
+        val result = iotHub.http.get<Map<String, Any>>(AppConfig.DEMO_HTTP_GET_URL)
         when (result) {
             is HttpResult.Success<*> -> appendLog("HTTP ✅ ${result.code}: ${result.data.toString().take(200)}")
             is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
@@ -215,9 +215,9 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun testHttpPost() = launchIotOperation("HTTP POST 提交中...") {
-        appendLog("HTTP POST → https://httpbin.org/post")
+        appendLog("HTTP POST → ${AppConfig.DEMO_HTTP_POST_URL}")
         val body = mapOf("key" to "value", "timestamp" to System.currentTimeMillis())
-        val result = iotHub.http.post<Map<String, Any>>("https://httpbin.org/post", body)
+        val result = iotHub.http.post<Map<String, Any>>(AppConfig.DEMO_HTTP_POST_URL, body)
         when (result) {
             is HttpResult.Success<*> -> appendLog("HTTP ✅ ${result.code}: OK")
             is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
@@ -248,11 +248,11 @@ class DashboardViewModel @Inject constructor(
         val sampleFile = File(cacheDir, "upload_sample_${System.currentTimeMillis()}.txt").apply {
             writeText("Hello IoT Cloud Server! Multipart payload test. Timestamp=${System.currentTimeMillis()}")
         }
-        appendLog("HTTP UPLOAD → https://httpbin.org/post")
+        appendLog("HTTP UPLOAD → ${AppConfig.DEMO_HTTP_POST_URL}")
         appendLog("HTTP UPLOAD [文件] 名称: ${sampleFile.name}, 大小: ${sampleFile.length()}B, 路径: ${sampleFile.absolutePath}")
 
         val result = iotHub.http.upload<Map<String, Any>>(
-            url = "https://httpbin.org/post",
+            url = AppConfig.DEMO_HTTP_POST_URL,
             file = sampleFile,
             paramName = "file",
             formFields = mapOf("deviceId" to "android_iot_dev_01", "firmware" to "v1.0.0"),
@@ -439,7 +439,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun mqttPublish() = viewModelScope.launch {
-        val topic = "iot/test/android"
+        val topic = AppConfig.DEMO_MQTT_PUB_TOPIC
         val payload = """{"msg":"hello","ts":${System.currentTimeMillis()}}"""
         appendLog("MQTT PUBLISH → $topic: $payload")
         try {
@@ -453,7 +453,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun mqttSubscribeTest() = viewModelScope.launch {
-        val topic = "iot/test/android"
+        val topic = AppConfig.DEMO_MQTT_SUB_TOPIC
         appendLog("MQTT 订阅 → $topic")
         try {
             iotHub.mqtt.subscribe(topic)
@@ -474,12 +474,12 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun redisSendCommand() = viewModelScope.launch {
-        appendLog("Redis SET iot:test:key → 'hello_from_android'")
+        appendLog("Redis SET ${AppConfig.DEMO_REDIS_KEY} → 'hello_from_android'")
         try {
-            val result = iotHub.redis.set("iot:test:key", "hello_from_android", 60)
+            val result = iotHub.redis.set(AppConfig.DEMO_REDIS_KEY, "hello_from_android", 60)
             appendLog("Redis SET 结果: $result")
-            val value = iotHub.redis.get("iot:test:key")
-            appendLog("Redis GET iot:test:key = $value")
+            val value = iotHub.redis.get(AppConfig.DEMO_REDIS_KEY)
+            appendLog("Redis GET ${AppConfig.DEMO_REDIS_KEY} = $value")
         } catch (e: ProtocolDisabledException) {
             appendLog("Redis ❌ 协议已禁用: ${e.message}")
         } catch (e: Exception) {

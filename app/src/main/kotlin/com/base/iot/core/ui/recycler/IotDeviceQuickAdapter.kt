@@ -1,11 +1,11 @@
 package com.base.iot.core.ui.recycler
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.ui.graphics.toArgb
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter4.BaseQuickAdapter
 
@@ -97,10 +97,13 @@ class IotDeviceQuickAdapter(
     override fun onBindViewHolder(holder: VH, position: Int, item: IotDeviceItem?) {
         if (item == null) return
 
-        val bgColor = if (isDark) 0xFF161B26.toInt() else 0xFFF1F5F9.toInt()
-        val nameColor = if (isDark) 0xFFF8FAFC.toInt() else 0xFF0F172A.toInt()
-        val ipColor = if (isDark) 0xFF94A3B8.toInt() else 0xFF64748B.toInt()
-        val protocolColor = if (isDark) 0xFF00E5FF.toInt() else 0xFF0284C7.toInt()
+        val palette = if (isDark) com.base.iot.ui.theme.DarkAppColors else com.base.iot.ui.theme.LightAppColors
+        val bgColor = palette.surface.toArgb()
+        val nameColor = palette.textPrimary.toArgb()
+        val ipColor = palette.textSecondary.toArgb()
+        val protocolColor = palette.accentCyan.toArgb()
+        val protocolBgColor = palette.accentCyan.copy(alpha = 0.15f).toArgb()
+        val statusColor = if (item.status == "ONLINE") palette.accentGreen.toArgb() else palette.accentRed.toArgb()
 
         holder.rootView.setBackgroundColor(bgColor)
         holder.tvName.text = item.name
@@ -108,16 +111,10 @@ class IotDeviceQuickAdapter(
 
         holder.tvProtocol.text = item.protocol
         holder.tvProtocol.setTextColor(protocolColor)
-        holder.tvProtocol.setBackgroundColor(if (isDark) 0x2200E5FF else 0x1A0284C7)
+        holder.tvProtocol.setBackgroundColor(protocolBgColor)
 
         holder.tvStatus.text = "● ${item.status}"
-        holder.tvStatus.setTextColor(
-            if (item.status == "ONLINE") {
-                if (isDark) 0xFF10B981.toInt() else 0xFF059669.toInt()
-            } else {
-                if (isDark) 0xFFEF4444.toInt() else 0xFFDC2626.toInt()
-            }
-        )
+        holder.tvStatus.setTextColor(statusColor)
 
         holder.tvIp.text = "${item.ipAddress} (${item.deviceId})"
         holder.tvIp.setTextColor(ipColor)

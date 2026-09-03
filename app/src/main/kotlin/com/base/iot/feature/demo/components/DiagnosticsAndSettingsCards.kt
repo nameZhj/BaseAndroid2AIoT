@@ -22,30 +22,30 @@ import com.base.iot.ui.theme.AppTheme
 fun DiagnosticsCard(vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = "日志与诊断", icon = Icons.Filled.BugReport, iconTint = colors.accentRed) {
+    AppCard(title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.diag_card_title), icon = Icons.Filled.BugReport, iconTint = colors.accentRed) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = "超长日志分段打印 (防截断/防OOM) & 异常捕捉与分享：",
+                text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.diag_card_desc),
                 color = colors.textSecondary,
                 fontSize = 11.sp
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 AppButton(
-                    text = "超长日志打印",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.diag_btn_long_log),
                     icon = Icons.AutoMirrored.Filled.Subject,
                     color = colors.accentCyan,
                     modifier = Modifier.weight(1f),
                     onClick = vm::triggerLongLog
                 )
                 AppButton(
-                    text = "检查崩溃日志",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.diag_btn_check_crash),
                     icon = Icons.Filled.FileDownload,
                     color = colors.accentAmber,
                     modifier = Modifier.weight(1f),
                     onClick = vm::exportCrashLogs
                 )
                 AppButton(
-                    text = "分享日志",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.diag_btn_share_log),
                     icon = Icons.Filled.Share,
                     color = colors.accentGreen,
                     modifier = Modifier.weight(1f),
@@ -60,7 +60,7 @@ fun DiagnosticsCard(vm: DashboardViewModel) {
 fun UiSettingsCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = "系统栏与界面设置", icon = Icons.Filled.Settings, iconTint = colors.accentCyan) {
+    AppCard(title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.settings_card_title), icon = Icons.Filled.Settings, iconTint = colors.accentCyan) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -68,13 +68,15 @@ fun UiSettingsCard(uiState: DashboardUiState, vm: DashboardViewModel) {
         ) {
             Column {
                 Text(
-                    text = "全屏沉浸式模式",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.settings_immersive_title),
                     color = colors.textPrimary,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = if (uiState.isImmersive) "已隐藏系统栏，边缘滑动呼出" else "已显示系统栏，透明背景",
+                    text = androidx.compose.ui.res.stringResource(
+                        if (uiState.isImmersive) com.base.iot.R.string.settings_immersive_on else com.base.iot.R.string.settings_immersive_off
+                    ),
                     color = colors.textSecondary,
                     fontSize = 11.sp
                 )
@@ -98,19 +100,19 @@ fun UiSettingsCard(uiState: DashboardUiState, vm: DashboardViewModel) {
         ) {
             Column {
                 Text(
-                    text = "开源许可与法律合规",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.settings_licenses_title),
                     color = colors.textPrimary,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "所有依赖均为宽松商业许可 (Apache-2.0 / MIT)",
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.settings_licenses_desc),
                     color = colors.textSecondary,
                     fontSize = 11.sp
                 )
             }
             AppButton(
-                text = "查看清单",
+                text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.settings_licenses_btn),
                 icon = Icons.Filled.Info,
                 color = colors.accentGreen,
                 onClick = vm::showLicensesDialog
