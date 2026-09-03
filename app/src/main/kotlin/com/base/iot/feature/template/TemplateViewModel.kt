@@ -29,9 +29,9 @@ class TemplateViewModel @Inject constructor(
     }
 
     fun executeSampleTask() = launchWithLoading(
-        title = "正在执行任务...",
+        title = getString(com.base.iot.R.string.template_task_running),
         isBlocking = true
     ) { updateProgress ->
-        updateProgress(0.5f, "处理中 50%")
+        updateProgress(0.5f, getString(com.base.iot.R.string.template_task_progress, 50))
     }
 }

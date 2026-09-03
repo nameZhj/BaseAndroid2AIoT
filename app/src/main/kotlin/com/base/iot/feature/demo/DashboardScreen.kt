@@ -48,9 +48,9 @@ fun DashboardScreen(
 
         AppConfirmDialog(
             visible = uiState.showConfirmDialog,
-            title = "核心协议复位确认",
-            message = "您正在请求重置物联网核心连接池与网关通道，操作将重新协商握手密钥，请确认是否执行？",
-            confirmText = "确认复位",
+            title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_confirm_reset_title),
+            message = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_confirm_reset_msg),
+            confirmText = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_confirm_reset_btn),
             isDanger = true,
             onConfirm = viewModel::onConfirmDialogConfirmed,
             onDismiss = { viewModel.setConfirmDialog(false) }
@@ -58,7 +58,7 @@ fun DashboardScreen(
 
         AppLoadingDialog(
             visible = uiState.showLoadingDialog,
-            message = "正在与物联网网关建立安全长连接..."
+            message = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_loading_gateway_msg)
         )
         if (uiState.showLoadingDialog) {
             LaunchedEffect(Unit) {
@@ -69,24 +69,26 @@ fun DashboardScreen(
 
         AppInputDialog(
             visible = uiState.showInputDialog,
-            title = "修改边缘节点标识",
-            hint = "如: ANDROID_AIOT_NODE_01",
+            title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_input_node_title),
+            hint = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_input_node_hint),
             initialText = "IOT_EDGE_DEV_ALPHA",
-            confirmText = "保存更改",
+            confirmText = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_input_node_confirm),
             onConfirm = viewModel::onInputDialogConfirmed,
             onDismiss = { viewModel.setInputDialog(false) }
         )
 
+        val currentCacheTitle = androidx.compose.ui.res.stringResource(uiState.currentCacheType.titleRes)
+        val currentThemeTitle = androidx.compose.ui.res.stringResource(uiState.themeMode.titleRes)
         AppBottomSheetDialog(
             visible = uiState.showBottomSheet,
-            title = "物联网实时监控抽屉面板",
+            title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_bottom_sheet_title),
             onDismiss = { viewModel.setBottomSheet(false) }
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("● 当前生效协议: HTTP(REST), MQTT, TCP Socket", color = AppTheme.colors.textPrimary, fontSize = 14.sp)
-                Text("● 缓存策略: ${uiState.currentCacheType.title}", color = AppTheme.colors.textSecondary, fontSize = 13.sp)
-                Text("● 当前显示模式: ${uiState.themeMode.title}", color = AppTheme.colors.accentCyan, fontSize = 13.sp)
-                Text("● 弹窗技术方案: XPopup 4 + Compose AppDialog 统一设计标准", color = AppTheme.colors.textSecondary, fontSize = 12.sp)
+                Text(androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_bottom_sheet_active_protocols), color = AppTheme.colors.textPrimary, fontSize = 14.sp)
+                Text(androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_bottom_sheet_cache_policy, currentCacheTitle), color = AppTheme.colors.textSecondary, fontSize = 13.sp)
+                Text(androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_bottom_sheet_theme_mode, currentThemeTitle), color = AppTheme.colors.accentCyan, fontSize = 13.sp)
+                Text(androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_bottom_sheet_tech_stack), color = AppTheme.colors.textSecondary, fontSize = 12.sp)
             }
         }
 

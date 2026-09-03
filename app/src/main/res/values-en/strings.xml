@@ -14,6 +14,8 @@
     <string name="btn_share">Share</string>
     <string name="loading">Loading...</string>
     <string name="processing">Processing...</string>
+    <string name="input_hint_default">Please enter content</string>
+    <string name="image_load_failed">Failed to load image</string>
 
     <!-- Error Dialog -->
     <string name="error_dialog_title">Operation Exception</string>
@@ -44,8 +46,11 @@
 
     <!-- Theme Modes -->
     <string name="theme_light">Light Mode</string>
+    <string name="theme_light_desc">Bright daytime mode with high-contrast visuals</string>
     <string name="theme_dark">Dark Mode</string>
+    <string name="theme_dark_desc">Deep dark mode, eye-care and energy efficient</string>
     <string name="theme_system">System Default</string>
+    <string name="theme_system_desc">Auto switch based on Android system dark/light mode</string>
 
     <!-- Diagnostics & Settings Card -->
     <string name="diag_card_title">Logs &amp; Diagnostics</string>
@@ -91,13 +96,28 @@
     <string name="storage_card_title">Cache &amp; Sharing</string>
     <string name="storage_location_section">Switch Cache Location (Persisted to DataStore):</string>
     <string name="storage_loc_internal">Internal Private</string>
+    <string name="storage_loc_internal_desc">App internal cache dir, cleared on uninstall, highest isolation</string>
     <string name="storage_loc_external">External Private</string>
+    <string name="storage_loc_external_desc">Located at Android/data/pkg/cache, spacious, recommended for large files</string>
     <string name="storage_loc_downloads">Public Downloads</string>
-    <string name="storage_current_dir_prefix">Current Cache: %1$s</string>
+    <string name="storage_loc_downloads_desc">Located at Android/data/pkg/files/Downloads, persistent storage</string>
+    <string name="storage_current_policy_prefix">Current Policy: %1$s</string>
+    <string name="storage_path_prefix">Storage Path: %1$s</string>
+    <string name="storage_init_pending">Initializing...</string>
+    <string name="storage_cached_files_count">Cached Files: %1$d</string>
     <string name="storage_file_ops_section">File Operations &amp; Sharing:</string>
     <string name="storage_btn_download_test">Download 100KB Test File</string>
     <string name="storage_btn_share_file">Share Downloaded File</string>
     <string name="storage_btn_share_report">Share Diagnostic Text</string>
+
+    <!-- File Sharing Titles & Content -->
+    <string name="share_file_title">Share File</string>
+    <string name="share_files_title">Batch Share Files</string>
+    <string name="share_report_title">Share Error Diagnostic Report</string>
+    <string name="share_file_body">File from BaseAndroid2AIoT terminal: %1$s (%2$d bytes)</string>
+    <string name="share_crash_logs_title">Share Log Files</string>
+    <string name="share_crash_logs_subject">IoT App Crash Logs</string>
+    <string name="share_crash_logs_body">Attached are %1$d crash log files for troubleshooting.</string>
 
     <!-- Loading & Error Demo Card -->
     <string name="loading_demo_title">Progress Dialog &amp; Root Cause Diagnostics</string>
@@ -108,16 +128,74 @@
     <string name="loading_btn_mock_unknown">Mock Unknown Exception</string>
     <string name="loading_btn_mock_http404">Mock HTTP 404 Error</string>
 
+    <!-- Demo Dialogs & Bottom Sheet -->
+    <string name="dialog_confirm_reset_title">Core Protocol Reset Confirmation</string>
+    <string name="dialog_confirm_reset_msg">You are requesting to reset IoT connection pools and gateway channels. This will re-negotiate handshake keys. Confirm execution?</string>
+    <string name="dialog_confirm_reset_btn">Confirm Reset</string>
+    <string name="dialog_loading_gateway_msg">Establishing secure connection with IoT gateway...</string>
+    <string name="dialog_input_node_title">Modify Edge Node Identifier</string>
+    <string name="dialog_input_node_hint">e.g. ANDROID_AIOT_NODE_01</string>
+    <string name="dialog_input_node_confirm">Save Changes</string>
+    <string name="dialog_bottom_sheet_title">IoT Real-Time Monitoring Panel</string>
+    <string name="dialog_bottom_sheet_active_protocols">● Active Protocols: HTTP(REST), MQTT, TCP Socket</string>
+    <string name="dialog_bottom_sheet_cache_policy">● Cache Policy: %1$s</string>
+    <string name="dialog_bottom_sheet_theme_mode">● Current Theme Mode: %1$s</string>
+    <string name="dialog_bottom_sheet_tech_stack">● Dialog Framework: XPopup 4 + Compose AppDialog Unified Standards</string>
+
+    <!-- Demo Devices -->
+    <string name="demo_device_gateway_a1">Environment Gateway-A1</string>
+    <string name="demo_device_siemens_plc">Siemens Industrial PLC-B2</string>
+    <string name="demo_device_edge_server">Edge Compute Server-C3</string>
+    <string name="demo_device_temp_sensor">Temp &amp; Humidity Sensor-D4</string>
+    <string name="demo_dashboard_ready">IoT dashboard ready. All protocols and services initialized.</string>
+    <string name="demo_protocol_locked_hint">%1$s protocol is actively in use by code and locked always-on, cannot disable at runtime.</string>
+    <string name="demo_license_summary_header">=== Open Source License &amp; Compliance List (Apache 2.0 / MIT) ===</string>
+    <string name="demo_license_compliance_desc">Compliance Notice: All third-party dependencies use permissive open-source licenses with zero GPL viral constraints. Fully approved for commercial use.</string>
+
+    <!-- Diagnostic Report Generator -->
+    <string name="err_dns_fail">DNS Resolution Failed</string>
+    <string name="err_dns_fail_desc">Unable to resolve target server domain (%1$s), check internet connection or LAN DNS settings.</string>
+    <string name="err_conn_refused">Connection Refused</string>
+    <string name="err_conn_refused_desc">Unable to connect to target host and port (%1$s), ensure service is running and firewall allows traffic.</string>
+    <string name="err_timeout">Network Timeout</string>
+    <string name="err_timeout_desc">TCP handshake or read/write timed out (%1$s), high network latency or node unresponsive.</string>
+    <string name="err_ssl_fail">SSL/TLS Certificate Verification Failed</string>
+    <string name="err_ssl_fail_desc">HTTPS/TLS handshake failed (%1$s), untrusted self-signed certificate or expired certificate chain.</string>
+    <string name="err_protocol_disabled">Communication Protocol Not Ready / Disabled</string>
+    <string name="err_protocol_disabled_desc">The requested communication protocol (%1$s) is disabled at compile-time or runtime.</string>
+    <string name="err_http_server">HTTP Server Error [HTTP %1$d]</string>
+    <string name="err_http_server_desc">Server returned abnormal status code: %1$d %2$s</string>
+    <string name="err_unknown_runtime">System Runtime Exception (%1$s)</string>
+    <string name="err_unknown_runtime_desc">An unknown runtime exception occurred. Please inspect the diagnostic stack trace.</string>
+
+    <string name="err_report_header">==================== IoT Terminal Diagnostic Report ====================</string>
+    <string name="err_report_time">■ Timestamp: %1$s</string>
+    <string name="err_report_category">■ Error Category: %1$s</string>
+    <string name="err_report_summary">■ Summary: %1$s</string>
+    <string name="err_report_advice">■ Recommendation: %1$s</string>
+    <string name="err_report_device_info">-------------------- Device &amp; Environment --------------------</string>
+    <string name="err_report_network">■ Current Network: %1$s</string>
+    <string name="err_report_hardware">■ Hardware: %1$s %2$s (%3$s)</string>
+    <string name="err_report_os">■ OS Version: Android %1$s (API %2$d)</string>
+    <string name="err_report_app_ver">■ App Version: %1$s (Code %2$d)</string>
+    <string name="err_report_stack">-------------------- Root Cause Stack Trace --------------------</string>
+    <string name="err_report_footer">==================== End of Report ====================</string>
+
     <!-- Terminal Log Card -->
     <string name="terminal_title">Sequential Execution Logs</string>
     <string name="terminal_empty">No logs yet. Tap any button above to initiate communication.</string>
 
     <!-- Unified Dialog Demo Card -->
     <string name="dialog_demo_title">XPopup Universal Dialog Suite</string>
+    <string name="dialog_demo_desc">Unified packaging for IoT scenarios, ensuring high-contrast clarity across both light and dark modes:</string>
     <string name="dialog_btn_confirm">Confirm Dialog</string>
     <string name="dialog_btn_loading">XPopup Loading</string>
     <string name="dialog_btn_custom">Custom Dialog</string>
+    <string name="dialog_btn_bottom_sheet">Bottom Sheet</string>
 
     <!-- Template Screen -->
+    <string name="brvah_card_title">BRVAH 4 Recycler Framework</string>
     <string name="template_execute_btn">Execute Sample Task</string>
+    <string name="template_task_running">Task in progress...</string>
+    <string name="template_task_progress">Processing %1$d%%</string>
 </resources>

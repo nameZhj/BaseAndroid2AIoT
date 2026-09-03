@@ -30,14 +30,19 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
 
     AppCard(title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_card_title), icon = Icons.Filled.FolderZip, iconTint = colors.accentAmber) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            val policyName = androidx.compose.ui.res.stringResource(uiState.currentCacheType.titleRes)
+            val pendingText = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_init_pending)
             Text(
-                text = "当前策略: ${uiState.currentCacheType.title}",
+                text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_current_policy_prefix, policyName),
                 color = colors.textPrimary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = "落盘路径: ${uiState.currentCachePath.ifEmpty { "初始化中..." }}",
+                text = androidx.compose.ui.res.stringResource(
+                    com.base.iot.R.string.storage_path_prefix,
+                    uiState.currentCachePath.ifEmpty { pendingText }
+                ),
                 color = colors.textSecondary,
                 fontSize = 11.sp,
                 maxLines = 2,
@@ -55,11 +60,7 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                         onClick = { vm.setCacheLocationType(type) },
                         label = {
                             Text(
-                                text = when (type) {
-                                    CacheLocationType.INTERNAL -> androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_loc_internal)
-                                    CacheLocationType.EXTERNAL -> androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_loc_external)
-                                    CacheLocationType.EXTERNAL_DOWNLOADS -> androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_loc_downloads)
-                                },
+                                text = androidx.compose.ui.res.stringResource(type.titleRes),
                                 fontSize = 11.sp
                             )
                         },
@@ -72,7 +73,7 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
             }
 
             Text(
-                text = "已缓存文件数: ${uiState.cacheFilesCount} 个",
+                text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_cached_files_count, uiState.cacheFilesCount),
                 color = colors.textSecondary,
                 fontSize = 12.sp
             )
@@ -101,7 +102,11 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
 fun BrvahRecyclerCard(uiState: DashboardUiState) {
     val colors = AppTheme.colors
 
-    AppCard(title = "BRVAH 4 列表框架", icon = Icons.Filled.ListAlt, iconTint = colors.accentCyan) {
+    AppCard(
+        title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.brvah_card_title),
+        icon = Icons.Filled.ListAlt,
+        iconTint = colors.accentCyan
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             val isDark = colors.isDark
             AndroidView(

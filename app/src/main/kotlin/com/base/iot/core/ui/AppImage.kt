@@ -96,7 +96,7 @@ fun AppImage(
                 ) {
                     Icon(
                         imageVector = Icons.Default.BrokenImage,
-                        contentDescription = "图片加载失败",
+                        contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.image_load_failed),
                         tint = MaterialTheme.colorScheme.error.copy(alpha = 0.6f),
                         modifier = Modifier.align(Alignment.Center)
                     )

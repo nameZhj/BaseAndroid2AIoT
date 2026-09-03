@@ -31,19 +31,24 @@ object ErrorParser {
 
         val (type, message) = when (rootCause) {
             is UnknownHostException -> {
-                "DNS 解析失败" to "无法解析目标服务器域名 (${rootCause.message})，请检查设备是否连接互联网或本地局域网 DNS 配置。"
+                context.getString(com.base.iot.R.string.err_dns_fail) to
+                        context.getString(com.base.iot.R.string.err_dns_fail_desc, rootCause.message ?: "")
             }
             is ConnectException -> {
-                "连接被拒绝 (Connection Refused)" to "无法连接到目标主机与端口 (${rootCause.message})，请确认远程服务已启动且工控防火墙已放行。"
+                context.getString(com.base.iot.R.string.err_conn_refused) to
+                        context.getString(com.base.iot.R.string.err_conn_refused_desc, rootCause.message ?: "")
             }
             is SocketTimeoutException -> {
-                "网络请求超时 (Timeout)" to "TCP 握手或读写超时 (${rootCause.message})，当前网络延迟过高或远程节点无响应。"
+                context.getString(com.base.iot.R.string.err_timeout) to
+                        context.getString(com.base.iot.R.string.err_timeout_desc, rootCause.message ?: "")
             }
             is SSLException -> {
-                "SSL/TLS 证书校验失败" to "HTTPS/TLS 安全握手未通过 (${rootCause.message})，可能为自签名证书未加白或证书链过期。"
+                context.getString(com.base.iot.R.string.err_ssl_fail) to
+                        context.getString(com.base.iot.R.string.err_ssl_fail_desc, rootCause.message ?: "")
             }
             is ProtocolDisabledException -> {
-                "通信协议未就绪/已禁用" to "当前所请求的通信协议 (${rootCause.message}) 在编译期或运行时被配置为禁用状态。"
+                context.getString(com.base.iot.R.string.err_protocol_disabled) to
+                        context.getString(com.base.iot.R.string.err_protocol_disabled_desc, rootCause.message ?: "")
             }
             else -> {
                 val className = rootCause.javaClass.name
@@ -53,11 +58,13 @@ object ErrorParser {
                     } catch (e: Exception) {
                         0
                     }
-                    val msg = rootCause.message ?: "HTTP 状态码异常"
-                    "HTTP 服务端错误 [HTTP $code]" to "服务器返回异常状态码: $code $msg"
+                    val msg = rootCause.message ?: ""
+                    context.getString(com.base.iot.R.string.err_http_server, code) to
+                            context.getString(com.base.iot.R.string.err_http_server_desc, code, msg)
                 } else {
                     val simpleName = rootCause.javaClass.simpleName
-                    "系统执行异常 ($simpleName)" to (rootCause.localizedMessage ?: "发生未知运行时异常，请查阅完整堆栈报告。")
+                    context.getString(com.base.iot.R.string.err_unknown_runtime, simpleName) to
+                            (rootCause.localizedMessage ?: context.getString(com.base.iot.R.string.err_unknown_runtime_desc))
                 }
             }
         }
@@ -65,19 +72,19 @@ object ErrorParser {
         val technicalSummary = "${rootCause.javaClass.name}: ${rootCause.message ?: "no message"}"
 
         val report = buildString {
-            appendLine("==================== 物联网终端错误诊断报告 ====================")
-            appendLine("■ 发生时间: $timeString")
-            appendLine("■ 错误类别: $type")
-            appendLine("■ 核心摘要: $technicalSummary")
-            appendLine("■ 友好建议: $message")
-            appendLine("-------------------- 设备与环境信息 --------------------")
-            appendLine("■ 当前网络: $networkStatus")
-            appendLine("■ 硬件设备: ${Build.MANUFACTURER} ${Build.MODEL} (${Build.DEVICE})")
-            appendLine("■ 系统版本: Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-            appendLine("■ 架构指令: ${Build.SUPPORTED_ABIS.joinToString(", ")}")
-            appendLine("-------------------- 异常根因堆栈全景 --------------------")
+            appendLine(context.getString(com.base.iot.R.string.err_report_header))
+            appendLine(context.getString(com.base.iot.R.string.err_report_time, timeString))
+            appendLine(context.getString(com.base.iot.R.string.err_report_category, type))
+            appendLine(context.getString(com.base.iot.R.string.err_report_summary, technicalSummary))
+            appendLine(context.getString(com.base.iot.R.string.err_report_advice, message))
+            appendLine(context.getString(com.base.iot.R.string.err_report_device_info))
+            appendLine(context.getString(com.base.iot.R.string.err_report_network, networkStatus))
+            appendLine(context.getString(com.base.iot.R.string.err_report_hardware, Build.MANUFACTURER, Build.MODEL, Build.DEVICE))
+            appendLine(context.getString(com.base.iot.R.string.err_report_os, Build.VERSION.RELEASE, Build.VERSION.SDK_INT))
+            appendLine("■ Arch: ${Build.SUPPORTED_ABIS.joinToString(", ")}")
+            appendLine(context.getString(com.base.iot.R.string.err_report_stack))
             appendLine(stackTraceString.trim())
-            appendLine("==========================================================")
+            appendLine(context.getString(com.base.iot.R.string.err_report_footer))
         }
 
         return ParsedError(
@@ -108,18 +115,18 @@ object ErrorParser {
     private fun getNetworkStatus(context: Context): String {
         return try {
             val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
-                ?: return "未知 (ConnectivityManager 缺失)"
-            val network = cm.activeNetwork ?: return "未连接任何网络 (离线)"
-            val capabilities = cm.getNetworkCapabilities(network) ?: return "网络能力不可用"
+                ?: return "Unknown (No ConnectivityManager)"
+            val network = cm.activeNetwork ?: return "Offline (No active network)"
+            val capabilities = cm.getNetworkCapabilities(network) ?: return "Unavailable (No capabilities)"
 
             when {
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "WIFI 局域网已连接"
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "有线以太网 (Ethernet) 已连接"
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "移动蜂窝数据已连接"
-                else -> "其他连接方式已接入"
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "WIFI (Connected)"
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "Ethernet (Connected)"
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "Cellular (Connected)"
+                else -> "Other Transport"
             }
         } catch (e: Exception) {
-            "获取网络状态异常: ${e.message}"
+            "Error querying network: ${e.message}"
         }
     }
 }

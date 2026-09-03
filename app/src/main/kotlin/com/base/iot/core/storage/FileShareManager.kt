@@ -24,47 +24,49 @@ class FileShareManager @Inject constructor(
     /**
      * 分享单个文件到系统分享面板（微信、QQ、邮件、蓝牙等）。
      */
-    fun shareFile(file: File, shareTitle: String = "分享文件") {
+    fun shareFile(file: File, shareTitle: String? = null) {
         if (!file.exists()) {
-            Lg.e(TAG, "分享失败：目标文件不存在 -> ${file.absolutePath}")
+            Lg.e(TAG, "Share failed: target file does not exist -> ${file.absolutePath}")
             return
         }
 
         try {
             val uri = FileProvider.getUriForFile(context, authority, file)
             val mimeType = getMimeType(file)
+            val effectiveTitle = shareTitle ?: context.getString(com.base.iot.R.string.share_file_title)
 
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = mimeType
                 putExtra(Intent.EXTRA_STREAM, uri)
                 putExtra(Intent.EXTRA_SUBJECT, file.name)
-                putExtra(Intent.EXTRA_TEXT, "来自 BaseAndroid2AIoT 物联网终端的文件: ${file.name} (${file.length()} 字节)")
+                putExtra(Intent.EXTRA_TEXT, context.getString(com.base.iot.R.string.share_file_body, file.name, file.length()))
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
-            val chooser = Intent.createChooser(intent, shareTitle).apply {
+            val chooser = Intent.createChooser(intent, effectiveTitle).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(chooser)
-            Lg.i(TAG, "已唤起系统分享面板: ${file.name}")
+            Lg.i(TAG, "System share panel opened: ${file.name}")
         } catch (e: Exception) {
-            Lg.e(TAG, "唤起分享异常: ${e.message}", e)
+            Lg.e(TAG, "Share error: ${e.message}", e)
         }
     }
 
     /**
      * 批量分享多个文件。
      */
-    fun shareFiles(files: List<File>, shareTitle: String = "批量分享文件") {
+    fun shareFiles(files: List<File>, shareTitle: String? = null) {
         val validFiles = files.filter { it.exists() }
         if (validFiles.isEmpty()) {
-            Lg.e(TAG, "批量分享失败：无有效文件")
+            Lg.e(TAG, "Batch share failed: no valid files")
             return
         }
 
         try {
             val uris = ArrayList(validFiles.map { FileProvider.getUriForFile(context, authority, it) })
+            val effectiveTitle = shareTitle ?: context.getString(com.base.iot.R.string.share_files_title)
             val intent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                 type = "*/*"
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
@@ -72,34 +74,35 @@ class FileShareManager @Inject constructor(
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
-            val chooser = Intent.createChooser(intent, shareTitle).apply {
+            val chooser = Intent.createChooser(intent, effectiveTitle).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(chooser)
-            Lg.i(TAG, "已唤起批量分享面板，共 ${validFiles.size} 个文件")
+            Lg.i(TAG, "Batch share panel opened with ${validFiles.size} files")
         } catch (e: Exception) {
-            Lg.e(TAG, "批量分享异常: ${e.message}", e)
+            Lg.e(TAG, "Batch share error: ${e.message}", e)
         }
     }
 
     /**
      * 分享文本内容（如错误诊断报告、系统日志文本）到系统分享面板。
      */
-    fun shareText(text: String, shareTitle: String = "分享错误诊断报告") {
+    fun shareText(text: String, shareTitle: String? = null) {
         try {
+            val effectiveTitle = shareTitle ?: context.getString(com.base.iot.R.string.share_report_title)
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, shareTitle)
+                putExtra(Intent.EXTRA_SUBJECT, effectiveTitle)
                 putExtra(Intent.EXTRA_TEXT, text)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
-            val chooser = Intent.createChooser(intent, shareTitle).apply {
+            val chooser = Intent.createChooser(intent, effectiveTitle).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(chooser)
-            Lg.i(TAG, "已唤起文本分享面板: $shareTitle")
+            Lg.i(TAG, "Text share panel opened: $effectiveTitle")
         } catch (e: Exception) {
-            Lg.e(TAG, "唤起文本分享异常: ${e.message}", e)
+            Lg.e(TAG, "Text share error: ${e.message}", e)
         }
     }
 

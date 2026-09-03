@@ -14,6 +14,8 @@
     <string name="btn_share">分享</string>
     <string name="loading">加载中...</string>
     <string name="processing">正在处理中...</string>
+    <string name="input_hint_default">请输入内容</string>
+    <string name="image_load_failed">图片加载失败</string>
 
     <!-- 异常与错误弹窗 -->
     <string name="error_dialog_title">操作执行异常</string>
@@ -42,10 +44,13 @@
     <string name="protocol_redis">Redis</string>
     <string name="protocol_socket">Socket</string>
 
-    <!-- 主题模式 -->
+    <!-- 主题模式与描述 -->
     <string name="theme_light">普通模式</string>
+    <string name="theme_light_desc">明亮日间模式，高对比度清爽视效</string>
     <string name="theme_dark">夜间模式</string>
+    <string name="theme_dark_desc">深色极夜模式，沉浸护眼低功耗</string>
     <string name="theme_system">跟随系统</string>
+    <string name="theme_system_desc">根据 Android 系统深色/浅色模式自动切换</string>
 
     <!-- 诊断与设置卡片 -->
     <string name="diag_card_title">日志与诊断</string>
@@ -91,13 +96,28 @@
     <string name="storage_card_title">缓存与系统分享</string>
     <string name="storage_location_section">自定义缓存位置切换（持久化到 DataStore）：</string>
     <string name="storage_loc_internal">内部私有缓存</string>
+    <string name="storage_loc_internal_desc">应用内部 cache 目录，卸载自动清除，隔离保护最高</string>
     <string name="storage_loc_external">外部私有缓存</string>
+    <string name="storage_loc_external_desc">位于 Android/data/包名/cache，空间充裕，大文件推荐</string>
     <string name="storage_loc_downloads">系统下载目录</string>
-    <string name="storage_current_dir_prefix">当前缓存目录: %1$s</string>
+    <string name="storage_loc_downloads_desc">位于 Android/data/包名/files/Downloads，易于持久保留</string>
+    <string name="storage_current_policy_prefix">当前策略: %1$s</string>
+    <string name="storage_path_prefix">落盘路径: %1$s</string>
+    <string name="storage_init_pending">初始化中...</string>
+    <string name="storage_cached_files_count">已缓存文件数: %1$d 个</string>
     <string name="storage_file_ops_section">文件操作与分享：</string>
     <string name="storage_btn_download_test">下载 100KB 测试包</string>
     <string name="storage_btn_share_file">分享下载的文件</string>
     <string name="storage_btn_share_report">分享诊断报告文本</string>
+
+    <!-- 系统分享标题与描述 -->
+    <string name="share_file_title">分享文件</string>
+    <string name="share_files_title">批量分享文件</string>
+    <string name="share_report_title">分享错误诊断报告</string>
+    <string name="share_file_body">来自 BaseAndroid2AIoT 物联网终端的文件: %1$s (%2$d 字节)</string>
+    <string name="share_crash_logs_title">分享日志文件</string>
+    <string name="share_crash_logs_subject">IoT App 崩溃日志</string>
+    <string name="share_crash_logs_body">附件包含 %1$d 个崩溃日志文件，请协助排查问题。</string>
 
     <!-- 耗时与错误模拟演示卡片 -->
     <string name="loading_demo_title">耗时进度弹窗 &amp; 真实错误诊断</string>
@@ -108,16 +128,74 @@
     <string name="loading_btn_mock_unknown">模拟未知异常</string>
     <string name="loading_btn_mock_http404">模拟 404 业务错误</string>
 
+    <!-- 演示弹窗与抽屉面板 -->
+    <string name="dialog_confirm_reset_title">核心协议复位确认</string>
+    <string name="dialog_confirm_reset_msg">您正在请求重置物联网核心连接池与网关通道，操作将重新协商握手密钥，请确认是否执行？</string>
+    <string name="dialog_confirm_reset_btn">确认复位</string>
+    <string name="dialog_loading_gateway_msg">正在与物联网网关建立安全长连接...</string>
+    <string name="dialog_input_node_title">修改边缘节点标识</string>
+    <string name="dialog_input_node_hint">如: ANDROID_AIOT_NODE_01</string>
+    <string name="dialog_input_node_confirm">保存更改</string>
+    <string name="dialog_bottom_sheet_title">物联网实时监控抽屉面板</string>
+    <string name="dialog_bottom_sheet_active_protocols">● 当前生效协议: HTTP(REST), MQTT, TCP Socket</string>
+    <string name="dialog_bottom_sheet_cache_policy">● 缓存策略: %1$s</string>
+    <string name="dialog_bottom_sheet_theme_mode">● 当前显示模式: %1$s</string>
+    <string name="dialog_bottom_sheet_tech_stack">● 弹窗技术方案: XPopup 4 + Compose AppDialog 统一设计标准</string>
+
+    <!-- 演示列表设备名称 -->
+    <string name="demo_device_gateway_a1">环境监测网关-A1</string>
+    <string name="demo_device_siemens_plc">西门子工业PLC-B2</string>
+    <string name="demo_device_edge_server">边缘计算服务器-C3</string>
+    <string name="demo_device_temp_sensor">温湿度传感器-D4</string>
+    <string name="demo_dashboard_ready">IoT 调试面板已就绪，所有协议与服务已初始化。</string>
+    <string name="demo_protocol_locked_hint">%1$s 协议正被业务代码调用，已锁定为常开，无法在运行期关闭</string>
+    <string name="demo_license_summary_header">=== 开源许可证与法律合规清单 (Apache 2.0 / MIT) ===</string>
+    <string name="demo_license_compliance_desc">合规说明: 本项目所有三方依赖均为宽松开源许可，无 GPL 传染性，完全允许闭源商业使用。详见 OPEN_SOURCE_LICENSES.md 与 NOTICE。</string>
+
+    <!-- 诊断报告生成器 -->
+    <string name="err_dns_fail">DNS 解析失败</string>
+    <string name="err_dns_fail_desc">无法解析目标服务器域名 (%1$s)，请检查设备是否连接互联网或本地局域网 DNS 配置。</string>
+    <string name="err_conn_refused">连接被拒绝 (Connection Refused)</string>
+    <string name="err_conn_refused_desc">无法连接到目标主机与端口 (%1$s)，请确认远程服务已启动且工控防火墙已放行。</string>
+    <string name="err_timeout">网络请求超时 (Timeout)</string>
+    <string name="err_timeout_desc">TCP 握手或读写超时 (%1$s)，当前网络延迟过高或远程节点无响应。</string>
+    <string name="err_ssl_fail">SSL/TLS 证书校验失败</string>
+    <string name="err_ssl_fail_desc">HTTPS/TLS 安全握手未通过 (%1$s)，可能为自签名证书未加白或证书链过期。</string>
+    <string name="err_protocol_disabled">通信协议未就绪/已禁用</string>
+    <string name="err_protocol_disabled_desc">当前所请求的通信协议 (%1$s) 在编译期或运行时被配置为禁用状态。</string>
+    <string name="err_http_server">HTTP 服务端错误 [HTTP %1$d]</string>
+    <string name="err_http_server_desc">服务器返回异常状态码: %1$d %2$s</string>
+    <string name="err_unknown_runtime">系统执行异常 (%1$s)</string>
+    <string name="err_unknown_runtime_desc">发生未知运行时异常，请查阅完整堆栈报告。</string>
+
+    <string name="err_report_header">==================== 物联网终端错误诊断报告 ====================</string>
+    <string name="err_report_time">■ 发生时间: %1$s</string>
+    <string name="err_report_category">■ 错误类别: %1$s</string>
+    <string name="err_report_summary">■ 核心摘要: %1$s</string>
+    <string name="err_report_advice">■ 友好建议: %1$s</string>
+    <string name="err_report_device_info">-------------------- 设备与环境信息 --------------------</string>
+    <string name="err_report_network">■ 当前网络: %1$s</string>
+    <string name="err_report_hardware">■ 硬件设备: %1$s %2$s (%3$s)</string>
+    <string name="err_report_os">■ 系统版本: Android %1$s (API %2$d)</string>
+    <string name="err_report_app_ver">■ 应用版本: %1$s (Code %2$d)</string>
+    <string name="err_report_stack">-------------------- 根因异常调用堆栈 --------------------</string>
+    <string name="err_report_footer">==================== 报告结束 ====================</string>
+
     <!-- 时序终端日志卡片 -->
     <string name="terminal_title">时序运行日志</string>
     <string name="terminal_empty">暂无时序日志，请点击上方功能按钮发起通信</string>
 
     <!-- 通用弹窗卡片 -->
     <string name="dialog_demo_title">XPopup 顶流通用弹窗套件</string>
+    <string name="dialog_demo_desc">针对物联网业务场景统一封装，在普通模式与夜间模式下均保证高对比度视觉质感：</string>
     <string name="dialog_btn_confirm">确认弹窗</string>
     <string name="dialog_btn_loading">XPopup 加载窗</string>
     <string name="dialog_btn_custom">自定义弹窗</string>
+    <string name="dialog_btn_bottom_sheet">抽屉面板</string>
 
     <!-- 模板特性页面 -->
+    <string name="brvah_card_title">BRVAH 4 列表框架</string>
     <string name="template_execute_btn">执行示例任务</string>
+    <string name="template_task_running">正在执行任务...</string>
+    <string name="template_task_progress">处理中 %1$d%%</string>
 </resources>

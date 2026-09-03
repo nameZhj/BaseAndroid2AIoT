@@ -16,13 +16,22 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
+import androidx.annotation.StringRes
+import com.base.iot.R
+
 /**
  * 缓存位置策略枚举
  */
-enum class CacheLocationType(val title: String, val desc: String) {
-    INTERNAL("内部私有缓存", "应用内部 cache 目录，卸载自动清除，隔离保护最高"),
-    EXTERNAL("外部私有缓存", "位于 Android/data/包名/cache，空间充裕，大文件推荐"),
-    EXTERNAL_DOWNLOADS("外部专属下载目录", "位于 Android/data/包名/files/Downloads，易于持久保留")
+enum class CacheLocationType(
+    @StringRes val titleRes: Int,
+    @StringRes val descRes: Int
+) {
+    INTERNAL(R.string.storage_loc_internal, R.string.storage_loc_internal_desc),
+    EXTERNAL(R.string.storage_loc_external, R.string.storage_loc_external_desc),
+    EXTERNAL_DOWNLOADS(R.string.storage_loc_downloads, R.string.storage_loc_downloads_desc);
+
+    fun getTitle(context: Context): String = context.getString(titleRes)
+    fun getDesc(context: Context): String = context.getString(descRes)
 }
 
 private val Context.cacheLocationDataStore: DataStore<Preferences>
@@ -52,7 +61,7 @@ class CacheLocationManager @Inject constructor(
     /** 切换缓存策略并持久化 */
     suspend fun setLocationType(type: CacheLocationType) {
         dataStore.edit { it[Keys.LOCATION_TYPE] = type.name }
-        Lg.i(TAG, "缓存位置已切换为: ${type.title} -> ${getCacheDir(type).absolutePath}")
+        Lg.i(TAG, "Cache location switched to: ${type.name} -> ${getCacheDir(type).absolutePath}")
     }
 
     /** 获取当前选中的实际物理缓存目录对象（自动创建目录） */
@@ -94,7 +103,7 @@ class CacheLocationManager @Inject constructor(
             freedBytes += file.length()
             file.delete()
         }
-        Lg.i(TAG, "已清理缓存目录: ${dir.absolutePath}，共释放: $freedBytes 字节")
+        Lg.i(TAG, "Cleared cache dir: ${dir.absolutePath}, freed: $freedBytes bytes")
         return freedBytes
     }
 }

@@ -19,15 +19,15 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
         application = app
         defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler(this)
-        Lg.i(TAG, "崩溃拦截器已安装")
+        Lg.i(TAG, "CrashHandler installed successfully")
     }
 
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
-        Lg.e(TAG, "捕获到未处理异常，正在写入崩溃日志...", throwable)
+        Lg.e(TAG, "Uncaught exception captured, writing crash log...", throwable)
         try {
             writeCrashLog(thread, throwable)
         } catch (e: Exception) {
-            Lg.e(TAG, "写入崩溃日志失败: ${e.message}", e)
+            Lg.e(TAG, "Failed to write crash log: ${e.message}", e)
         }
         defaultHandler?.uncaughtException(thread, throwable)
     }
@@ -77,7 +77,7 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
             pw.flush()
         }
 
-        Lg.i(TAG, "崩溃日志已写入: ${logFile.absolutePath}")
+        Lg.i(TAG, "Crash log written successfully: ${logFile.absolutePath}")
     }
 
     fun getCrashLogFiles(app: Application): List<File> {

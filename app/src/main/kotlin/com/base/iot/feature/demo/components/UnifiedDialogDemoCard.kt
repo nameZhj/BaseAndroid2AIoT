@@ -28,7 +28,7 @@ fun UnifiedDialogDemoCard(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
-                text = "针对物联网业务场景统一封装，在普通模式与夜间模式下均保证高对比度视觉质感：",
+                text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_demo_desc),
                 color = colors.textSecondary,
                 fontSize = 12.sp
             )
@@ -57,7 +57,7 @@ fun UnifiedDialogDemoCard(
                     onClick = { vm.setInputDialog(true) }
                 )
                 AppButton(
-                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_confirm),
+                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dialog_btn_bottom_sheet),
                     icon = Icons.Filled.VerticalAlignTop,
                     color = colors.accentGreen,
                     modifier = Modifier.weight(1f),

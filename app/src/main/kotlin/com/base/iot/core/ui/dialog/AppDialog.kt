@@ -27,8 +27,8 @@ fun AppConfirmDialog(
     visible: Boolean,
     title: String,
     message: String,
-    confirmText: String = "确定",
-    cancelText: String = "取消",
+    confirmText: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_confirm),
+    cancelText: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_cancel),
     isDanger: Boolean = false,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
@@ -125,7 +125,7 @@ fun AppConfirmDialog(
 @Composable
 fun AppLoadingDialog(
     visible: Boolean,
-    message: String = "正在处理中..."
+    message: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.processing)
 ) {
     if (!visible) return
 
@@ -169,10 +169,10 @@ fun AppLoadingDialog(
 fun AppInputDialog(
     visible: Boolean,
     title: String,
-    hint: String = "请输入内容",
+    hint: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.input_hint_default),
     initialText: String = "",
-    confirmText: String = "确定",
-    cancelText: String = "取消",
+    confirmText: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_confirm),
+    cancelText: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_cancel),
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -226,7 +226,7 @@ fun AppInputDialog(
                             IconButton(onClick = { textState = "" }) {
                                 Icon(
                                     imageVector = Icons.Filled.Close,
-                                    contentDescription = "清空",
+                                    contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_clear),
                                     tint = colors.textTertiary
                                 )
                             }

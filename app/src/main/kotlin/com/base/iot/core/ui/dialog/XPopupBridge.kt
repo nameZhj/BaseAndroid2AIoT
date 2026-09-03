@@ -20,13 +20,15 @@ object XPopupBridge {
         title: String,
         content: String,
         isDark: Boolean = true,
-        confirmText: String = "确定",
-        cancelText: String = "取消",
+        confirmText: String? = null,
+        cancelText: String? = null,
         onConfirm: () -> Unit
     ): BasePopupView {
+        val effectiveConfirm = confirmText ?: context.getString(com.base.iot.R.string.btn_confirm)
+        val effectiveCancel = cancelText ?: context.getString(com.base.iot.R.string.btn_cancel)
         return XPopup.Builder(context)
             .isDarkTheme(isDark)
-            .asConfirm(title, content, cancelText, confirmText, OnConfirmListener {
+            .asConfirm(title, content, effectiveCancel, effectiveConfirm, OnConfirmListener {
                 onConfirm()
             }, null, false)
             .show()
@@ -37,12 +39,13 @@ object XPopupBridge {
      */
     fun showLoading(
         context: Context,
-        title: String = "正在处理中...",
+        title: String? = null,
         isDark: Boolean = true
     ): BasePopupView {
+        val effectiveTitle = title ?: context.getString(com.base.iot.R.string.processing)
         return XPopup.Builder(context)
             .isDarkTheme(isDark)
-            .asLoading(title)
+            .asLoading(effectiveTitle)
             .show()
     }
 
@@ -52,13 +55,14 @@ object XPopupBridge {
     fun showInput(
         context: Context,
         title: String,
-        hint: String = "请输入内容",
+        hint: String? = null,
         isDark: Boolean = true,
         onConfirm: (String) -> Unit
     ): BasePopupView {
+        val effectiveHint = hint ?: context.getString(com.base.iot.R.string.input_hint_default)
         return XPopup.Builder(context)
             .isDarkTheme(isDark)
-            .asInputConfirm(title, null, null, hint, OnInputConfirmListener { text ->
+            .asInputConfirm(title, null, null, effectiveHint, OnInputConfirmListener { text ->
                 onConfirm(text)
             })
             .show()

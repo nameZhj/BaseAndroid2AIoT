@@ -25,7 +25,7 @@ import com.base.iot.ui.theme.AppTheme
 
 data class LoadingConfig(
     val visible: Boolean = false,
-    val title: String = "正在处理中...",
+    val title: String? = null,
     val message: String? = null,
     val isBlocking: Boolean = true,
     val progress: Float? = null,
@@ -76,7 +76,7 @@ fun AppProgressDialog(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = config.title,
+                            text = config.title ?: androidx.compose.ui.res.stringResource(com.base.iot.R.string.progress_default_title),
                             color = colors.textPrimary,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold,

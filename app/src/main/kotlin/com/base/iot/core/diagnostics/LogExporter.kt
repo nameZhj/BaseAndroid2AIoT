@@ -17,17 +17,17 @@ object LogExporter {
         val logFiles = CrashHandler.getCrashLogFiles(app)
 
         if (logFiles.isEmpty()) {
-            Lg.i(TAG, "没有崩溃日志文件可分享")
+            Lg.i(TAG, "No crash log files available to share")
             return
         }
 
-        Lg.i(TAG, "准备分享 ${logFiles.size} 个日志文件")
+        Lg.i(TAG, "Preparing to share ${logFiles.size} log files")
 
         val uris = logFiles.mapNotNull { file ->
             try {
                 FileProvider.getUriForFile(context, authority, file)
             } catch (e: Exception) {
-                Lg.e(TAG, "获取 URI 失败: ${file.name}", e)
+                Lg.e(TAG, "Failed to get URI: ${file.name}", e)
                 null
             }
         }
@@ -37,15 +37,15 @@ object LogExporter {
         val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
             type = "text/plain"
             putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
-            putExtra(Intent.EXTRA_SUBJECT, "IoT App 崩溃日志")
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(com.base.iot.R.string.share_crash_logs_subject))
             putExtra(
                 Intent.EXTRA_TEXT,
-                "附件包含 ${logFiles.size} 个崩溃日志文件，请协助排查问题。"
+                context.getString(com.base.iot.R.string.share_crash_logs_body, logFiles.size)
             )
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
-        val chooser = Intent.createChooser(shareIntent, "分享日志文件")
+        val chooser = Intent.createChooser(shareIntent, context.getString(com.base.iot.R.string.share_crash_logs_title))
         chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(chooser)
     }
@@ -57,7 +57,7 @@ object LogExporter {
         logFiles.forEach { file ->
             if (file.delete()) count++
         }
-        Lg.i(TAG, "已清除 $count 个日志文件")
+        Lg.i(TAG, "Cleared $count log files")
     }
 
     fun getLogsDirSize(context: Context): Long {

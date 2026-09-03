@@ -33,24 +33,29 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
         _uiState.update(reducer)
     }
 
+    fun getString(resId: Int, vararg formatArgs: Any): String {
+        return getApplication<Application>().getString(resId, *formatArgs)
+    }
+
     /**
      * @param isBlocking true=不可取消防穿透, false=允许外部点击取消
      * @param showLoading false=后台静默执行
      */
     fun launchWithLoading(
-        title: String = "正在处理中...",
+        title: String? = null,
         isBlocking: Boolean = true,
         showLoading: Boolean = true,
         onError: ((Throwable) -> Unit)? = null,
         action: suspend CoroutineScope.(updateProgress: (Float?, String?) -> Unit) -> Unit
     ): Job {
+        val effectiveTitle = title ?: getString(com.base.iot.R.string.processing)
         return viewModelScope.launch {
             var currentJob: Job? = null
             if (showLoading) {
                 updateLoadingConfig {
                     LoadingConfig(
                         visible = true,
-                        title = title,
+                        title = effectiveTitle,
                         isBlocking = isBlocking,
                         progress = null,
                         progressText = null,
@@ -58,7 +63,7 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
                         onCancel = {
                             currentJob?.cancel()
                             dismissLoading()
-                            onOperationCancelled(title)
+                            onOperationCancelled(effectiveTitle)
                         }
                     )
                 }
@@ -74,9 +79,9 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
                     }
                 }
             } catch (e: CancellationException) {
-                onOperationCancelled(title)
+                onOperationCancelled(effectiveTitle)
             } catch (t: Throwable) {
-                Lg.e(logTag, "任务执行异常: ${t.message}", t)
+                Lg.e(logTag, "Task execution error: ${t.message}", t)
                 if (onError != null) {
                     onError(t)
                 } else {
@@ -109,11 +114,11 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
     fun shareErrorReport(error: ParsedError) {
         fileShareManager.shareText(
             text = error.fullDiagnosticReport,
-            shareTitle = "分享错误报告 - ${error.errorType}"
+            shareTitle = "${getString(com.base.iot.R.string.share_report_title)} - ${error.errorType}"
         )
     }
 
     protected open fun onOperationCancelled(title: String) {
-        Lg.d(logTag, "任务已取消: $title")
+        Lg.d(logTag, "Task cancelled: $title")
     }
 }

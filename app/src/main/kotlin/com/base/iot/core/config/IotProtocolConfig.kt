@@ -16,8 +16,8 @@ import javax.inject.Singleton
 
 class ProtocolDisabledException(
     protocol: String,
-    reason: String = "当前已禁用，请先在配置文件中开启对应开关。"
-) : IllegalStateException("协议 [$protocol] $reason")
+    reason: String = "is disabled in configuration."
+) : IllegalStateException("Protocol [$protocol] $reason")
 
 data class IotProtocolSwitches(
     val isHttpCompiled: Boolean = BuildConfig.IS_HTTP_COMPILED,
@@ -64,54 +64,54 @@ class IotProtocolConfig @Inject constructor(
 
     suspend fun setHttpEnabled(enabled: Boolean) {
         if (BuildConfig.IS_HTTP_COMPILED && !enabled) {
-            Lg.w(TAG, "HTTP 协议已被代码调用并编译入包，默认锁定为常开，无法关闭")
+            Lg.w(TAG, "HTTP protocol is compiled and locked always-on, cannot disable at runtime")
             return
         }
         if (!BuildConfig.IS_HTTP_COMPILED && enabled) {
-            throw ProtocolDisabledException("HTTP", "在编译期已被物理裁剪（未打包），无法在运行期开启。请在 gradle.properties 中配置并重新编译。")
+            throw ProtocolDisabledException("HTTP", "trimmed at compile-time (not compiled into APK). Please enable in gradle.properties and recompile.")
         }
         dataStore.edit { it[Keys.HTTP] = enabled }
     }
 
     suspend fun setMqttEnabled(enabled: Boolean) {
         if (BuildConfig.IS_MQTT_COMPILED && !enabled) {
-            Lg.w(TAG, "MQTT 协议已被代码调用并编译入包，默认锁定为常开，无法关闭")
+            Lg.w(TAG, "MQTT protocol is compiled and locked always-on, cannot disable at runtime")
             return
         }
         if (!BuildConfig.IS_MQTT_COMPILED && enabled) {
-            throw ProtocolDisabledException("MQTT", "在编译期已被物理裁剪（未打包），无法在运行期开启。请在 gradle.properties 中配置并重新编译。")
+            throw ProtocolDisabledException("MQTT", "trimmed at compile-time (not compiled into APK). Please enable in gradle.properties and recompile.")
         }
         dataStore.edit { it[Keys.MQTT] = enabled }
     }
 
     suspend fun setRedisEnabled(enabled: Boolean) {
         if (BuildConfig.IS_REDIS_COMPILED && !enabled) {
-            Lg.w(TAG, "Redis 协议已被代码调用并编译入包，默认锁定为常开，无法关闭")
+            Lg.w(TAG, "Redis protocol is compiled and locked always-on, cannot disable at runtime")
             return
         }
         if (!BuildConfig.IS_REDIS_COMPILED && enabled) {
-            throw ProtocolDisabledException("Redis", "在编译期已被物理裁剪（未打包），无法在运行期开启。请在 gradle.properties 中配置并重新编译。")
+            throw ProtocolDisabledException("Redis", "trimmed at compile-time (not compiled into APK). Please enable in gradle.properties and recompile.")
         }
         dataStore.edit { it[Keys.REDIS] = enabled }
     }
 
     suspend fun setSocketEnabled(enabled: Boolean) {
         if (BuildConfig.IS_SOCKET_COMPILED && !enabled) {
-            Lg.w(TAG, "Socket 协议已被代码调用并编译入包，默认锁定为常开，无法关闭")
+            Lg.w(TAG, "Socket protocol is compiled and locked always-on, cannot disable at runtime")
             return
         }
         if (!BuildConfig.IS_SOCKET_COMPILED && enabled) {
-            throw ProtocolDisabledException("Socket", "在编译期已被物理裁剪（未打包），无法在运行期开启。请在 gradle.properties 中配置并重新编译。")
+            throw ProtocolDisabledException("Socket", "trimmed at compile-time (not compiled into APK). Please enable in gradle.properties and recompile.")
         }
         dataStore.edit { it[Keys.SOCKET] = enabled }
     }
 
     fun assertEnabled(protocol: String, isCompiled: Boolean, isEnabled: Boolean) {
         if (!isCompiled) {
-            throw ProtocolDisabledException(protocol, "在编译期已被物理裁剪（框架已彻底剔除以削减体积），请在 gradle.properties 中开启后重新编译。")
+            throw ProtocolDisabledException(protocol, "trimmed at compile-time. Please configure in gradle.properties and recompile.")
         }
         if (!isEnabled) {
-            throw ProtocolDisabledException(protocol, "当前已禁用。")
+            throw ProtocolDisabledException(protocol, "is currently disabled.")
         }
     }
 }

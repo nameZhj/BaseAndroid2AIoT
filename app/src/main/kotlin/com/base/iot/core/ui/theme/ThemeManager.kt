@@ -13,13 +13,22 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+import androidx.annotation.StringRes
+import com.base.iot.R
+
 /**
  * 主题显示模式枚举
  */
-enum class ThemeMode(val title: String, val subtitle: String) {
-    SYSTEM("跟随系统", "根据 Android 系统深色/浅色模式自动切换"),
-    LIGHT("普通模式", "明亮日间模式，高对比度清爽视效"),
-    DARK("夜间模式", "深色极夜模式，沉浸护眼低功耗")
+enum class ThemeMode(
+    @StringRes val titleRes: Int,
+    @StringRes val subtitleRes: Int
+) {
+    SYSTEM(R.string.theme_system, R.string.theme_system_desc),
+    LIGHT(R.string.theme_light, R.string.theme_light_desc),
+    DARK(R.string.theme_dark, R.string.theme_dark_desc);
+
+    fun getTitle(context: Context): String = context.getString(titleRes)
+    fun getSubtitle(context: Context): String = context.getString(subtitleRes)
 }
 
 private val Context.themeDataStore: DataStore<Preferences>
@@ -49,6 +58,6 @@ class ThemeManager @Inject constructor(
     /** 设置主题模式并持久化 */
     suspend fun setThemeMode(mode: ThemeMode) {
         dataStore.edit { it[Keys.THEME_MODE] = mode.name }
-        Lg.i(TAG, "全局主题已切换为: ${mode.title}")
+        Lg.i(TAG, "Global theme mode changed to: ${mode.name}")
     }
 }
