@@ -1,6 +1,5 @@
-# BaseAndroid2AIoT — 企业级 Android IoT 快速开发脚手架
+# BaseAndroid2AIoT — 企业级 Android IoT 快速开发框架
 
-> 100% Kotlin · Jetpack Compose + Material3 · BRVAH 4 · MVVM + Hilt · Multi-Protocol IoT · 编译期协议裁剪
 
 ---
 
@@ -52,7 +51,7 @@
 
 ## 🌟 核心特性与技术方案
 
-### 1. 编译期协议依赖裁剪 (Compile-time Protocol Toggles)
+### 1. 编译期协议依赖控制 (Compile-time Protocol Toggles)
 针对工控和 AIoT 边缘设备对包体积及运行时内存的严苛要求，在 `gradle.properties` 中提供编译期开关：
 ```properties
 # 物联网协议编译期开关
@@ -98,7 +97,7 @@ Android 系统对网络通信有严格的沙箱与安全限制，本项目针对
 
 ---
 
-### 5. 集成 GitHub Star 最高的 RecyclerView 适配器框架 (BRVAH 4)
+### 5. 集成 RecyclerView 适配器框架 (BRVAH 4)
 - **选型**：GitHub 拥有 24.3k+ Stars 的 `BaseRecyclerViewAdapterHelper4` (`io.github.cymchad:BaseRecyclerViewAdapterHelper4:4.1.4`)。
 - **原生与 Compose 混编**：
   在保持现代 Jetpack Compose 架构的同时，提供 `IotDeviceQuickAdapter` 演示原生高效列表开发，并通过 Compose `AndroidView` 实现顺畅混编与双向状态响应，支持普通模式与夜间模式色彩动态适配。
@@ -128,7 +127,7 @@ Android 系统对网络通信有严格的沙箱与安全限制，本项目针对
 
 ---
 
-### 7. 引入 GitHub 顶流 Dialog 框架 XPopup (15.2k+ ★) 与统一弹窗体系
+### 7. 引入Dialog 框架 XPopup
 针对 Android 物联网操作中频繁的确认、等待、参数配置与面板交互，引入 GitHub 截至 2026 年最流行的弹窗框架 **XPopup** (`com.github.li-xiaojun:XPopup:2.10.0`)，并封装全应用风格统一的弹窗体系：
 
 1. **统一设计规范 Compose 弹窗组件 (`AppDialog.kt`)**：
@@ -193,15 +192,15 @@ Android 系统对网络通信有严格的沙箱与安全限制，本项目针对
    - 自动维护 `StateFlow<STATE>` 与 `SharedFlow<EVENT>`；
    - 通用集成 `launchWithLoading`、`ErrorParser` 错误拦截、非阻塞式错误弹窗驱动与系统一键分享；
    - Agent 新建页面仅需 10 行代码继承基类，无需写任何重复的基础设施样板代码。
-2. **物联网多协议统一门面 (`core/iot/IotHub.kt`)**：
+2. **物联网多协议统一 (`core/iot/IotHub.kt`)**：
    - 集中聚合 `http`, `mqtt`, `redis`, `socket`, `config`，避免繁琐的多对象注入，一行注入即可调动全局协议通信。
 3. **全局原子化 UI 组件库 (`core/ui/components/`)**：
    - 将卡片与按钮全面标准化下沉为 `AppCard`、`AppButton`、`AppSwitchRow`，暗/日间模式自适应与高对比度开箱即用。
-4. **巨石文件组件化解耦 (`feature/demo/components/`)**：
+4. **大文件组件化解耦 (`feature/demo/components/`)**：
    - 将原 1080 行的 `DashboardScreen.kt` 彻底拆解为若干 50~80 行的独立微组件，主屏幕瘦身为仅 180 行的高层骨架编排器；
    - **Agent 在后续迭代或修改某个业务卡片时，单次操作上下文 Token 消耗骤降 80% 以上！**
 5. **极速导航手册 (`AGENT_ARCHITECTURE.md`)**：
-   - 在根目录下提供极速架构导航与 3 步起手式开发指南，包含包结构映射、起手模板与五大工程红线。
+   - 在根目录下提供极速架构导航与 3 步起手式开发指南，包含包结构映射、起手模板与五大工程。
 
 ---
 
