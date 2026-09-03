@@ -15,6 +15,7 @@
 - 所有网络与协议通信必须通过 `IotHub` 或通用抽象接口（`HttpManager`, `MqttManager`, `RedisManager`, `SocketManager`）调用，确保 `gradle.properties` 关闭任何协议开关时，`src/main/` 均能 100% 独立编译。
 - **驱动与桩实现必须严格对齐**：修改协议接口时，必须同步修改 `src/protocol_<proto>/`（真实驱动）与 `src/protocol_<proto>_stub/`（零依赖桩实现），保持相同类名与签名。
 - **依赖版本单一权威源**：所有依赖必须在 `gradle/libs.versions.toml` 中声明并通过 `libs.xxx` 引用，严禁在构建脚本中硬编码坐标。
+- **代码调用协议默认锁定常开铁律**：`gradle.properties` 是协议编译期的唯一配置源。只要协议被编译入包并在代码中调用（`isCompiled == true`），运行期必须默认锁定为常开，无法在运行期关闭，彻底杜绝误关导致业务中断。
 
 ### 3. WCAG AAA 级高对比度双模红线
 - **严禁硬编码颜色值**（`Color(0xFF...)`），所有 UI 元素必须统一读取 `AppTheme.colors.*` 设计系统令牌（`surface`, `background`, `textPrimary`, `textSecondary`, `accentCyan`, `cardBorder` 等）。

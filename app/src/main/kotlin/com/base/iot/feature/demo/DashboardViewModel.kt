@@ -156,21 +156,37 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun toggleHttp(enabled: Boolean) = viewModelScope.launch {
+        if (_uiState.value.switches.isHttpCompiled && !enabled) {
+            appendLog("HTTP 协议正被业务代码调用，已锁定为常开，无法在运行期关闭")
+            return@launch
+        }
         iotHub.config.setHttpEnabled(enabled)
         appendLog("HTTP 协议开关: $enabled")
     }
 
     fun toggleMqtt(enabled: Boolean) = viewModelScope.launch {
+        if (_uiState.value.switches.isMqttCompiled && !enabled) {
+            appendLog("MQTT 协议正被业务代码调用，已锁定为常开，无法在运行期关闭")
+            return@launch
+        }
         iotHub.config.setMqttEnabled(enabled)
         appendLog("MQTT 协议开关: $enabled")
     }
 
     fun toggleRedis(enabled: Boolean) = viewModelScope.launch {
+        if (_uiState.value.switches.isRedisCompiled && !enabled) {
+            appendLog("Redis 协议正被业务代码调用，已锁定为常开，无法在运行期关闭")
+            return@launch
+        }
         iotHub.config.setRedisEnabled(enabled)
         appendLog("Redis 协议开关: $enabled")
     }
 
     fun toggleSocket(enabled: Boolean) = viewModelScope.launch {
+        if (_uiState.value.switches.isSocketCompiled && !enabled) {
+            appendLog("Socket 协议正被业务代码调用，已锁定为常开，无法在运行期关闭")
+            return@launch
+        }
         iotHub.config.setSocketEnabled(enabled)
         appendLog("Socket 协议开关: $enabled")
     }

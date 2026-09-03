@@ -3,6 +3,8 @@ package com.base.iot.core.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,11 +57,31 @@ fun AppSwitchRow(
                     .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
-                    text = if (compiled) "已编译" else "未编译",
+                    text = if (compiled) "已编入" else "未编译·已裁剪",
                     color = if (compiled) colors.accentGreen else colors.textSecondary,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.SemiBold
                 )
+            }
+
+            if (compiled) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Lock,
+                        contentDescription = "常开锁定",
+                        tint = colors.accentGreen,
+                        modifier = Modifier.size(11.dp)
+                    )
+                    Text(
+                        text = "常开锁定",
+                        color = colors.accentGreen,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
 
             if (connected != null) {
@@ -83,14 +105,16 @@ fun AppSwitchRow(
         }
 
         Switch(
-            checked = enabled && compiled,
+            checked = compiled,
             onCheckedChange = { onToggle(it) },
-            enabled = compiled,
+            enabled = false,
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Color.White,
                 checkedTrackColor = activeColor,
-                uncheckedThumbColor = colors.textSecondary,
-                uncheckedTrackColor = colors.cardBorder
+                disabledCheckedThumbColor = Color.White,
+                disabledCheckedTrackColor = activeColor.copy(alpha = 0.6f),
+                disabledUncheckedThumbColor = colors.textSecondary,
+                disabledUncheckedTrackColor = colors.cardBorder
             )
         )
     }

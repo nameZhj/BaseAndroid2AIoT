@@ -7,11 +7,11 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-// ==================== 读取编译期协议开关 ====================
-val isHttpEnabled: Boolean = (project.findProperty("iot.protocol.http.enabled") as? String)?.toBoolean() ?: false
-val isMqttEnabled: Boolean = (project.findProperty("iot.protocol.mqtt.enabled") as? String)?.toBoolean() ?: false
-val isRedisEnabled: Boolean = (project.findProperty("iot.protocol.redis.enabled") as? String)?.toBoolean() ?: false
-val isSocketEnabled: Boolean = (project.findProperty("iot.protocol.socket.enabled") as? String)?.toBoolean() ?: false
+// ==================== 统一编译期协议裁剪执行器 (配置源: gradle.properties) ====================
+val isHttpCompiled: Boolean = (project.findProperty("iot.protocol.http.enabled") as? String)?.toBoolean() ?: true
+val isMqttCompiled: Boolean = (project.findProperty("iot.protocol.mqtt.enabled") as? String)?.toBoolean() ?: true
+val isRedisCompiled: Boolean = (project.findProperty("iot.protocol.redis.enabled") as? String)?.toBoolean() ?: false
+val isSocketCompiled: Boolean = (project.findProperty("iot.protocol.socket.enabled") as? String)?.toBoolean() ?: true
 
 android {
     namespace = "com.base.iot"
@@ -29,10 +29,10 @@ android {
         }
 
         // 注入编译期协议打包状态常量到 BuildConfig
-        buildConfigField("Boolean", "IS_HTTP_COMPILED", isHttpEnabled.toString())
-        buildConfigField("Boolean", "IS_MQTT_COMPILED", isMqttEnabled.toString())
-        buildConfigField("Boolean", "IS_REDIS_COMPILED", isRedisEnabled.toString())
-        buildConfigField("Boolean", "IS_SOCKET_COMPILED", isSocketEnabled.toString())
+        buildConfigField("Boolean", "IS_HTTP_COMPILED", isHttpCompiled.toString())
+        buildConfigField("Boolean", "IS_MQTT_COMPILED", isMqttCompiled.toString())
+        buildConfigField("Boolean", "IS_REDIS_COMPILED", isRedisCompiled.toString())
+        buildConfigField("Boolean", "IS_SOCKET_COMPILED", isSocketCompiled.toString())
     }
 
     buildTypes {
@@ -70,10 +70,10 @@ android {
     sourceSets {
         getByName("main") {
             val protocolDirs = mutableListOf<String>()
-            protocolDirs.add(if (isHttpEnabled) "src/protocol_http/kotlin" else "src/protocol_http_stub/kotlin")
-            protocolDirs.add(if (isMqttEnabled) "src/protocol_mqtt/kotlin" else "src/protocol_mqtt_stub/kotlin")
-            protocolDirs.add(if (isRedisEnabled) "src/protocol_redis/kotlin" else "src/protocol_redis_stub/kotlin")
-            protocolDirs.add(if (isSocketEnabled) "src/protocol_socket/kotlin" else "src/protocol_socket_stub/kotlin")
+            protocolDirs.add(if (isHttpCompiled) "src/protocol_http/kotlin" else "src/protocol_http_stub/kotlin")
+            protocolDirs.add(if (isMqttCompiled) "src/protocol_mqtt/kotlin" else "src/protocol_mqtt_stub/kotlin")
+            protocolDirs.add(if (isRedisCompiled) "src/protocol_redis/kotlin" else "src/protocol_redis_stub/kotlin")
+            protocolDirs.add(if (isSocketCompiled) "src/protocol_socket/kotlin" else "src/protocol_socket_stub/kotlin")
             kotlin.srcDirs(protocolDirs)
         }
     }
@@ -122,7 +122,7 @@ dependencies {
     // ==================== 条件依赖引入（核心：未开启则绝不打包进 APK） ====================
 
     // HTTP 协议组件（开启时引入 Retrofit 与 OkHttp，关闭时不参与依赖解析）
-    if (isHttpEnabled) {
+    if (isHttpCompiled) {
         implementation(libs.retrofit)
         implementation(libs.retrofit.converter.gson)
         implementation(libs.okhttp)
@@ -130,12 +130,12 @@ dependencies {
     }
 
     // MQTT 协议组件（开启时引入 HiveMQ 及底层 Netty 约 15MB 依赖，关闭时彻底剔除）
-    if (isMqttEnabled) {
+    if (isMqttCompiled) {
         implementation(libs.hivemq.mqtt.client)
     }
 
     // Redis 协议组件（开启时引入 Jedis，关闭时彻底剔除）
-    if (isRedisEnabled) {
+    if (isRedisCompiled) {
         implementation(libs.jedis)
     }
 
