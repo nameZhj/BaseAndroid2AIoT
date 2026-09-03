@@ -454,11 +454,11 @@ class DashboardViewModel @Inject constructor(
         appendLog("MQTT PUBLISH → $topic: $payload")
         try {
             iotHub.mqtt.publish(topic, payload)
-            appendLog("MQTT publish successfully")
+            appendLog("MQTT 发布成功 ✅")
         } catch (e: ProtocolDisabledException) {
-            appendLog("MQTT protocol disabled: ${e.message}")
+            appendLog("MQTT 协议已禁用: ${e.message}")
         } catch (e: Exception) {
-            appendLog("MQTT publish failed: ${e.message}")
+            appendLog("MQTT 发布失败: ${e.message}")
         }
     }
 
@@ -468,11 +468,11 @@ class DashboardViewModel @Inject constructor(
         try {
             iotHub.mqtt.subscribe(topic)
                 .take(3)
-                .onEach { msg -> appendLog("MQTT RECV ← $msg") }
-                .catch { e -> appendLog("MQTT subscription error: ${e.message}") }
+                .onEach { msg -> appendLog("MQTT 接收数据 ← $msg") }
+                .catch { e -> appendLog("MQTT 订阅异常: ${e.message}") }
                 .launchIn(this)
         } catch (e: ProtocolDisabledException) {
-            appendLog("MQTT protocol disabled: ${e.message}")
+            appendLog("MQTT 协议已禁用: ${e.message}")
         }
     }
 

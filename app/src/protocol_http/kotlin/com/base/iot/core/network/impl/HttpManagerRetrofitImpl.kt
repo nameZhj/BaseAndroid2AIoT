@@ -253,7 +253,7 @@ class HttpManagerRetrofitImpl @Inject constructor(
             result
         } catch (e: Exception) {
             Lg.e(TAG, "[HTTP-UPLOAD] [3/3 DISCONNECTED/ERROR] 上传异常: ${e.message}", e)
-            HttpResult.Error(-1, e.message ?: "Upload exception", e)
+            HttpResult.Error(-1, e.message ?: "上传异常", e)
         }
     }
 
@@ -314,7 +314,7 @@ class HttpManagerRetrofitImpl @Inject constructor(
             emit(DownloadState.Success(destFile))
         } catch (e: Exception) {
             Lg.e(TAG, "[HTTP-DOWNLOAD] [3/3 DISCONNECTED/ERROR] 下载异常: ${e.message}", e)
-            emit(DownloadState.Error(e.message ?: "Download failed", e))
+            emit(DownloadState.Error(e.message ?: "下载失败", e))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -368,7 +368,7 @@ class HttpManagerRetrofitImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Lg.e(TAG, "[HTTP] [3/3 DISCONNECTED/ERROR] 异常: ${e.message}", e)
-            HttpResult.Error(-1, e.message ?: "Network error", e)
+            HttpResult.Error(-1, e.message ?: "网络异常", e)
         }
     }
 }
