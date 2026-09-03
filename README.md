@@ -264,16 +264,35 @@ BaseAndroid2AIoT/
 | **语言** | Kotlin | `2.0.21` | 100% 现代 Kotlin 编写 |
 | **构建体系** | Gradle / AGP | `8.11.1` / `8.5.2` | Gradle 8+ 增量构建与配置缓存 |
 | **UI 体系** | Jetpack Compose + M3 | BOM `2024.09.03` | 响应式 Material 3 设计 |
-| **弹窗框架** | XPopup | `2.10.0` | GitHub 15k+ 顶流通用弹窗库 |
-| **列表框架** | BRVAH 4 (BaseQuickAdapter) | `4.1.4` | GitHub 24k+ 顶流列表适配器 |
+| **弹窗框架** | [XPopup](https://github.com/li-xiaojun/XPopup) | `2.10.0` | GitHub 15k+ 顶流通用弹窗库 |
+| **列表框架** | [BRVAH 4](https://github.com/CymChad/BaseRecyclerViewAdapterHelper) | `4.1.4` | GitHub 24k+ 顶流列表适配器 |
 | **架构组件** | ViewModel + Coroutines + Flow | `2.8.3` / `1.8.1` | MVVM 单向数据流架构 |
-| **依赖注入** | Google Hilt | `2.51.1` | 依赖注入与组件生命周期管理 |
+| **依赖注入** | [Hilt](https://github.com/google/dagger) | `2.51.1` | 依赖注入与组件生命周期管理 |
 | **配置存储** | Jetpack DataStore | `1.1.1` | 响应式配置、主题模式与缓存策略持久化 |
-| **HTTP 传输** | Retrofit + OkHttp + Okio | `2.11.0` / `4.12.0` | 支持 GET/POST/PUT/DELETE 及大文件流式上传下载 |
-| **MQTT 协议** | HiveMQ MQTT Client | `1.3.3` | 高性能反应式 MQTT 3.1.1 客户端 |
-| **Redis 协议** | Jedis (BOM 精简版) | `5.1.5` | 物联网控制指令与键值操作 |
+| **HTTP 传输** | [Retrofit](https://github.com/square/retrofit) + [OkHttp](https://github.com/square/okhttp) | `2.11.0` / `4.12.0` | 支持常规 REST 与大文件 1 小时流式上传下载 |
+| **MQTT 协议** | [HiveMQ MQTT Client](https://github.com/hivemq/hivemq-mqtt-client) | `1.3.3` | 高性能反应式 MQTT 3.1.1 客户端 |
+| **Redis 协议** | [Jedis](https://github.com/redis/jedis) | `5.1.3` | 物联网控制指令与键值操作 |
+| **图片加载** | [Coil](https://github.com/coil-kt/coil) | `2.7.0` | 协程驱动轻量图片加载 |
+| **JSON 解析** | [Gson](https://github.com/google/gson) | `2.11.0` | 序列化与反序列化 |
 | **TCP Socket** | 原生 NIO SocketChannel | JDK 17 | 工业级长连接心跳与断线重连 |
 | **网络诊断** | 自研分段日志 + CrashHandler | 原生扩展 | 防止 Logcat 截断与本地异常落盘 |
+
+---
+
+## 📦 第三方开源框架声明
+
+本项目引用了以下优秀的开源项目与框架：
+
+- **[XPopup](https://github.com/li-xiaojun/XPopup)**：功能强大、UI 优雅的 Android 顶流弹窗框架
+- **[BRVAH](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)**：高效强大的 RecyclerView 顶流通用列表适配器
+- **[Retrofit](https://github.com/square/retrofit)**：Square 出品的类型安全 RESTful 网络请求库
+- **[OkHttp](https://github.com/square/okhttp)**：Square 出品的工业级高性能 HTTP/2 传输与连接客户端
+- **[HiveMQ MQTT Client](https://github.com/hivemq/hivemq-mqtt-client)**：快速、轻量、高性能反应式 MQTT 客户端
+- **[Jedis](https://github.com/redis/jedis)**：经典轻量小巧的 Java/Android Redis 客户端
+- **[Coil](https://github.com/coil-kt/coil)**：基于 Kotlin 协程的现代轻量 Android 图片加载库
+- **[Hilt](https://github.com/google/dagger)**：Google 官方出品的标准 Android 依赖注入框架
+- **[Gson](https://github.com/google/gson)**：Google 出品的 Java/Kotlin 通用 JSON 序列化与反序列化库
+- **[Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines)**：JetBrains 官方 Kotlin 异步并发协程库
 
 ---
 
