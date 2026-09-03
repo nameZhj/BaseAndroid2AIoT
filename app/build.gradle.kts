@@ -10,7 +10,7 @@ plugins {
 // ==================== 统一编译期协议裁剪执行器 (配置源: gradle.properties) ====================
 val isHttpCompiled: Boolean = (project.findProperty("iot.protocol.http.enabled") as? String)?.toBoolean() ?: true
 val isMqttCompiled: Boolean = (project.findProperty("iot.protocol.mqtt.enabled") as? String)?.toBoolean() ?: true
-val isRedisCompiled: Boolean = (project.findProperty("iot.protocol.redis.enabled") as? String)?.toBoolean() ?: false
+val isRedisCompiled: Boolean = (project.findProperty("iot.protocol.redis.enabled") as? String)?.toBoolean() ?: true
 val isSocketCompiled: Boolean = (project.findProperty("iot.protocol.socket.enabled") as? String)?.toBoolean() ?: true
 
 android {
