@@ -24,9 +24,12 @@ import okio.*
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.*
+import com.base.iot.core.config.AppConfig
+import okhttp3.OkHttpClient
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.reflect.Type
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -130,6 +133,21 @@ class HttpManagerRetrofitImpl @Inject constructor(
         retrofit.create(DynamicRetrofitService::class.java)
     }
 
+    private val fileTransferService: DynamicRetrofitService by lazy {
+        val baseOkHttpClient = (retrofit.callFactory() as? OkHttpClient)
+        val fileOkHttpClient = (baseOkHttpClient?.newBuilder() ?: OkHttpClient.Builder())
+            .connectTimeout(AppConfig.HTTP_CONNECT_TIMEOUT_SEC, TimeUnit.SECONDS)
+            .readTimeout(AppConfig.HTTP_FILE_TRANSFER_TIMEOUT_SEC, TimeUnit.SECONDS)
+            .writeTimeout(AppConfig.HTTP_FILE_TRANSFER_TIMEOUT_SEC, TimeUnit.SECONDS)
+            .callTimeout(AppConfig.HTTP_FILE_TRANSFER_TIMEOUT_SEC, TimeUnit.SECONDS)
+            .build()
+
+        retrofit.newBuilder()
+            .client(fileOkHttpClient)
+            .build()
+            .create(DynamicRetrofitService::class.java)
+    }
+
     private val jsonMediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
 
     override suspend fun <T : Any> executeGet(
@@ -228,7 +246,7 @@ class HttpManagerRetrofitImpl @Inject constructor(
             }
 
             val result: HttpResult<T> = safeExecute("UPLOAD", url, type) {
-                service.uploadRaw(url, filePart, partMap, headers ?: emptyMap())
+                fileTransferService.uploadRaw(url, filePart, partMap, headers ?: emptyMap())
             }
             val tookMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
             Lg.i(TAG, "[HTTP-UPLOAD] [3/3 CLOSED] 上传交互结束 (耗时: ${tookMs}ms)")
@@ -254,7 +272,7 @@ class HttpManagerRetrofitImpl @Inject constructor(
         )
 
         try {
-            val response = service.downloadRaw(url, headers ?: emptyMap())
+            val response = fileTransferService.downloadRaw(url, headers ?: emptyMap())
             if (!response.isSuccessful || response.body() == null) {
                 val errMsg = "下载失败，HTTP状态码: ${response.code()}"
                 Lg.e(TAG, "[HTTP-DOWNLOAD] [3/3 ERROR] $errMsg")

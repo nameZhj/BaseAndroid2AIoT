@@ -25,6 +25,7 @@ object AppConfig {
     const val HTTP_CONNECT_TIMEOUT_SEC = 15L
     const val HTTP_READ_TIMEOUT_SEC = 30L
     const val HTTP_WRITE_TIMEOUT_SEC = 30L
+    const val HTTP_FILE_TRANSFER_TIMEOUT_SEC = 3600L // 大文件上传下载超时：1小时 (3600秒)
 
     // ==================== MQTT 配置 ====================
     const val MQTT_HOST = "broker.hivemq.com"
