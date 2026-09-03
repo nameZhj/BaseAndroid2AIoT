@@ -27,6 +27,10 @@ import javax.inject.Inject
 
 // ==================== UI State ====================
 
+import com.base.iot.core.diagnostics.ErrorParser
+import com.base.iot.core.diagnostics.ParsedError
+import com.base.iot.core.ui.dialog.LoadingConfig
+
 data class DashboardUiState(
     val switches: IotProtocolSwitches = IotProtocolSwitches(),
     val mqttConnected: Boolean = false,
@@ -43,7 +47,13 @@ data class DashboardUiState(
     val showConfirmDialog: Boolean = false,
     val showLoadingDialog: Boolean = false,
     val showInputDialog: Boolean = false,
-    val showBottomSheet: Boolean = false
+    val showBottomSheet: Boolean = false,
+    // ===== 耗时操作进度与错误弹窗体系 =====
+    val loadingConfig: LoadingConfig = LoadingConfig(),
+    val parsedError: ParsedError? = null,
+    val showErrorDialog: Boolean = false,
+    val isBlockingDefault: Boolean = true,
+    val enableLoadingDialog: Boolean = true
 )
 
 // ==================== Events (One-shot) ====================
@@ -187,65 +197,45 @@ class DashboardViewModel @Inject constructor(
 
     // ==================== HTTP 测试 ====================
 
-    fun testHttpGet() = viewModelScope.launch {
+    fun testHttpGet() = launchWithLoading(title = "HTTP GET 请求中...") {
         appendLog("HTTP GET → https://httpbin.org/get")
-        try {
-            val result = httpManager.get<Map<String, Any>>("https://httpbin.org/get")
-            when (result) {
-                is HttpResult.Success<*> -> appendLog("HTTP ✅ ${result.code}: ${result.data.toString().take(200)}")
-                is HttpResult.Error -> appendLog("HTTP ❌ ${result.code}: ${result.message}")
-            }
-        } catch (e: ProtocolDisabledException) {
-            appendLog("HTTP ❌ 协议已禁用: ${e.message}")
-        } catch (e: Exception) {
-            appendLog("HTTP ❌ 异常: ${e.message}")
+        val result = httpManager.get<Map<String, Any>>("https://httpbin.org/get")
+        when (result) {
+            is HttpResult.Success<*> -> appendLog("HTTP ✅ ${result.code}: ${result.data.toString().take(200)}")
+            is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
         }
     }
 
-    fun testHttpPost() = viewModelScope.launch {
+    fun testHttpPost() = launchWithLoading(title = "HTTP POST 提交中...") {
         appendLog("HTTP POST → https://httpbin.org/post")
-        try {
-            val body = mapOf("key" to "value", "timestamp" to System.currentTimeMillis())
-            val result = httpManager.post<Map<String, Any>>("https://httpbin.org/post", body)
-            when (result) {
-                is HttpResult.Success<*> -> appendLog("HTTP ✅ ${result.code}: OK")
-                is HttpResult.Error -> appendLog("HTTP ❌ ${result.code}: ${result.message}")
-            }
-        } catch (e: ProtocolDisabledException) {
-            appendLog("HTTP ❌ 协议已禁用: ${e.message}")
-        } catch (e: Exception) {
-            appendLog("HTTP ❌ 异常: ${e.message}")
+        val body = mapOf("key" to "value", "timestamp" to System.currentTimeMillis())
+        val result = httpManager.post<Map<String, Any>>("https://httpbin.org/post", body)
+        when (result) {
+            is HttpResult.Success<*> -> appendLog("HTTP ✅ ${result.code}: OK")
+            is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
         }
     }
 
-    fun testHttpPut() = viewModelScope.launch {
+    fun testHttpPut() = launchWithLoading(title = "HTTP PUT 更新中...") {
         appendLog("HTTP PUT → https://httpbin.org/put")
-        try {
-            val body = mapOf("deviceStatus" to "ONLINE", "updatedAt" to System.currentTimeMillis())
-            val result = httpManager.put<Map<String, Any>>("https://httpbin.org/put", body)
-            when (result) {
-                is HttpResult.Success<*> -> appendLog("HTTP PUT ✅ ${result.code}: 更新成功")
-                is HttpResult.Error -> appendLog("HTTP PUT ❌ ${result.code}: ${result.message}")
-            }
-        } catch (e: Exception) {
-            appendLog("HTTP PUT ❌ 异常: ${e.message}")
+        val body = mapOf("deviceStatus" to "ONLINE", "updatedAt" to System.currentTimeMillis())
+        val result = httpManager.put<Map<String, Any>>("https://httpbin.org/put", body)
+        when (result) {
+            is HttpResult.Success<*> -> appendLog("HTTP PUT ✅ ${result.code}: 更新成功")
+            is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
         }
     }
 
-    fun testHttpDelete() = viewModelScope.launch {
+    fun testHttpDelete() = launchWithLoading(title = "HTTP DELETE 删除中...") {
         appendLog("HTTP DELETE → https://httpbin.org/delete")
-        try {
-            val result = httpManager.delete<Map<String, Any>>("https://httpbin.org/delete", mapOf("id" to "1001"))
-            when (result) {
-                is HttpResult.Success<*> -> appendLog("HTTP DELETE ✅ ${result.code}: 删除成功")
-                is HttpResult.Error -> appendLog("HTTP DELETE ❌ ${result.code}: ${result.message}")
-            }
-        } catch (e: Exception) {
-            appendLog("HTTP DELETE ❌ 异常: ${e.message}")
+        val result = httpManager.delete<Map<String, Any>>("https://httpbin.org/delete", mapOf("id" to "1001"))
+        when (result) {
+            is HttpResult.Success<*> -> appendLog("HTTP DELETE ✅ ${result.code}: 删除成功")
+            is HttpResult.Error -> throw RuntimeException("HTTP 响应错误 [${result.code}]: ${result.message}")
         }
     }
 
-    fun testHttpUpload() = viewModelScope.launch {
+    fun testHttpUpload() = launchWithLoading(title = "HTTP Multipart 文件上传中") { updateProgress ->
         val cacheDir = cacheLocationManager.getCurrentCacheDir()
         val sampleFile = File(cacheDir, "upload_sample_${System.currentTimeMillis()}.txt").apply {
             writeText("Hello IoT Cloud Server! Multipart payload test. Timestamp=${System.currentTimeMillis()}")
@@ -260,16 +250,19 @@ class DashboardViewModel @Inject constructor(
             formFields = mapOf("deviceId" to "android_iot_dev_01", "firmware" to "v1.0.0"),
             onProgress = { bytesWritten, totalBytes, percent ->
                 Lg.d("Upload", "上传进度: $percent% ($bytesWritten/$totalBytes)")
+                val p = bytesWritten.toFloat() / totalBytes
+                val text = "${bytesWritten / 1024} KB / ${totalBytes / 1024} KB ($percent%)"
+                updateProgress(p, text)
             }
         )
         when (result) {
             is HttpResult.Success<*> -> appendLog("HTTP UPLOAD ✅ ${result.code}: 上传成功")
-            is HttpResult.Error -> appendLog("HTTP UPLOAD ❌ ${result.code}: ${result.message}")
+            is HttpResult.Error -> throw RuntimeException("HTTP 上传错误 [${result.code}]: ${result.message}")
         }
         refreshCacheStats()
     }
 
-    fun testHttpDownload() = viewModelScope.launch {
+    fun testHttpDownload() = launchWithLoading(title = "HTTP 流式文件下载中") { updateProgress ->
         val destFile = cacheLocationManager.createCacheFile("download_iot_${System.currentTimeMillis()}.bin")
         appendLog("HTTP DOWNLOAD → 开始流式下载...")
         appendLog("HTTP DOWNLOAD [目标] 名称: ${destFile.name}, 存储路径: ${destFile.absolutePath}")
@@ -277,13 +270,17 @@ class DashboardViewModel @Inject constructor(
         httpManager.download("https://httpbin.org/bytes/65536", destFile).collect { state ->
             when (state) {
                 is DownloadState.Idle -> appendLog("HTTP 下载准备中...")
-                is DownloadState.Progress -> appendLog("HTTP 下载中: ${state.percent.toInt()}% (${state.bytesRead}/${state.totalBytes})")
+                is DownloadState.Progress -> {
+                    val p = state.bytesRead.toFloat() / state.totalBytes
+                    val text = "${state.bytesRead / 1024} KB / ${state.totalBytes / 1024} KB (${state.percent.toInt()}%)"
+                    updateProgress(p, text)
+                }
                 is DownloadState.Success -> {
                     appendLog("HTTP 下载 ✅ 成功！文件大小: ${state.file.length()} 字节，已存入缓存: ${state.file.name}")
                     _uiState.update { it.copy(latestDownloadedFile = state.file) }
                     refreshCacheStats()
                 }
-                is DownloadState.Error -> appendLog("HTTP 下载 ❌ 失败: ${state.message}")
+                is DownloadState.Error -> throw RuntimeException("HTTP 下载失败: ${state.message}")
             }
         }
     }
@@ -365,18 +362,172 @@ class DashboardViewModel @Inject constructor(
         appendLog("输入弹窗 ✍️ 用户已提交数据: $text")
     }
 
+    // ==================== 通用耗时操作进度与错误弹窗架构 ====================
+
+    fun toggleBlockingDefault() {
+        _uiState.update { it.copy(isBlockingDefault = !it.isBlockingDefault) }
+        appendLog("耗时弹窗模式切换: " + if (_uiState.value.isBlockingDefault) "阻塞式（禁止取消/点击穿透）" else "非阻塞式（可取消/外部关闭）")
+    }
+
+    fun toggleEnableLoadingDialog() {
+        _uiState.update { it.copy(enableLoadingDialog = !it.enableLoadingDialog) }
+        appendLog("耗时进度弹窗开关: " + if (_uiState.value.enableLoadingDialog) "启用" else "禁用 (后台静默执行)")
+    }
+
+    /**
+     * 核心封装：执行带进度或等待弹窗的耗时异步操作。
+     *
+     * @param title 弹窗标题
+     * @param isBlocking 是否阻塞交互（不可穿透、不可取消），默认为当前全局配置
+     * @param showLoading 是否显示弹窗（开发者可自由选择每项任务是否展示）
+     * @param action 异步执行闭包，提供 updateProgress(percent, text) 动态更新百分比进度
+     */
+    fun launchWithLoading(
+        title: String = "正在处理中...",
+        isBlocking: Boolean = _uiState.value.isBlockingDefault,
+        showLoading: Boolean = _uiState.value.enableLoadingDialog,
+        action: suspend CoroutineScope.(updateProgress: (Float?, String?) -> Unit) -> Unit
+    ): Job {
+        return viewModelScope.launch {
+            var currentJob: Job? = null
+            if (showLoading) {
+                _uiState.update {
+                    it.copy(
+                        loadingConfig = LoadingConfig(
+                            visible = true,
+                            title = title,
+                            isBlocking = isBlocking,
+                            progress = null,
+                            progressText = null,
+                            cancelable = true,
+                            onCancel = {
+                                currentJob?.cancel()
+                                dismissLoading()
+                                appendLog("用户已主动取消操作: $title")
+                            }
+                        )
+                    )
+                }
+            }
+
+            try {
+                currentJob = coroutineContext[Job]
+                action { progress, text ->
+                    if (showLoading) {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingConfig = state.loadingConfig.copy(
+                                    progress = progress,
+                                    progressText = text
+                                )
+                            )
+                        }
+                    }
+                }
+            } catch (e: CancellationException) {
+                appendLog("操作已安全中断: ${e.message ?: "用户取消"}")
+            } catch (t: Throwable) {
+                Lg.e(TAG, "耗时任务执行失败: ${t.message}", t)
+                appendLog("❌ 执行异常: ${t.javaClass.simpleName} - ${t.message}")
+                showError(t)
+            } finally {
+                if (showLoading) {
+                    dismissLoading()
+                }
+            }
+        }
+    }
+
+    fun dismissLoading() {
+        _uiState.update { it.copy(loadingConfig = it.loadingConfig.copy(visible = false)) }
+    }
+
+    fun showError(throwable: Throwable) {
+        val parsed = ErrorParser.parse(getApplication(), throwable)
+        _uiState.update {
+            it.copy(
+                parsedError = parsed,
+                showErrorDialog = true
+            )
+        }
+    }
+
+    fun dismissError() {
+        _uiState.update { it.copy(showErrorDialog = false) }
+    }
+
+    fun shareErrorReport(error: ParsedError) {
+        fileShareManager.shareText(
+            text = error.fullDiagnosticReport,
+            shareTitle = "分享错误报告 - ${error.errorType}"
+        )
+    }
+
+    // ==================== 进度与错误弹窗实测模拟 ====================
+
+    fun testBlockingProgress() = launchWithLoading(
+        title = "安全握手与密钥分发",
+        isBlocking = true
+    ) {
+        appendLog("测试【阻塞式加载弹窗】启动 (不可中断)...")
+        delay(2500)
+        appendLog("测试【阻塞式加载弹窗】执行完毕 ✅")
+    }
+
+    fun testNonBlockingProgress() = launchWithLoading(
+        title = "后台固件包校验",
+        isBlocking = false
+    ) {
+        appendLog("测试【非阻塞式加载弹窗】启动 (可轻触外部或点击取消)...")
+        for (i in 1..5) {
+            delay(1000)
+            appendLog("非阻塞后台任务进度: ${i * 20}%")
+        }
+        appendLog("测试【非阻塞式加载弹窗】正常完成 ✅")
+    }
+
+    fun testPercentageProgress() = launchWithLoading(
+        title = "OTA 固件下载中",
+        isBlocking = _uiState.value.isBlockingDefault
+    ) { updateProgress ->
+        appendLog("测试【确定百分比进度弹窗】启动...")
+        val totalBytes = 100 * 1024 * 1024L // 100MB
+        var currentBytes = 0L
+        while (currentBytes < totalBytes) {
+            delay(150)
+            currentBytes += (5 * 1024 * 1024L)
+            val percent = currentBytes.toFloat() / totalBytes
+            val text = "${currentBytes / (1024 * 1024)} MB / 100 MB (${(percent * 100).toInt()}%)"
+            updateProgress(percent, text)
+        }
+        appendLog("测试【确定百分比进度弹窗】下载完成 ✅")
+    }
+
+    fun testSimulateTimeoutError() = launchWithLoading(
+        title = "正在连接不可达工控网关..."
+    ) {
+        appendLog("故意连接超时不可达 IP (10.255.255.1:80)...")
+        withContext(Dispatchers.IO) {
+            val socket = java.net.Socket()
+            // 设置 1.5 秒超时，必触发 SocketTimeoutException
+            socket.connect(java.net.InetSocketAddress("10.255.255.1", 80), 1500)
+            socket.close()
+        }
+    }
+
+    fun testSimulateProtocolDisabledError() = launchWithLoading(
+        title = "检查协议运行状态..."
+    ) {
+        delay(600)
+        throw ProtocolDisabledException("MQTT 工业总线协议已被管理员在后台禁用 (iot.protocol.mqtt.enabled=false)")
+    }
+
     // ==================== MQTT 测试 ====================
 
-    fun connectMqtt() = viewModelScope.launch {
+    fun connectMqtt() = launchWithLoading(title = "正在连接 MQTT Broker...") {
         appendLog("MQTT 正在连接 ${AppConfig.MQTT_HOST}:${AppConfig.MQTT_PORT}...")
-        try {
-            mqttManager.connect()
-            appendLog("MQTT ✅ 连接成功")
-        } catch (e: ProtocolDisabledException) {
-            appendLog("MQTT ❌ 协议已禁用: ${e.message}")
-        } catch (e: Exception) {
-            appendLog("MQTT ❌ 连接失败: ${e.message}")
-        }
+        mqttManager.connect()
+        appendLog("MQTT ✅ 连接成功")
     }
 
     fun mqttPublish() = viewModelScope.launch {
@@ -409,17 +560,11 @@ class DashboardViewModel @Inject constructor(
 
     // ==================== Redis 测试 ====================
 
-    fun connectRedis() = viewModelScope.launch {
+    fun connectRedis() = launchWithLoading(title = "正在连接 Redis 服务器...") {
         appendLog("Redis 正在连接 ${AppConfig.REDIS_HOST}:${AppConfig.REDIS_PORT}...")
-        try {
-            redisManager.connect()
-            _uiState.update { it.copy(redisConnected = true) }
-            appendLog("Redis ✅ 连接成功")
-        } catch (e: ProtocolDisabledException) {
-            appendLog("Redis ❌ 协议已禁用: ${e.message}")
-        } catch (e: Exception) {
-            appendLog("Redis ❌ 连接失败: ${e.message}")
-        }
+        redisManager.connect()
+        _uiState.update { it.copy(redisConnected = true) }
+        appendLog("Redis ✅ 连接成功")
     }
 
     fun redisSendCommand() = viewModelScope.launch {
@@ -438,16 +583,10 @@ class DashboardViewModel @Inject constructor(
 
     // ==================== Socket 测试 ====================
 
-    fun connectSocket() = viewModelScope.launch {
+    fun connectSocket() = launchWithLoading(title = "正在建立 TCP Socket 工业连接...") {
         appendLog("Socket 正在连接 ${AppConfig.SOCKET_HOST}:${AppConfig.SOCKET_PORT}...")
-        try {
-            socketManager.connect()
-            appendLog("Socket ✅ 连接成功")
-        } catch (e: ProtocolDisabledException) {
-            appendLog("Socket ❌ 协议已禁用: ${e.message}")
-        } catch (e: Exception) {
-            appendLog("Socket ❌ 连接失败: ${e.message}")
-        }
+        socketManager.connect(AppConfig.SOCKET_HOST, AppConfig.SOCKET_PORT)
+        appendLog("Socket ✅ 连接成功")
     }
 
     fun socketPingPong() = viewModelScope.launch {

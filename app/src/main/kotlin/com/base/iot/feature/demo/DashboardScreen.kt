@@ -133,6 +133,7 @@ fun DashboardScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item { DashboardHeader(viewModel, uiState) }
+                    item { LoadingAndErrorDemoCard(uiState, viewModel) }
                     item { UnifiedDialogDemoCard(uiState, viewModel) }
                     item { ProtocolSwitchesCard(uiState, viewModel) }
                     item { HttpTestCard(viewModel) }
@@ -200,6 +201,20 @@ fun DashboardScreen(
                 Text("● 弹窗技术方案: XPopup 4 + Compose AppDialog 统一设计标准", color = TextSecondary, fontSize = 12.sp)
             }
         }
+
+        // ==================== 耗时操作进度与真实错误弹窗挂载 ====================
+
+        AppProgressDialog(
+            config = uiState.loadingConfig,
+            onDismissRequest = viewModel::dismissLoading
+        )
+
+        AppErrorDialog(
+            visible = uiState.showErrorDialog,
+            error = uiState.parsedError,
+            onDismiss = viewModel::dismissError,
+            onShareReport = viewModel::shareErrorReport
+        )
     }
 }
 
@@ -217,6 +232,7 @@ private fun ControlPanel(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item { DashboardHeader(viewModel, uiState) }
+        item { LoadingAndErrorDemoCard(uiState, viewModel) }
         item { UnifiedDialogDemoCard(uiState, viewModel) }
         item { ProtocolSwitchesCard(uiState, viewModel) }
         item { HttpTestCard(viewModel) }
@@ -353,6 +369,127 @@ private fun UnifiedDialogDemoCard(uiState: DashboardUiState, vm: DashboardViewMo
                     color = AccentGreen,
                     modifier = Modifier.weight(1f),
                     onClick = { vm.setBottomSheet(true) }
+                )
+            }
+        }
+    }
+}
+
+// ==================== 耗时操作进度与真实错误弹窗体系卡片 ====================
+
+@Composable
+private fun LoadingAndErrorDemoCard(uiState: DashboardUiState, vm: DashboardViewModel) {
+    IotCard(
+        title = "耗时操作进度与错误诊断体系",
+        icon = Icons.Filled.HourglassBottom,
+        iconTint = AccentCyan
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(
+                text = "支持开发者自主配置启用/禁用、阻塞/非阻塞，错误弹窗非阻塞呈现真实堆栈并支持一键系统分享：",
+                color = TextSecondary,
+                fontSize = 11.sp
+            )
+
+            // 开发者开关行 1: 启用进度弹窗
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(AppTheme.colors.surfaceVariant)
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text("启用耗时进度弹窗", color = TextPrimary, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text(
+                        if (uiState.enableLoadingDialog) "耗时操作展示进度弹窗" else "静默后台执行 (无遮罩)",
+                        color = TextSecondary,
+                        fontSize = 10.sp
+                    )
+                }
+                Switch(
+                    checked = uiState.enableLoadingDialog,
+                    onCheckedChange = { vm.toggleEnableLoadingDialog() },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.White,
+                        checkedTrackColor = AccentCyan
+                    )
+                )
+            }
+
+            // 开发者开关行 2: 阻塞式 vs 非阻塞式
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(AppTheme.colors.surfaceVariant)
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text("弹窗交互模式", color = TextPrimary, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text(
+                        if (uiState.isBlockingDefault) "阻塞式 (防并发点击穿透/不可取消)" else "非阻塞式 (可点击外部或手动取消)",
+                        color = if (uiState.isBlockingDefault) AccentAmber else AccentCyan,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Switch(
+                    checked = uiState.isBlockingDefault,
+                    onCheckedChange = { vm.toggleBlockingDefault() },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.White,
+                        checkedTrackColor = AccentAmber
+                    )
+                )
+            }
+
+            // 进度功能测试按钮
+            Text("进度窗形态实测:", color = TextSecondary, fontSize = 11.sp)
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                IotButton(
+                    text = "阻塞式",
+                    icon = Icons.Filled.Lock,
+                    color = AccentAmber,
+                    modifier = Modifier.weight(1f),
+                    onClick = vm::testBlockingProgress
+                )
+                IotButton(
+                    text = "非阻塞",
+                    icon = Icons.Filled.LockOpen,
+                    color = AccentCyan,
+                    modifier = Modifier.weight(1f),
+                    onClick = vm::testNonBlockingProgress
+                )
+                IotButton(
+                    text = "0%~100%",
+                    icon = Icons.Filled.LinearScale,
+                    color = AccentGreen,
+                    modifier = Modifier.weight(1f),
+                    onClick = vm::testPercentageProgress
+                )
+            }
+
+            // 真实错误与系统分享测试按钮
+            Text("非阻塞真实错误诊断与一键分享实测:", color = TextSecondary, fontSize = 11.sp)
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                IotButton(
+                    text = "模拟网络超时",
+                    icon = Icons.Filled.WifiOff,
+                    color = AccentRed,
+                    modifier = Modifier.weight(1f),
+                    onClick = vm::testSimulateTimeoutError
+                )
+                IotButton(
+                    text = "模拟协议禁用",
+                    icon = Icons.Filled.ReportProblem,
+                    color = AccentPurple,
+                    modifier = Modifier.weight(1f),
+                    onClick = vm::testSimulateProtocolDisabledError
                 )
             }
         }

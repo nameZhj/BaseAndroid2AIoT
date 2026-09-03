@@ -82,6 +82,27 @@ class FileShareManager @Inject constructor(
         }
     }
 
+    /**
+     * 分享文本内容（如错误诊断报告、系统日志文本）到系统分享面板。
+     */
+    fun shareText(text: String, shareTitle: String = "分享错误诊断报告") {
+        try {
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, shareTitle)
+                putExtra(Intent.EXTRA_TEXT, text)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            val chooser = Intent.createChooser(intent, shareTitle).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(chooser)
+            Lg.i(TAG, "已唤起文本分享面板: $shareTitle")
+        } catch (e: Exception) {
+            Lg.e(TAG, "唤起文本分享异常: ${e.message}", e)
+        }
+    }
+
     private fun getMimeType(file: File): String {
         val extension = file.extension
         if (extension.isEmpty()) return "*/*"
