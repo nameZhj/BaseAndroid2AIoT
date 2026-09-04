@@ -61,6 +61,39 @@ VERSION: 2.0 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
    - PURGE_TARGETS: Everything indexed in `[DEMO_INDEX_AND_AUTO_PURGE]`.
    - ZERO_RESIDUE: Formal production releases MUST have zero demo code remnants.
 
+10. ANDROID_UI_SPEC_AND_ACCESSIBILITY:
+   - TOUCH_TARGET_SIZE: Interactive elements (Buttons, Clickable Rows, Switches, IconButtons) MUST provide >= 48.dp x 48.dp touch area (`Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)` or standard padding).
+   - SPACING_GRID_SYSTEM: Strict 4dp/8dp incremental scale (`4.dp`, `8.dp`, `12.dp`, `16.dp`, `20.dp`, `24.dp`, `32.dp`). FORBIDDEN: Arbitrary or odd dimensions (e.g. `11.dp`, `13.7.dp`, `19.dp`).
+   - TYPOGRAPHY_AND_TEXT:
+     - All typography sizes MUST use `.sp`, all layout dimensions/padding MUST use `.dp`.
+     - Strict typographic hierarchy: Screen Titles `20~22.sp` (Bold), Section Headers `16~18.sp` (Bold/SemiBold), Body `14~15.sp` (Normal/Medium), Captions/Badges `11~13.sp` (Secondary text color).
+     - Single-line truncation: Dynamic identifiers, endpoints, topic paths, or payloads MUST specify `maxLines = 1` and `overflow = TextOverflow.Ellipsis`.
+   - SCAFFOLD_AND_INSETS:
+     - All top-level screens MUST consume `Scaffold(paddingValues)` or explicitly apply system insets to prevent content overlapping status bars, navigation bars, or display cutouts.
+   - RESPONSIVE_AND_ADAPTIVE:
+     - Compact screens (< 600dp): Single-pane vertical scroll (`verticalScroll(rememberScrollState())` or `LazyColumn`).
+     - Medium/Expanded screens (>= 600dp, landscape/tablets): Two-pane (`AdaptiveContentLayout`), split-screen, or grid. Zero content clipping on small screens, zero blown-out full-width stretch on large screens.
+   - FEEDBACK_AND_A11Y:
+     - 100% of clickable elements MUST provide immediate press/ripple visual feedback.
+     - Decorative icons MUST set `contentDescription = null`. Functional icons MUST declare an `@StringRes` i18n description.
+
+11. COMPOSE_AND_UDF_CODING_PARADIGM:
+   - UNIDIRECTIONAL_DATA_FLOW (UDF):
+     - State flows DOWN: UI screens accept immutable `UiState` and emit user intents via lambda callbacks / method references (`onClick = vm::executeTask`).
+     - Events flow UP: ViewModel mutates state atomically via `_uiState.update { it.copy(...) }`.
+   - LIFECYCLE_AWARE_COLLECTION:
+     - Compose MUST collect StateFlow using `collectAsStateWithLifecycle()` (from `androidx.lifecycle.compose`). FORBIDDEN: Raw `collectAsState()` on background or network flows.
+   - ZERO_CONTEXT_LEAK:
+     - ViewModels MUST NEVER hold references to `Activity`, `Fragment`, `View`, or Compose scopes.
+     - Access resources in ViewModels ONLY via `Application` context in `BaseViewModel` (`getString(R.string.xxx)`).
+   - THREAD_DISPATCHING:
+     - Network, socket, database, file I/O, or heavy computation MUST run on `Dispatchers.IO` (`withContext(Dispatchers.IO)`).
+     - UI state mutations and toast/event emissions MUST run on Main thread (`viewModelScope.launch` default).
+   - LIST_OPTIMIZATION:
+     - LazyColumn / LazyRow items MUST supply a stable unique key (`items(items, key = { it.id })`).
+   - STATE_IMMUTABILITY:
+     - All `UiState` classes MUST be immutable `@Immutable data class` with `val` properties only. FORBIDDEN: Mutable collections (`ArrayList`, `mutableListOf()`) or `var` inside UiState.
+
 ## [DEMO_INDEX_AND_AUTO_PURGE]
 STATUS: DEMO_ACTIVE | TRIGGER: FORMAL_FEATURE_DEV -> AUTO_PURGE_ALL_DEMO
 1. DEMO_FILE_REGISTRY (Action: DELETE directory & files on formal dev):
@@ -175,10 +208,14 @@ Clone `feature/template/` -> `feature/<name>/`:
 - Mandatory compilation: `.\gradlew.bat compileDebugKotlin`
 - Zero compile errors, zero warnings.
 - Pre-delivery self-audit:
-  [ ] Git safety: Zero `git push` executed.
+  [ ] Git safety: Zero `git push` executed unless explicitly commanded.
   [ ] String hygiene: Zero hardcoded string literals in UI/VM/dialogs. 100% in strings.xml (zh & en). No scattered configs.
   [ ] Import hygiene: Zero inline package paths / FQNs. All symbols strictly declared at file header.
-  [ ] Token hygiene: Zero color hex, zero hardcoded endpoints/ports.
-  [ ] Module boundary: Zero protocol driver imports in `src/main/`.
+  [ ] Token hygiene: Zero color hex, zero hardcoded endpoints/ports. 100% colors from `AppTheme.colors.*`.
+  [ ] Module boundary: Zero protocol driver imports in `src/main/`. All new feature code strictly in `:app`.
+  [ ] UI spec hygiene: Touch targets >= 48dp, 4dp/8dp spacing scale, text sizes in `.sp`, layout in `.dp`.
+  [ ] Insets hygiene: Top-level screens consume `Scaffold(paddingValues)` or insets to avoid system bar overlap.
+  [ ] Paradigm hygiene: StateFlow collected via `collectAsStateWithLifecycle()`, zero Context/Activity leaks in VM.
+  [ ] Thread hygiene: Background tasks & IO operations dispatched to `Dispatchers.IO`.
   [ ] Granularity: Every Kotlin file <= 150 lines.
   [ ] Demo hygiene: If in formal dev mode, zero demo files or DEMO_* constants remain.
