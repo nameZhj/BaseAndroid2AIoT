@@ -1,5 +1,5 @@
-# BaseAndroid2AIoT — Android IoT 快速开发框架
-
+# 赛博牛马1.0 — Android IoT 快速开发框架
+本文档由AI生成（大部分）
 ---
 
 ## 📐 架构概览
@@ -48,7 +48,7 @@
 
 ## 🤖 为 AI Agent 原生设计：AGENTS.md 与协同开发优势
 
-本项目从底层即全面拥抱 **“AI 智能体结对编程 (Agentic Pair-Programming)”** 范式。根目录内置的 [`AGENTS.md`](AGENTS.md) 是专门面向 AI Coding Agent 设计的系统级开发指令集 (Agent Directives)。
+本项目从底层即面向 **“AI 智能体结对编程 (Agentic Pair-Programming)”** 范式。根目录内置的 [`AGENTS.md`](AGENTS.md) 是专门面向 AI Coding Agent 设计的系统级开发指令集 (Agent Directives)。
 
 ### 核心定位与特性
 - **Agent 指令友好**：全篇采用严谨的命令式规约（如 `ABSOLUTE_ZERO_TOLERANCE`、`MANDATORY_I18N`、`TOP_LEVEL_IMPORTS_ONLY`），剥离自然语言歧义与冗词，智能体理解与执行准确率达 100%。
