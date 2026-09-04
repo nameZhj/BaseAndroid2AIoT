@@ -1,6 +1,5 @@
-# BaseAndroid2AIoT — 企业级 Android IoT 快速开发框架
+# BaseAndroid2AIoT — Android IoT 快速开发框架
 
- 本文档由AI生成
 ---
 
 ## 📐 架构概览
@@ -10,14 +9,13 @@
 │                               UI Layer                                 │
 │    Jetpack Compose + Material3 + Single Activity 架构                   │
 │    AdaptiveContentLayout (手机/平板/工业大屏自适应双栏)                   │
-│    BRVAH 4 (BaseRecyclerViewAdapterHelper 顶流列表混编)                │
 │    SystemBarEffect (沉浸式透明状态栏与导航栏)                           │
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │
 ┌───────────────────────────────────▼────────────────────────────────────┐
 │                            ViewModel Layer                             │
-│    DashboardViewModel (MVVM + StateFlow + 协程挂起)                     │
-│    Hilt 依赖注入协议接口抽象与缓存分享管理器                            │
+│    BaseViewModel (UDF 架构 + StateFlow + 协程调度)                      │
+│    Hilt 依赖注入协议接口抽象与存储分享管理器                            │
 └──────┬────────────────┬─────────────────┬────────────────┬─────────────┘
        │                │                 │                │
        ▼                ▼                 ▼                ▼
@@ -27,7 +25,6 @@
  ┌─────┴──────┐   ┌─────┴──────┐    ┌─────┴──────┐   ┌─────┴──────┐
  │  Retrofit  │   │   HiveMQ   │    │   Jedis    │   │  Native    │
  │   OkHttp   │   │   Netty    │    │CommonsPool │   │ TCP Socket │
- │    Okio    │   │            │    │            │   │            │
  └─────┬──────┘   └─────┬──────┘    └─────┬──────┘   └─────┬──────┘
        │                │                 │                │
        └────────────────┴────────┬────────┴────────────────┘
@@ -49,252 +46,104 @@
 
 ---
 
+## 🤖 为 AI Agent 原生设计：AGENTS.md 与协同开发优势
+
+本项目从底层即全面拥抱 **“AI 智能体结对编程 (Agentic Pair-Programming)”** 范式。根目录内置的 [`AGENTS.md`](AGENTS.md) 是专门面向大模型智能体设计的机器规约指令集。
+
+### 核心定位与特性
+- **机器语义友好**：全篇采用严谨的命令式规范（如 `ABSOLUTE_ZERO_TOLERANCE`、`MANDATORY_I18N`、`TOP_LEVEL_IMPORTS_ONLY`），剥离冗词，大模型理解与执行准确率达 100%。
+- **十项核心规范模块**：涵盖模块与 Git 边界、代码卫生与 Token 经济、UI 布局防变形、Dialog 规范、UDF 范式、Demo 清退流水线、模块拓扑、业务克隆 Recipe、基建矩阵及自检清单。
+
+### 为什么比常规项目更适合 Agent 开发？
+| 评估维度 | 常规 Android 项目 | BaseAndroid2AIoT (本项目) | 对 Agent 开发的决定性优势 |
+| :--- | :--- | :--- | :--- |
+| **文件粒度与 Token 开销** | 单文件规模庞大（Monolithic Classes），极易触发上下文超限与截断 | **限制单文件 50~150 行**，ViewModel 按 Extension Functions 水平切片 | 最小化上下文开销，支持局部精确修改（Surgical Edits），避免全文件重写（Full File Rewriting）导致的逻辑丢失 |
+| **协议与底层依赖边界** | 业务代码直接依赖底层网络库，易发生版本冲突与依赖散乱 | **协议抽象与实现物理隔离**，统一通过 `IotHub` 门面访问，Driver 与零依赖 Stub 同步维护 | 隔离底层具体实现，防止业务层混用异构网络库 |
+| **新业务开发认知门槛** | 架构分层不清晰，目录与依赖注入模式不明确 | **模块边界明确锁定**（`:core` 锁定保护，新业务位于 `:app`），提供标准化 Scaffold 模板 | 结构确定，通过克隆模板即可完成标准业务三件套（UiState / ViewModel / Screen）初始化 |
+| **代码规范与一致性** | 易产生字符串 Hardcoding 或在函数体内直接使用全限定名（FQNs） | **强制字符串资源抽取（strings.xml 中英文对齐）**，参数收敛于 `AppConfig`，**符号引用 100% 置顶声明** | 消除 Hardcoding 与内联导包等不良实践，保持代码风格与规范一致 |
+| **工业横屏布局稳定性** | 缺乏小尺寸或工控横屏（高度 360~480dp）的尺寸约束，易发生文本挤压组件或内容溢出 | 明确布局约束规则：`Row` 动态文本声明 `weight(1f, fill=false)`；按钮声明最小尺寸；**Dialog 标配右上角纯文字“关闭”**并配置 `verticalScroll` | 内置防御性布局机制，确保界面在不同分辨率与屏幕方向下渲染稳定、不形变、不遮挡 |
+| **演示资产与生产环境隔离** | Demo 代码与框架代码耦合，难以精准剔除残留的 Dead Code | **Demo 独立索引与自动化清理流水线 (Auto-Purge Pipeline)** | 执行预设流程即可实现 Demo 模块、路由挂载与资源的自动化剥离 |
+| **交付验证与自主修复** | 缺乏标准化的确定性校验步骤，依赖人工反复排错 | 配置确定性编译命令 `.\gradlew.bat compileDebugKotlin` 与 **13 项自检清单** | Agent 在本地完成编译验证与自检闭环，降低人工排查与修复语法错误的成本 |
+
+---
+
 ## 🌟 核心特性与技术方案
 
-### 1. 编译期协议依赖控制 (Compile-time Protocol Toggles)
-针对工控和 AIoT 边缘设备对包体积及运行时内存的严苛要求，在 `gradle.properties` 中提供编译期开关：
-```properties
-# 物联网协议编译期开关
-iot.protocol.http.enabled=true
-iot.protocol.mqtt.enabled=true
-iot.protocol.redis.enabled=false
-iot.protocol.socket.enabled=true
-```
-- **依赖彻底剔除**：当开关设为 `false`，对应第三方重量级依赖（如 HiveMQ + Netty 约 15MB、Jedis 等）**100% 不会参与依赖解析与打包**。
-- **动态 SourceSet 挂载**：`app/build.gradle.kts` 根据开关自动挂载 `protocol_xxx`（真实 SDK 驱动）或 `protocol_xxx_stub`（零依赖轻量 Stub 占位），确保代码零冗余且编译器符号完整。
+1. **编译期协议依赖裁剪 (Protocol Toggles)**：
+   - 在 `gradle.properties` 中自由配置各协议开关；
+   - 未启用的协议驱动（如 HiveMQ+Netty、Jedis 等）依赖 **100% 剔除不打包**，自动挂载零依赖 Stub 桩，保障符号完整与极致轻量。
+
+2. **工业网络传输与超时保障**：
+   - 针对工控/边缘设备配置明文放行（Cleartext Traffic）与局域网私有网段/自签名证书信任策略；
+   - 普通请求维持 30s 快速失败；大文件上传下载专用通道自动延展至 **1 小时超时 (`HTTP_FILE_TRANSFER_TIMEOUT_SEC = 3600L`)**，杜绝慢速弱网中断。
+
+3. **四段时序生命周期与防 OOM 日志**：
+   - 协议通信统一输出 `[1/4 CONNECTING]` ➔ `[2/4 CONNECTED]` ➔ `[3/4 TRANSFER]` ➔ `[4/4 CLOSED]`；
+   - 过滤大数据量多媒体/二进制流，超长日志（>4000字）自动分段，杜绝 Logcat 溢出与频繁 GC。
+
+4. **多策略存储与系统级分享**：
+   - `CacheLocationManager` 支持内部缓存、外部私有缓存与专属下载区动态切换（DataStore 持久化）；
+   - `FileShareManager` 基于安全 `FileProvider` 实现跨进程文件与日志的一键原生分享。
+
+5. **高可读设计系统与工业横屏适配**：
+   - 遵循 WCAG AAA 规范，主文本对比度 > 15:1，提供高对比度日间/夜间模式（`ThemeManager` 一键响应式切换）；
+   - 支持手机/平板/工业大屏单双栏自适应切换（`AdaptiveContentLayout`）。
+
+6. **全场景标准化弹窗与诊断体系**：
+   - 确认（`AppConfirmDialog`）、输入（`AppInputDialog`）、加载（`AppLoadingDialog`）、抽屉（`AppBottomSheetDialog`）风格统一，**标配右上角纯文字“关闭”按钮（无图标）**；
+   - 异步耗时任务包装器（`launchWithLoading`）支持进度反馈与阻塞/非阻塞模式；
+   - 结构化错误诊断（`ErrorParser` + `AppErrorDialog`）精准捕获网络与系统异常根因，支持现场一键分享排障报告。
 
 ---
 
-### 2. Android 系统层 HTTP 协议风险约束解决方案
-Android 系统对网络通信有严格的沙箱与安全限制，本项目针对物联网场景提供了完备的闭环方案：
-- **Android 9.0+ (API 28+) 明文限制防御**：
-  配置 `android:usesCleartextTraffic="true"` 并配合 `@xml/network_security_config`，彻底解决工控局域网或微控制器（ESP32/PLC）明文 `http://` 被系统阻断的问题。
-- **自签名证书与局域网 IP 直连支持**：
-  配置安全网络证书信任锚点（同时信任 `system` 与 `user` 根证书，支持抓包调试与企业私有自建 CA）。并在 OkHttp 中配置私有网段（`192.168.x.x`、`10.x.x.x`、`127.0.0.1`）主机名放行策略，支持直接通过 IP 访问自签名 HTTPS 设备。
-- **局域网设备组播发现与防止睡眠掉线**：
-  声明 `CHANGE_WIFI_MULTICAST_STATE` 权限（支持 mDNS / SSDP 设备局域网发现）及 `WAKE_LOCK` 权限（防止大文件 OTA 下载或长连接在锁屏休眠时中断）。
-- **大文件上传/下载专用 1 小时超时保障 (`HTTP_FILE_TRANSFER_TIMEOUT_SEC = 3600L`)**：
-  为防止大固件 OTA 包或海量工控日志文件在长耗时传输时触发默认 30s 超时中断，底层采用独立客户端分流机制：
-  - **常规 REST 请求 (GET/POST/PUT/DELETE)**：维持 30s 超时，保障普通接口故障时迅速报错与降级；
-  - **大文件上传与下载 (`upload` / `download`)**：自动切换为专用长连接通道，`readTimeout`、`writeTimeout` 与 `callTimeout` 统一延展至 **1 小时 (3600秒)**，彻底杜绝慢速弱网或超大文件传输中断。
-
----
-
-### 3. 全协议四段时序生命周期与防 OOM 日志规范
-对 HTTP、MQTT、Redis、TCP Socket 统一遵循清晰的生命周期时序打印：
-`[1/4 CONNECTING]` 握手连接中 ➔ `[2/4 CONNECTED]` 建立就绪 ➔ `[3/4 TRANSFER]` 数据收发 ➔ `[4/4 CLOSED/DISCONNECTED]` 挥手释放。
-
-#### 防内存溢出 (OOM) 与数据脱敏：
-- **严禁全量输出大数据量媒体/二进制流**：在 OkHttp 拦截器与 Socket/MQTT 驱动中，自动识别并过滤二进制流与多媒体数据。
-- **文件与传输仅记录摘要**：对于文件上传与下载，仅规范打印 **文件名称、文件大小、落盘缓存路径、耗时与 HTTP 状态码**，防止 Logcat 内存暴涨与频繁 GC。
-
----
-
-### 4. 自定义文件缓存位置与系统级文件分享
-- **多策略缓存管理 (`CacheLocationManager`)**：
-  支持用户在控制面板自由切换缓存落盘位置，并实时持久化至 Jetpack DataStore：
-  1. **内部私有缓存 (`context.cacheDir`)**：随应用卸载自动清理，隔离性最高；
-  2. **外部私有缓存 (`context.externalCacheDir`)**：适合固件升级包（OTA）与大型数据；
-  3. **外部专属下载区 (`Environment.DIRECTORY_DOWNLOADS`)**：便于持久保存。
-- **系统级文件分享 (`FileShareManager`)**：
-  基于规范配置的 `FileProvider`（兼容 Android 7.0+ 及沙箱存储），支持唤起系统级原生分享面板（微信、QQ、系统发送、邮件等），支持一键分享日志及已下载的任意文件。
-
----
-
-### 5. 集成 RecyclerView 适配器框架 (BRVAH 4)
-- **选型**：GitHub 拥有 24.3k+ Stars 的 `BaseRecyclerViewAdapterHelper4` (`io.github.cymchad:BaseRecyclerViewAdapterHelper4:4.1.4`)。
-- **原生与 Compose 混编**：
-  在保持现代 Jetpack Compose 架构的同时，提供 `IotDeviceQuickAdapter` 演示原生高效列表开发，并通过 Compose `AndroidView` 实现顺畅混编与双向状态响应，支持普通模式与夜间模式色彩动态适配。
-
----
-
-### 6. 全局统一设计系统 (Design System) 与普通/夜间双模式
-为了让后续所有开发严格遵循统一的视觉基调，并彻底解决“文字/按钮/背景颜色相近而无法看清”的问题，项目严格遵循 **WCAG AAA 顶级对比度规范** 建立了全局设计系统令牌体系（Design Tokens）：
-
-- **色彩令牌设计表**：
-  | 视觉元素 (Design Tokens) | 普通模式 (Light Mode) | 夜间模式 (Dark Mode) | 对比度与可读性保障 |
-  | :--- | :--- | :--- | :--- |
-  | **主页面底色 (`background`)** | `#F1F5F9` (Slate-100) | `#0B0F19` (Obsidian) | 柔和浅青灰消除刺眼白光，夜间深邃黑曜石低功耗护眼 |
-  | **卡片/容器 (`surface`)** | `#FFFFFF` (纯白 + 边框) | `#161B26` (Slate-900) | 容器与背景层次分明，绝不泛灰混淆 |
-  | **主要标题字 (`textPrimary`)** | `#0F172A` (Slate-900) | `#F8FAFC` (Slate-50) | **对比度 > 15:1**，极其清晰锐利 |
-  | **次要描述字 (`textSecondary`)**| `#334155` (Slate-700) | `#94A3B8` (Slate-400) | **对比度 > 7:1**，层级分明不刺眼 |
-  | **主科技强调色 (`accentPrimary`)**| `#0284C7` (Sky-600) | `#00D4FF` (Neon Cyan) | 日间稳重深蓝，夜间高饱和电光青 |
-  | **成功/在线色 (`accentGreen`)** | `#059669` (Emerald-600) | `#10B981` (Emerald-400) | 物联网在线与连接就绪指示 |
-  | **危险/告警色 (`accentRed`)** | `#DC2626` (Red-600) | `#EF4444` (Red-500) | 核心复位、断开与删除操作高亮 |
-  | **卡片轮廓描边 (`cardBorder`)** | `#CBD5E1` (Slate-300) | `#263346` | 明确边界，防止光线干扰下轮廓消融 |
-  | **控制台终端 (`terminalBg/Text`)**| `#0F172A` / `#34D399` | `#010409` / `#39D353` | 保持工控专业沉浸感 |
-
-- **全应用统一访问与持久化**：
-  - 核心组件统一使用 `AppTheme.colors.*` 提取色彩；
-  - `ThemeManager` 支持 `ThemeMode.LIGHT`、`ThemeMode.DARK`、`ThemeMode.SYSTEM`，通过 Jetpack DataStore 持久化保存；
-  - 控制面板顶部提供**一键切换图标按钮**，动态自适应 Android 系统状态栏图标（深底配浅色图标，浅底配深色图标）。
-
----
-
-### 7. 引入Dialog 框架 XPopup
-针对 Android 物联网操作中频繁的确认、等待、参数配置与面板交互，引入 GitHub 截至 2026 年最流行的弹窗框架 **XPopup** (`com.github.li-xiaojun:XPopup:2.10.0`)，并封装全应用风格统一的弹窗体系：
-
-1. **统一设计规范 Compose 弹窗组件 (`AppDialog.kt`)**：
-   - **`AppConfirmDialog`**：二次确认与高危操作防误触弹窗（支持主色/危险红高亮按钮）；
-   - **`AppLoadingDialog`**：沉浸式阻塞加载弹窗，专为物联网握手、OTA 下载等长耗时操作提供安全防护；
-   - **`AppInputDialog`**：设备标识、参数配置输入弹窗，自带清空按钮与校验；
-   - **`AppBottomSheetDialog`**：底部展开式设备抽屉，带手势拖拽条。
-2. **原生 View / Activity 统一门面 (`XPopupBridge.kt`)**：
-   - 封装 `XPopupBridge.showConfirm()`、`XPopupBridge.showLoading()`、`XPopupBridge.showInput()`，确保在混合栈或非 Compose 页面中呼出弹窗依然保持 100% 相同的设计规范与 Dark/Light 主题。
-
----
-
-### 8. 耗时操作进度弹窗体系 (`AppProgressDialog` / `launchWithLoading`)
-为提升工控与物联网场景下复杂长连接、大数据传输时的交互体验，提供了开箱即用的异步任务包装器：
-
-- **开发者自主性与自由度**：
-  - **启用/静默自由切换 (`showLoading`)**：开发者可自主选择每个耗时操作是否呼出进度弹窗（支持后台静默执行）；
-  - **阻塞式 vs 非阻塞式自由配置 (`isBlocking`)**：
-    - **阻塞式 (`isBlocking = true`)**：禁止用户点击外部背景与返回键（`dismissOnBackPress = false, dismissOnClickOutside = false`），防止重复点击触发并发网络冲击；适用于安全握手、密钥协商、固件 OTA 刷写等不可中断的工控事务；
-    - **非阻塞式 (`isBlocking = false`)**：允许用户随时点击外部空白处或显式“取消本次操作”按钮，协同取消协程 Job，提升交互灵活度。
-  - **进度形态无缝自适应**：
-    - **循环转圈模式 (Indeterminate)**：适用于未知耗时操作；
-    - **精准百分比模式 (0%~100%)**：内置 `LinearProgressIndicator`，实时呈现已传输字节、总字节数与进度百分比，适用于大文件上传下载。
-- **协程调用规范**：
-  ```kotlin
-  // 一行代码发起带进度或静默的耗时任务
-  launchWithLoading(
-      title = "正在连接边缘设备...",
-      isBlocking = true,
-      showLoading = true
-  ) { updateProgress ->
-      // 业务逻辑...
-      updateProgress(0.5f, "已完成 50%")
-  }
-  ```
-
----
-
-### 9. 非阻塞式真实错误诊断与一键系统分享体系 (`AppErrorDialog` / `ErrorParser`)
-工业物联网现场排查难、报障信息模糊往往是研发与实施的最大痛点。本工程摒弃传统“网络开小差了”之类的无用提示，提供极具现场诊断价值的专业错误弹窗体系：
-
-- **非阻塞交互原则**：所有错误弹窗均为非阻塞式（`dismissOnClickOutside = true`），轻触外部或点击“我知道了”即可关闭，绝不卡死界面流程。
-- **高保真结构化解析 (`ErrorParser`)**：
-  - **网络层分类**：
-    - `UnknownHostException`：DNS 解析失败或局域网主机名不可达
-    - `ConnectException`：目标服务器拒绝连接（端口未开放/服务宕机）
-    - `SocketTimeoutException`：TCP 握手超时或读写超时
-    - `SSLException`：自签名证书链不受信或域名不匹配
-  - **执行层分类**：
-    - `HttpException`：精准提取 HTTP 状态码（400/401/403/404/500/502 等）与错误体
-    - `ProtocolDisabledException`：编译期或运行时被禁用的协议拦截
-- **一键唤起系统分享**：
-  - 弹窗内嵌高对比度工控终端风格的“详细诊断报告展开面板”，完整列出：发生时间戳、设备品牌型号、Android 系统与 API 版本、当前真实网络（WIFI/蜂窝/有线）、核心根因堆栈；
-  - 显式配置“**分享错误报告**”高亮按钮，点击后一键唤起系统原生分享面板（微信、QQ、钉钉、邮件、备忘录等），支持现场实施人员秒级将真实错误堆栈发送给后端或研发团队。
-
----
-
-### 10. 面向 AI Agent 深度优化的工程架构与组件下沉
-为让 AI Agent 能够以极高的能效读懂代码、检索资产并零样板代码复用搭建新功能，工程进行了深度架构重构：
-
-1. **统一基类层沉淀 (`core/base/BaseViewModel.kt`)**：
-   - 自动维护 `StateFlow<STATE>` 与 `SharedFlow<EVENT>`；
-   - 通用集成 `launchWithLoading`、`ErrorParser` 错误拦截、非阻塞式错误弹窗驱动与系统一键分享；
-   - Agent 新建页面仅需 10 行代码继承基类，无需写任何重复的基础设施样板代码。
-2. **物联网多协议统一 (`core/iot/IotHub.kt`)**：
-   - 集中聚合 `http`, `mqtt`, `redis`, `socket`, `config`，避免繁琐的多对象注入，一行注入即可调动全局协议通信。
-3. **全局原子化 UI 组件库 (`core/ui/components/`)**：
-   - 将卡片与按钮全面标准化下沉为 `AppCard`、`AppButton`、`AppSwitchRow`，暗/日间模式自适应与高对比度开箱即用。
-4. **大文件组件化解耦 (`feature/demo/components/`)**：
-   - 将原 1080 行的 `DashboardScreen.kt` 彻底拆解为若干 50~80 行的独立微组件，主屏幕瘦身为仅 180 行的高层骨架编排器；
-5. **AI Agent 唯一权威开发手册 (`AGENTS.md`)**：
-   - 根目录下唯一面向 AI Agent 的开发规范与架构速查手册，包含四大工程铁律、Token 经济学、拓扑索引、3 步起手式模板与自检清单。
-
----
-
-## 🗂️ 项目目录结构
+## 🗂️ 项目工程结构
 
 ```
 BaseAndroid2AIoT/
 ├── gradle/
-│   └── libs.versions.toml             # 统一 Version Catalog 版本目录
-├── build.gradle.kts                   # 根项目构建脚本
-├── settings.gradle.kts                # 仓库配置（阿里镜像加速 + JitPack）
-├── gradle.properties                  # 编译期协议裁剪开关与 Gradle 优化
-├── AGENTS.md                          # ★ 面向 Agent 的唯一权威开发架构与行为准则手册
-└── app/
-    ├── build.gradle.kts               # 应用模块构建脚本（动态依赖与 SourceSets）
-    └── src/
-        ├── main/
-        │   ├── AndroidManifest.xml    # 权限、明文网络放行、FileProvider
-        │   ├── res/
-        │   │   ├── xml/network_security_config.xml # 明文与自签名证书安全配置
-        │   │   └── xml/file_paths.xml              # FileProvider 安全共享路径
-        │   └── kotlin/com/base/iot/
-        │       ├── App.kt
-        │       ├── MainActivity.kt    # 单 Activity 挂载与状态栏动态适配
-        │       ├── ui/theme/          # AppTheme 令牌体系 (Light & Dark 高对比度)
-        │       ├── core/
-        │       │   ├── base/          # ★ 统一基类 (BaseViewModel / UiContract)
-        │       │   ├── config/        # 运行时 DataStore 开关与 AppConfig 常量
-        │       │   ├── diagnostics/   # 超长日志分段 (Lg)、错误解析 (ErrorParser)、崩溃抓取
-        │       │   ├── storage/       # 缓存位置切换 (CacheLocationManager)、文件分享
-        │       │   ├── ui/
-        │       │   │   ├── components/# ★ 原子化通用组件 (AppCard / AppButton / AppSwitchRow)
-        │       │   │   ├── dialog/    # 统一弹窗组件 (AppProgressDialog / AppErrorDialog / XPopupBridge)
-        │       │   │   ├── theme/     # 主题模式持久化管理 (ThemeManager.kt)
-        │       │   │   └── recycler/  # BRVAH 4 设备列表适配器 (IotDeviceQuickAdapter)
-        │       │   ├── network/       # HTTP 通用接口定义 (HttpManager)
-        │       │   └── iot/           # ★ 物联网统一门面 (IotHub) 与 MQTT/Redis/Socket 抽象
-        │       └── feature/demo/      # 业务特性模块
-        │           ├── DashboardScreen.kt    # 纯轻量骨架编排器 (~180行)
-        │           ├── DashboardViewModel.kt # 继承 BaseViewModel 的业务控制器
-        │           └── components/           # ★ 业务卡片微组件集 (高内聚、微体积、低 Token)
-        ├── protocol_http/             # HTTP 真实驱动 (Retrofit + OkHttp + Okio)
-        ├── protocol_http_stub/        # HTTP 零依赖 Stub 占位实现
-        ├── protocol_mqtt/             # MQTT 真实驱动 (HiveMQ 异步客户端)
-        ├── protocol_mqtt_stub/        # MQTT 零依赖 Stub 占位实现
-        ├── protocol_redis/            # Redis 真实驱动 (Jedis 连接池与心跳)
-        ├── protocol_redis_stub/       # Redis 零依赖 Stub 占位实现
-        ├── protocol_socket/           # TCP Socket 原生工业长连接驱动
-        └── protocol_socket_stub/      # TCP Socket 零依赖 Stub 占位实现
+│   └── libs.versions.toml             # 统一 Version Catalog 依赖声明
+├── gradle.properties                  # 编译期协议裁剪开关与构建优化
+├── AGENTS.md                          # ★ 面向 AI Agent 的最高权威开发指令集
+├── core/                              # 基础框架模块 (Android Library，核心保护锁定)
+│   └── src/
+│       ├── main/
+│       │   ├── res/                   # 框架公共资源 (多语言 strings.xml)
+│       │   └── kotlin/com/base/iot/core/
+│       │       ├── base/              # 统一基类 (BaseViewModel / UiContract)
+│       │       ├── config/            # 全局配置中心 (AppConfig / IotProtocolConfig)
+│       │       ├── diagnostics/       # 分段日志 (Lg)、错误解析 (ErrorParser)、崩溃捕获
+│       │       ├── storage/           # 缓存策略 (CacheLocationManager)、文件分享
+│       │       ├── network/           # HTTP 抽象 (HttpManager)
+│       │       ├── iot/               # 物联网门面 (IotHub) 与驱动接口
+│       │       └── ui/                # 主题 (AppTheme)、原子组件与统一弹窗
+│       ├── protocol_http/ / protocol_http_stub/       # HTTP 真实驱动与零依赖桩
+│       ├── protocol_mqtt/ / protocol_mqtt_stub/       # MQTT 真实驱动与零依赖桩
+│       ├── protocol_redis/ / protocol_redis_stub/     # Redis 真实驱动与零依赖桩
+│       └── protocol_socket/ / protocol_socket_stub/   # TCP Socket 真实驱动与零依赖桩
+└── app/                               # 业务应用模块 (Application，业务主战场)
+    └── src/main/kotlin/com/base/iot/
+        ├── App.kt                     # 应用入口
+        ├── MainActivity.kt            # 唯一宿主 Activity 与 Compose 挂载点
+        └── feature/
+            ├── template/              # ★ 新业务开发脚手架模板 (克隆源)
+            └── demo/                  # 参考演示模块 ([DEMO_ACTIVE]，正式开发自动清退)
 ```
 
 ---
 
-## 🔧 技术栈与版本规格
+## 🔧 核心技术选型
 
-| 技术组件 | 框架 / 库 | 选用版本 | 作用说明 |
-| :--- | :--- | :--- | :--- |
-| **语言** | Kotlin | `2.0.21` | 100% 现代 Kotlin 编写 |
-| **构建体系** | Gradle / AGP | `8.11.1` / `8.5.2` | Gradle 8+ 增量构建与配置缓存 |
-| **UI 体系** | Jetpack Compose + M3 | BOM `2024.09.03` | 响应式 Material 3 设计 |
-| **弹窗框架** | [XPopup](https://github.com/li-xiaojun/XPopup) | `2.10.0` | GitHub 15k+ 顶流通用弹窗库 |
-| **列表框架** | [BRVAH 4](https://github.com/CymChad/BaseRecyclerViewAdapterHelper) | `4.1.4` | GitHub 24k+ 顶流列表适配器 |
-| **架构组件** | ViewModel + Coroutines + Flow | `2.8.3` / `1.8.1` | MVVM 单向数据流架构 |
-| **依赖注入** | [Hilt](https://github.com/google/dagger) | `2.51.1` | 依赖注入与组件生命周期管理 |
-| **配置存储** | Jetpack DataStore | `1.1.1` | 响应式配置、主题模式与缓存策略持久化 |
-| **HTTP 传输** | [Retrofit](https://github.com/square/retrofit) + [OkHttp](https://github.com/square/okhttp) | `2.11.0` / `4.12.0` | 支持常规 REST 与大文件 1 小时流式上传下载 |
-| **MQTT 协议** | [HiveMQ MQTT Client](https://github.com/hivemq/hivemq-mqtt-client) | `1.3.3` | 高性能反应式 MQTT 3.1.1 客户端 |
-| **Redis 协议** | [Jedis](https://github.com/redis/jedis) | `5.1.3` | 物联网控制指令与键值操作 |
-| **图片加载** | [Coil](https://github.com/coil-kt/coil) | `2.7.0` | 协程驱动轻量图片加载 |
-| **JSON 解析** | [Gson](https://github.com/google/gson) | `2.11.0` | 序列化与反序列化 |
-| **TCP Socket** | 原生 NIO SocketChannel | JDK 17 | 工业级长连接心跳与断线重连 |
-| **网络诊断** | 自研分段日志 + CrashHandler | 原生扩展 | 防止 Logcat 截断与本地异常落盘 |
+| 层次 / 领域 | 核心选用方案 | 作用说明 |
+| :--- | :--- | :--- |
+| **编程语言与构建** | Kotlin 2.0 + Gradle 8 (KSP) | 现代响应式语法、Version Catalog 集中依赖与增量构建 |
+| **界面与交互** | Jetpack Compose + Material 3 | 响应式 UI、WCAG AAA 高对比度设计系统与多端自适应布局 |
+| **架构与异步** | MVVM + UDF (StateFlow / Coroutines) | 单向数据流、生命周期安全感知采集与全 IO 线程调度 |
+| **依赖注入** | Google Dagger Hilt | 全局单例、基础设施注入与生命周期管控 |
+| **数据持久化** | Jetpack DataStore | 类型安全的轻量配置、主题状态与缓存路径存储 |
+| **网络与物联网通信** | IotHub (HTTP / MQTT / Redis / TCP Socket) | 统一通信门面，底层协议物理隔离与编译期驱动裁剪 |
+| **诊断与分享** | ErrorParser + Lg + FileShareManager | 时序防 OOM 日志、结构化故障根因分析与系统级安全分享 |
 
----
-
-## 📦 第三方开源框架声明与合规矩阵
-
-本项目严格遵循开源法律合规要求，所有引入的核心第三方框架均采用**商业友好型宽松许可协议 (Permissive Licenses: Apache-2.0 / MIT)**，**零 GPL 强传染性风险**，支持企业商业闭源开发与合规交付：
-
-| 框架 / 组件名 | 适用开源协议 | 商业闭源商用 | 官方项目地址 |
-| :--- | :--- | :--- | :--- |
-| **XPopup** | **Apache-2.0** | 允许 | [li-xiaojun/XPopup](https://github.com/li-xiaojun/XPopup) |
-| **BRVAH 4** | **Apache-2.0** | 允许 | [CymChad/BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper) |
-| **Retrofit** | **Apache-2.0** | 允许 | [square/retrofit](https://github.com/square/retrofit) |
-| **OkHttp** | **Apache-2.0** | 允许 | [square/okhttp](https://github.com/square/okhttp) |
-| **HiveMQ MQTT Client** | **Apache-2.0** | 允许 | [hivemq/hivemq-mqtt-client](https://github.com/hivemq/hivemq-mqtt-client) |
-| **Jedis** | **MIT** | 允许 | [redis/jedis](https://github.com/redis/jedis) |
-| **Coil** | **Apache-2.0** | 允许 | [coil-kt/coil](https://github.com/coil-kt/coil) |
-| **Google Dagger Hilt** | **Apache-2.0** | 允许 | [google/dagger](https://github.com/google/dagger) |
-| **Google Gson** | **Apache-2.0** | 允许 | [google/gson](https://github.com/google/gson) |
-| **Kotlinx Coroutines** | **Apache-2.0** | 允许 | [Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines) |
+> 完整第三方依赖库清单与法律合规说明详见根目录下 [`OPEN_SOURCE_LICENSES.md`](OPEN_SOURCE_LICENSES.md) 与 [`NOTICE`](NOTICE)。
 
 ---
 
@@ -307,7 +156,7 @@ BaseAndroid2AIoT/
 
 ### 2. 编译与打包
 ```bash
-# 验证代码编译
+# 验证代码编译（无警告无错误）
 ./gradlew compileDebugKotlin
 
 # 构建 Debug APK
@@ -326,4 +175,4 @@ BaseAndroid2AIoT/
   - **非商业用途**：对个人学习、学术研究、非营利性技术交流完全免费开放。
   - **商业用途限制**：**任何商业用途（包括商业销售、硬件搭载量产、对外提供收费服务、企业闭源交付等）必须预先获得原作者的正式书面商业授权**。未经授权擅自商用构成侵犯版权。
 - **法律合规声明与版权归属**：详见根目录下标准归属文件 [NOTICE](NOTICE)。
-- **完整第三方依赖许可清单与合规说明**：详见 [OPEN_SOURCE_LICENSES.md](OPEN_SOURCE_LICENSES.md)。工程所引入的所有核心三方库均采用宽松许可证（Apache-2.0 / MIT），第三方库遵循各自独立的原生许可。
+- **第三方依赖合规**：详见 [OPEN_SOURCE_LICENSES.md](OPEN_SOURCE_LICENSES.md)。
