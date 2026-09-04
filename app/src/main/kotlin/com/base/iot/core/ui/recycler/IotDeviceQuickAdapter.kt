@@ -1,3 +1,4 @@
+// [DEMO_FILE] Reference demo only. Auto-purge on formal development.
 package com.base.iot.core.ui.recycler
 
 import android.content.Context
@@ -7,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.compose.ui.graphics.toArgb
 import androidx.recyclerview.widget.RecyclerView
+import com.base.iot.R
+import com.base.iot.ui.theme.DarkAppColors
+import com.base.iot.ui.theme.LightAppColors
 import com.chad.library.adapter4.BaseQuickAdapter
 
 /**
@@ -97,14 +101,14 @@ class IotDeviceQuickAdapter(
     override fun onBindViewHolder(holder: VH, position: Int, item: IotDeviceItem?) {
         if (item == null) return
 
-        val palette = if (isDark) com.base.iot.ui.theme.DarkAppColors else com.base.iot.ui.theme.LightAppColors
+        val palette = if (isDark) DarkAppColors else LightAppColors
         val bgColor = palette.surface.toArgb()
         val nameColor = palette.textPrimary.toArgb()
         val ipColor = palette.textSecondary.toArgb()
         val protocolColor = palette.accentCyan.toArgb()
         val protocolBgColor = palette.accentCyan.copy(alpha = 0.15f).toArgb()
         val context = holder.rootView.context
-        val statusText = if (item.status == "ONLINE") context.getString(com.base.iot.R.string.status_online) else context.getString(com.base.iot.R.string.status_offline)
+        val statusText = if (item.status == "ONLINE") context.getString(R.string.status_online) else context.getString(R.string.status_offline)
         val statusColor = if (item.status == "ONLINE") palette.accentGreen.toArgb() else palette.accentRed.toArgb()
 
         holder.rootView.setBackgroundColor(bgColor)
@@ -115,10 +119,10 @@ class IotDeviceQuickAdapter(
         holder.tvProtocol.setTextColor(protocolColor)
         holder.tvProtocol.setBackgroundColor(protocolBgColor)
 
-        holder.tvStatus.text = "● $statusText"
+        holder.tvStatus.text = context.getString(R.string.device_status_dot_format, statusText)
         holder.tvStatus.setTextColor(statusColor)
 
-        holder.tvIp.text = "${item.ipAddress} (${item.deviceId})"
+        holder.tvIp.text = context.getString(R.string.device_ip_desc_format, item.ipAddress, item.deviceId)
         holder.tvIp.setTextColor(ipColor)
     }
 }

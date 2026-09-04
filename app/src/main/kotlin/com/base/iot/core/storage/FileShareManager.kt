@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
+import com.base.iot.R
 import com.base.iot.core.diagnostics.Lg
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -33,13 +34,13 @@ class FileShareManager @Inject constructor(
         try {
             val uri = FileProvider.getUriForFile(context, authority, file)
             val mimeType = getMimeType(file)
-            val effectiveTitle = shareTitle ?: context.getString(com.base.iot.R.string.share_file_title)
+            val effectiveTitle = shareTitle ?: context.getString(R.string.share_file_title)
 
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = mimeType
                 putExtra(Intent.EXTRA_STREAM, uri)
                 putExtra(Intent.EXTRA_SUBJECT, file.name)
-                putExtra(Intent.EXTRA_TEXT, context.getString(com.base.iot.R.string.share_file_body, file.name, file.length()))
+                putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_file_body, file.name, file.length()))
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
@@ -66,7 +67,7 @@ class FileShareManager @Inject constructor(
 
         try {
             val uris = ArrayList(validFiles.map { FileProvider.getUriForFile(context, authority, it) })
-            val effectiveTitle = shareTitle ?: context.getString(com.base.iot.R.string.share_files_title)
+            val effectiveTitle = shareTitle ?: context.getString(R.string.share_files_title)
             val intent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                 type = "*/*"
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
@@ -89,7 +90,7 @@ class FileShareManager @Inject constructor(
      */
     fun shareText(text: String, shareTitle: String? = null) {
         try {
-            val effectiveTitle = shareTitle ?: context.getString(com.base.iot.R.string.share_report_title)
+            val effectiveTitle = shareTitle ?: context.getString(R.string.share_report_title)
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_SUBJECT, effectiveTitle)

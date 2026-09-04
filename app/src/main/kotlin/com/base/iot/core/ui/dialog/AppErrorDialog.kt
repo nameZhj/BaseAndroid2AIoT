@@ -22,10 +22,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.base.iot.R
 import com.base.iot.core.diagnostics.ParsedError
 import com.base.iot.ui.theme.AppTheme
 
@@ -86,7 +88,7 @@ fun AppErrorDialog(
 
                     Column {
                         Text(
-                            text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.error_dialog_title),
+                            text = stringResource(R.string.error_dialog_title),
                             color = colors.textPrimary,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold
@@ -108,7 +110,7 @@ fun AppErrorDialog(
                 )
 
                 Text(
-                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.error_root_cause_prefix, error.technicalSummary),
+                    text = stringResource(R.string.error_root_cause_prefix, error.technicalSummary),
                     color = colors.textSecondary,
                     fontSize = 12.sp,
                     lineHeight = 16.sp
@@ -126,8 +128,8 @@ fun AppErrorDialog(
                     )
                     Spacer(Modifier.width(6.dp))
                     Text(
-                        text = androidx.compose.ui.res.stringResource(
-                            if (showStackDetails) com.base.iot.R.string.error_collapse_report else com.base.iot.R.string.error_expand_report
+                        text = stringResource(
+                            if (showStackDetails) R.string.error_collapse_report else R.string.error_expand_report
                         ),
                         color = colors.accentPrimary,
                         fontSize = 12.sp,
@@ -178,7 +180,7 @@ fun AppErrorDialog(
                             contentColor = colors.textSecondary
                         )
                     ) {
-                        Text(text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_i_know), fontSize = 13.sp)
+                        Text(text = stringResource(R.string.btn_i_know), fontSize = 13.sp)
                     }
 
                     Button(
@@ -194,12 +196,12 @@ fun AppErrorDialog(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Share,
-                            contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.error_btn_share_report),
+                            contentDescription = stringResource(R.string.error_btn_share_report),
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.error_btn_share_report),
+                            text = stringResource(R.string.error_btn_share_report),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold
                         )

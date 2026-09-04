@@ -18,10 +18,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import com.base.iot.R
 
 /**
  * 通用 Compose 图片加载组件（基于 Coil）。
@@ -96,7 +98,7 @@ fun AppImage(
                 ) {
                     Icon(
                         imageVector = Icons.Default.BrokenImage,
-                        contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.image_load_failed),
+                        contentDescription = stringResource(R.string.image_load_failed),
                         tint = MaterialTheme.colorScheme.error.copy(alpha = 0.6f),
                         modifier = Modifier.align(Alignment.Center)
                     )

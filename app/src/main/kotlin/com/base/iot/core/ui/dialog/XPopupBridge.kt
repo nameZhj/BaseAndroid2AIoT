@@ -1,6 +1,7 @@
 package com.base.iot.core.ui.dialog
 
 import android.content.Context
+import com.base.iot.R
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.OnConfirmListener
@@ -24,8 +25,8 @@ object XPopupBridge {
         cancelText: String? = null,
         onConfirm: () -> Unit
     ): BasePopupView {
-        val effectiveConfirm = confirmText ?: context.getString(com.base.iot.R.string.btn_confirm)
-        val effectiveCancel = cancelText ?: context.getString(com.base.iot.R.string.btn_cancel)
+        val effectiveConfirm = confirmText ?: context.getString(R.string.btn_confirm)
+        val effectiveCancel = cancelText ?: context.getString(R.string.btn_cancel)
         return XPopup.Builder(context)
             .isDarkTheme(isDark)
             .asConfirm(title, content, effectiveCancel, effectiveConfirm, OnConfirmListener {
@@ -42,7 +43,7 @@ object XPopupBridge {
         title: String? = null,
         isDark: Boolean = true
     ): BasePopupView {
-        val effectiveTitle = title ?: context.getString(com.base.iot.R.string.processing)
+        val effectiveTitle = title ?: context.getString(R.string.processing)
         return XPopup.Builder(context)
             .isDarkTheme(isDark)
             .asLoading(effectiveTitle)
@@ -59,7 +60,7 @@ object XPopupBridge {
         isDark: Boolean = true,
         onConfirm: (String) -> Unit
     ): BasePopupView {
-        val effectiveHint = hint ?: context.getString(com.base.iot.R.string.input_hint_default)
+        val effectiveHint = hint ?: context.getString(R.string.input_hint_default)
         return XPopup.Builder(context)
             .isDarkTheme(isDark)
             .asInputConfirm(title, null, null, effectiveHint, OnInputConfirmListener { text ->

@@ -1,6 +1,7 @@
 package com.base.iot.feature.template
 
 import android.app.Application
+import com.base.iot.R
 import com.base.iot.core.base.BaseViewModel
 import com.base.iot.core.diagnostics.ParsedError
 import com.base.iot.core.iot.IotHub
@@ -29,9 +30,9 @@ class TemplateViewModel @Inject constructor(
     }
 
     fun executeSampleTask() = launchWithLoading(
-        title = getString(com.base.iot.R.string.template_task_running),
+        title = getString(R.string.template_task_running),
         isBlocking = true
     ) { updateProgress ->
-        updateProgress(0.5f, getString(com.base.iot.R.string.template_task_progress, 50))
+        updateProgress(0.5f, getString(R.string.template_task_progress, 50))
     }
 }

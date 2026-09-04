@@ -3,6 +3,7 @@ package com.base.iot.core.base
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.base.iot.R
 import com.base.iot.core.diagnostics.ErrorParser
 import com.base.iot.core.diagnostics.Lg
 import com.base.iot.core.diagnostics.ParsedError
@@ -48,7 +49,7 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
         onError: ((Throwable) -> Unit)? = null,
         action: suspend CoroutineScope.(updateProgress: (Float?, String?) -> Unit) -> Unit
     ): Job {
-        val effectiveTitle = title ?: getString(com.base.iot.R.string.processing)
+        val effectiveTitle = title ?: getString(R.string.processing)
         return viewModelScope.launch {
             var currentJob: Job? = null
             if (showLoading) {
@@ -114,7 +115,7 @@ abstract class BaseViewModel<STATE : IUiState, EVENT : IUiEvent>(
     fun shareErrorReport(error: ParsedError) {
         fileShareManager.shareText(
             text = error.fullDiagnosticReport,
-            shareTitle = "${getString(com.base.iot.R.string.share_report_title)} - ${error.errorType}"
+            shareTitle = "${getString(R.string.share_report_title)} - ${error.errorType}"
         )
     }
 

@@ -1,3 +1,4 @@
+// [DEMO_FILE] Reference demo only. Auto-purge on formal development.
 package com.base.iot.feature.demo.components
 
 import androidx.compose.foundation.background
@@ -18,8 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.base.iot.R
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.core.ui.components.AppCard
-import com.base.iot.feature.demo.DashboardUiState
-import com.base.iot.feature.demo.DashboardViewModel
+import com.base.iot.feature.demo.*
 import com.base.iot.ui.theme.AppTheme
 
 @Composable
@@ -112,7 +112,7 @@ fun LoadingAndErrorDemoCard(
                     onClick = vm::testNonBlockingProgress
                 )
                 AppButton(
-                    text = "0%~100%",
+                    text = stringResource(R.string.loading_btn_percentage),
                     icon = Icons.Filled.LinearScale,
                     color = colors.accentGreen,
                     modifier = Modifier.weight(1f),

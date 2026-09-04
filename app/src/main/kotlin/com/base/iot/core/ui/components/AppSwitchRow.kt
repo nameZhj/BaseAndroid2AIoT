@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.base.iot.R
 import com.base.iot.ui.theme.AppTheme
 
 @Composable
@@ -57,8 +59,8 @@ fun AppSwitchRow(
                     .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
-                    text = androidx.compose.ui.res.stringResource(
-                        if (compiled) com.base.iot.R.string.protocol_compiled else com.base.iot.R.string.protocol_not_compiled
+                    text = stringResource(
+                        if (compiled) R.string.protocol_compiled else R.string.protocol_not_compiled
                     ),
                     color = if (compiled) colors.accentGreen else colors.textSecondary,
                     fontSize = 10.sp,
@@ -73,12 +75,12 @@ fun AppSwitchRow(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Lock,
-                        contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.protocol_locked_on),
+                        contentDescription = stringResource(R.string.protocol_locked_on),
                         tint = colors.accentGreen,
                         modifier = Modifier.size(11.dp)
                     )
                     Text(
-                        text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.protocol_locked_on),
+                        text = stringResource(R.string.protocol_locked_on),
                         color = colors.accentGreen,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium
@@ -97,8 +99,8 @@ fun AppSwitchRow(
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        text = androidx.compose.ui.res.stringResource(
-                            if (connected) com.base.iot.R.string.protocol_connected else com.base.iot.R.string.protocol_disconnected
+                        text = stringResource(
+                            if (connected) R.string.protocol_connected else R.string.protocol_disconnected
                         ),
                         color = if (connected) colors.accentGreen else colors.accentRed,
                         fontSize = 10.sp,

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
+import com.base.iot.R
 import java.io.File
 
 object LogExporter {
@@ -37,15 +38,15 @@ object LogExporter {
         val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
             type = "text/plain"
             putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
-            putExtra(Intent.EXTRA_SUBJECT, context.getString(com.base.iot.R.string.share_crash_logs_subject))
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.share_crash_logs_subject))
             putExtra(
                 Intent.EXTRA_TEXT,
-                context.getString(com.base.iot.R.string.share_crash_logs_body, logFiles.size)
+                context.getString(R.string.share_crash_logs_body, logFiles.size)
             )
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
-        val chooser = Intent.createChooser(shareIntent, context.getString(com.base.iot.R.string.share_crash_logs_title))
+        val chooser = Intent.createChooser(shareIntent, context.getString(R.string.share_crash_logs_title))
         chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(chooser)
     }

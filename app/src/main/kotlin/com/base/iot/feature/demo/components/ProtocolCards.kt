@@ -1,20 +1,20 @@
+// [DEMO_FILE] Reference demo only. Auto-purge on formal development.
 package com.base.iot.feature.demo.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.CallReceived
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.base.iot.R
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.core.ui.components.AppCard
 import com.base.iot.core.ui.components.AppSwitchRow
-import com.base.iot.feature.demo.DashboardUiState
-import com.base.iot.feature.demo.DashboardViewModel
+import com.base.iot.feature.demo.*
 import com.base.iot.ui.theme.AppTheme
 
 @Composable
@@ -67,9 +67,9 @@ fun HttpTestCard(vm: DashboardViewModel) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppButton(text = stringResource(R.string.http_btn_get), icon = Icons.Filled.Refresh, color = colors.accentCyan, modifier = Modifier.weight(1f), onClick = vm::testHttpGet)
-                AppButton(text = stringResource(R.string.http_btn_post), icon = Icons.Filled.Send, color = colors.accentPurple, modifier = Modifier.weight(1f), onClick = vm::testHttpPost)
-                AppButton(text = "PUT", icon = Icons.Filled.Edit, color = colors.accentAmber, modifier = Modifier.weight(1f), onClick = vm::testHttpPut)
-                AppButton(text = "DEL", icon = Icons.Filled.Delete, color = colors.accentRed, modifier = Modifier.weight(1f), onClick = vm::testHttpDelete)
+                AppButton(text = stringResource(R.string.http_btn_post), icon = Icons.AutoMirrored.Filled.Send, color = colors.accentPurple, modifier = Modifier.weight(1f), onClick = vm::testHttpPost)
+                AppButton(text = stringResource(R.string.http_btn_put), icon = Icons.Filled.Edit, color = colors.accentAmber, modifier = Modifier.weight(1f), onClick = vm::testHttpPut)
+                AppButton(text = stringResource(R.string.http_btn_delete), icon = Icons.Filled.Delete, color = colors.accentRed, modifier = Modifier.weight(1f), onClick = vm::testHttpDelete)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 AppButton(text = stringResource(R.string.storage_btn_download_test), icon = Icons.Filled.FileUpload, color = colors.accentPurple, modifier = Modifier.weight(1f), onClick = vm::testHttpUpload)
@@ -92,20 +92,8 @@ fun MqttTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                 modifier = Modifier.weight(1f),
                 onClick = vm::connectMqtt
             )
-            AppButton(
-                text = stringResource(R.string.mqtt_btn_publish),
-                icon = Icons.Filled.Send,
-                color = colors.accentCyan,
-                modifier = Modifier.weight(1f),
-                onClick = vm::mqttPublish
-            )
-            AppButton(
-                text = stringResource(R.string.mqtt_btn_subscribe),
-                icon = Icons.Filled.CallReceived,
-                color = colors.accentAmber,
-                modifier = Modifier.weight(1f),
-                onClick = vm::mqttSubscribeTest
-            )
+            AppButton(text = stringResource(R.string.mqtt_btn_publish), icon = Icons.AutoMirrored.Filled.Send, color = colors.accentCyan, modifier = Modifier.weight(1f), onClick = vm::mqttPublish)
+            AppButton(text = stringResource(R.string.mqtt_btn_subscribe), icon = Icons.AutoMirrored.Filled.CallReceived, color = colors.accentAmber, modifier = Modifier.weight(1f), onClick = vm::mqttSubscribeTest)
         }
     }
 }
@@ -123,13 +111,7 @@ fun RedisTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                 modifier = Modifier.weight(1f),
                 onClick = vm::connectRedis
             )
-            AppButton(
-                text = stringResource(R.string.redis_btn_set),
-                icon = Icons.Filled.Send,
-                color = colors.accentAmber,
-                modifier = Modifier.weight(1f),
-                onClick = vm::redisSendCommand
-            )
+            AppButton(text = stringResource(R.string.redis_btn_set), icon = Icons.AutoMirrored.Filled.Send, color = colors.accentAmber, modifier = Modifier.weight(1f), onClick = vm::redisSendCommand)
         }
     }
 }
@@ -147,13 +129,7 @@ fun SocketTestCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                 modifier = Modifier.weight(1f),
                 onClick = vm::connectSocket
             )
-            AppButton(
-                text = stringResource(R.string.socket_btn_send),
-                icon = Icons.Filled.Sensors,
-                color = colors.accentAmber,
-                modifier = Modifier.weight(1f),
-                onClick = vm::socketPingPong
-            )
+            AppButton(text = stringResource(R.string.socket_btn_send), icon = Icons.Filled.Sensors, color = colors.accentAmber, modifier = Modifier.weight(1f), onClick = vm::socketPingPong)
         }
     }
 }

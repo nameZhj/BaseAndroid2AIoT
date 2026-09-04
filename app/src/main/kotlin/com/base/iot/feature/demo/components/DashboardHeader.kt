@@ -1,3 +1,4 @@
+// [DEMO_FILE] Reference demo only. Auto-purge on formal development.
 package com.base.iot.feature.demo.components
 
 import androidx.compose.animation.core.*
@@ -16,11 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.base.iot.feature.demo.DashboardUiState
-import com.base.iot.feature.demo.DashboardViewModel
+import com.base.iot.R
+import com.base.iot.feature.demo.*
 import com.base.iot.ui.theme.AppTheme
 
 @Composable
@@ -57,13 +59,13 @@ fun DashboardHeader(
             Spacer(Modifier.width(10.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dashboard_title),
+                    text = stringResource(R.string.dashboard_title),
                     color = colors.textPrimary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.dashboard_subtitle),
+                    text = stringResource(R.string.dashboard_subtitle),
                     color = colors.textSecondary,
                     fontSize = 12.sp
                 )
@@ -79,8 +81,8 @@ fun DashboardHeader(
             ) {
                 Icon(
                     imageVector = if (colors.isDark) Icons.Filled.LightMode else Icons.Filled.DarkMode,
-                    contentDescription = androidx.compose.ui.res.stringResource(
-                        if (colors.isDark) com.base.iot.R.string.theme_light else com.base.iot.R.string.theme_dark
+                    contentDescription = stringResource(
+                        if (colors.isDark) R.string.theme_light else R.string.theme_dark
                     ),
                     tint = if (colors.isDark) colors.accentAmber else colors.accentPurple,
                     modifier = Modifier.size(20.dp)

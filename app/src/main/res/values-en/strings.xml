@@ -70,6 +70,8 @@
     <string name="http_card_title">HTTP Communication</string>
     <string name="http_btn_get">GET Request</string>
     <string name="http_btn_post">POST Request</string>
+    <string name="http_btn_put">PUT Request</string>
+    <string name="http_btn_delete">DELETE Request</string>
     <string name="http_btn_download">Download File</string>
 
     <!-- MQTT Card -->
@@ -124,6 +126,7 @@
     <string name="loading_demo_desc">Supports percentage reporting, blocking/non-blocking modes, and one-tap root cause sharing:</string>
     <string name="loading_btn_blocking">Blocking Task Demo</string>
     <string name="loading_btn_non_blocking">Non-blocking Task Demo</string>
+    <string name="loading_btn_percentage">Percentage Progress Demo</string>
     <string name="loading_btn_mock_timeout">Mock Network Timeout</string>
     <string name="loading_btn_mock_unknown">Mock Unknown Exception</string>
     <string name="loading_btn_mock_http404">Mock HTTP 404 Error</string>
@@ -216,6 +219,49 @@
     <string name="op_redis_connect">Connecting to Redis Server...</string>
     <string name="op_socket_connect">Establishing TCP Socket Connection...</string>
 
+    <!-- [DEMO_STRINGS_START] Strip on formal dev -->
+    <!-- HTTP Terminal Logs & Results -->
+    <string name="demo_http_get_url">HTTP GET → %1$s</string>
+    <string name="demo_http_post_url">HTTP POST → %1$s</string>
+    <string name="demo_http_put_url">HTTP PUT → %1$s</string>
+    <string name="demo_http_delete_url">HTTP DELETE → %1$s</string>
+    <string name="demo_http_upload_url">HTTP UPLOAD → %1$s</string>
+    <string name="demo_http_success_code">HTTP Request Successful [%1$d]: %2$s</string>
+    <string name="demo_http_error_code">HTTP Request Error [%1$d]: %2$s</string>
+    <string name="demo_http_put_success">HTTP PUT Update Successful [%1$d]</string>
+    <string name="demo_http_put_error">HTTP Update Error [%1$d]: %2$s</string>
+    <string name="demo_http_delete_success">HTTP DELETE Successful [%1$d]</string>
+    <string name="demo_http_delete_error">HTTP Delete Error [%1$d]: %2$s</string>
+    <string name="demo_http_upload_file_info">HTTP UPLOAD [File] name: %1$s, size: %2$dB, path: %3$s</string>
+    <string name="demo_http_upload_success">HTTP Upload Successful [%1$d]</string>
+    <string name="demo_http_upload_error">HTTP Upload Error [%1$d]: %2$s</string>
+    <string name="demo_http_download_prep">HTTP Download starting stream transfer...</string>
+    <string name="demo_http_download_target">HTTP Download target file: %1$s, path: %2$s</string>
+    <string name="demo_http_download_ready">HTTP Download preparing...</string>
+    <string name="demo_http_download_success">HTTP Download successful! File size: %1$d bytes, saved to: %2$s</string>
+    <string name="demo_http_download_error">HTTP Download failed: %1$s</string>
+
+    <!-- MQTT/Redis/Socket Terminal Logs -->
+    <string name="demo_mqtt_connecting">MQTT connecting to %1$s:%2$d...</string>
+    <string name="demo_mqtt_connected">MQTT connected successfully ✅</string>
+    <string name="demo_mqtt_publish_log">MQTT PUBLISH → %1$s: %2$s</string>
+    <string name="demo_mqtt_publish_success">MQTT published successfully ✅</string>
+    <string name="demo_mqtt_publish_failed">MQTT publish failed: %1$s</string>
+    <string name="demo_mqtt_subscribe_log">MQTT SUBSCRIBE → %1$s</string>
+    <string name="demo_mqtt_receive_data">MQTT received ← %1$s</string>
+    <string name="demo_mqtt_subscribe_error">MQTT subscription error: %1$s</string>
+    <string name="demo_redis_connecting">Redis connecting to %1$s:%2$d...</string>
+    <string name="demo_redis_connected">Redis connected successfully ✅</string>
+    <string name="demo_redis_set_log">Redis SET %1$s → %2$s</string>
+    <string name="demo_redis_set_result">Redis SET write result: %1$s</string>
+    <string name="demo_redis_get_result">Redis GET read result: %1$s</string>
+    <string name="demo_redis_op_error">Redis operation error: %1$s</string>
+    <string name="demo_socket_connecting">Socket connecting to %1$s:%2$d...</string>
+    <string name="demo_socket_connected">Socket connected successfully ✅</string>
+    <string name="demo_socket_send_log">Socket SEND → %1$s</string>
+    <string name="demo_socket_send_failed">Socket send failed: %1$s</string>
+    <string name="demo_protocol_disabled_log">%1$s protocol disabled: %2$s</string>
+
     <!-- Demo Tasks & Dialog Titles -->
     <string name="demo_task_handshake_title">Security Handshake &amp; Key Distribution</string>
     <string name="demo_task_firmware_verify_title">Firmware Verification</string>
@@ -238,12 +284,26 @@
     <string name="demo_log_non_blocking_task_done">Test [Non-blocking Progress Dialog] completed</string>
     <string name="demo_log_percentage_task_start">Test [Percentage Progress Dialog] started...</string>
     <string name="demo_log_percentage_task_done">Test [Percentage Progress Dialog] completed</string>
+    <string name="demo_progress_kb_format">%1$d KB / %2$d KB (%3$d%%)</string>
+    <string name="demo_progress_mb_format">%1$d MB / %2$d MB (%3$d%%)</string>
     <string name="demo_log_share_file">Opening system share: %1$s</string>
     <string name="demo_log_cache_cleared">Cleared cache directory, freed: %1$d bytes</string>
     <string name="demo_log_crash_check">Checking crash logs...</string>
     <string name="demo_log_crash_found">Found crash log: %1$s (%2$d bytes)</string>
     <string name="demo_log_immersive">Fullscreen Immersive Mode: %1$s</string>
     <string name="demo_log_long_test_triggered">Triggered long log test, check Logcat [LongLogTest]</string>
+    <string name="demo_log_simulate_timeout">Deliberately connecting to unreachable IP (%1$s:%2$d)...</string>
+    <string name="demo_protocol_switch_log">%1$s protocol switch: %2$s</string>
+    <string name="demo_cache_policy_switched">Cache storage strategy switched: %1$s</string>
+    <string name="demo_theme_mode_switched">Display theme switched: %1$s</string>
+    <string name="demo_mode_blocking">Blocking (no-dismiss / anti-touch-through)</string>
+    <string name="demo_mode_non_blocking">Non-blocking (tap outside to dismiss)</string>
+    <string name="demo_state_enabled">Enabled</string>
+    <string name="demo_state_disabled_silent">Disabled (silent background execution)</string>
+    <string name="device_status_dot_format">● %1$s</string>
+    <string name="device_ip_desc_format">%1$s (%2$s)</string>
+    <string name="percent_value_format">%1$d%%</string>
+    <!-- [DEMO_STRINGS_END] -->
 
     <!-- Template Screen -->
     <string name="template_feature_title">Template Feature</string>

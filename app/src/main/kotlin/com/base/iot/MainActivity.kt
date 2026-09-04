@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = AppTheme.colors.background
                 ) {
+                    // [DEMO_MOUNT_POINT] Replace DashboardScreen() with your feature screen on formal dev
                     DashboardScreen()
                 }
             }

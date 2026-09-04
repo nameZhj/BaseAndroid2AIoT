@@ -18,8 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.base.iot.R
 import com.base.iot.ui.theme.AppTheme
 
 @Composable
@@ -27,8 +29,8 @@ fun AppConfirmDialog(
     visible: Boolean,
     title: String,
     message: String,
-    confirmText: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_confirm),
-    cancelText: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_cancel),
+    confirmText: String = stringResource(R.string.btn_confirm),
+    cancelText: String = stringResource(R.string.btn_cancel),
     isDanger: Boolean = false,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
@@ -125,7 +127,7 @@ fun AppConfirmDialog(
 @Composable
 fun AppLoadingDialog(
     visible: Boolean,
-    message: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.processing)
+    message: String = stringResource(R.string.processing)
 ) {
     if (!visible) return
 
@@ -169,10 +171,10 @@ fun AppLoadingDialog(
 fun AppInputDialog(
     visible: Boolean,
     title: String,
-    hint: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.input_hint_default),
+    hint: String = stringResource(R.string.input_hint_default),
     initialText: String = "",
-    confirmText: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_confirm),
-    cancelText: String = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_cancel),
+    confirmText: String = stringResource(R.string.btn_confirm),
+    cancelText: String = stringResource(R.string.btn_cancel),
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -226,7 +228,7 @@ fun AppInputDialog(
                             IconButton(onClick = { textState = "" }) {
                                 Icon(
                                     imageVector = Icons.Filled.Close,
-                                    contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_clear),
+                                    contentDescription = stringResource(R.string.btn_clear),
                                     tint = colors.textTertiary
                                 )
                             }

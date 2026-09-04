@@ -70,6 +70,8 @@
     <string name="http_card_title">HTTP 通信</string>
     <string name="http_btn_get">GET 请求</string>
     <string name="http_btn_post">POST 请求</string>
+    <string name="http_btn_put">PUT 请求</string>
+    <string name="http_btn_delete">DEL 请求</string>
     <string name="http_btn_download">文件下载</string>
 
     <!-- MQTT 通信卡片 -->
@@ -124,6 +126,7 @@
     <string name="loading_demo_desc">支持百分比上报，自主选择阻塞/非阻塞模式。各种错误弹窗均包含真实根因诊断与系统一键分享：</string>
     <string name="loading_btn_blocking">阻塞式耗时任务</string>
     <string name="loading_btn_non_blocking">非阻塞耗时任务</string>
+    <string name="loading_btn_percentage">百分比进度演示</string>
     <string name="loading_btn_mock_timeout">模拟网络超时错误</string>
     <string name="loading_btn_mock_unknown">模拟未知异常</string>
     <string name="loading_btn_mock_http404">模拟 404 业务错误</string>
@@ -216,6 +219,49 @@
     <string name="op_redis_connect">正在连接 Redis 服务器...</string>
     <string name="op_socket_connect">正在建立 TCP Socket 工业长连接...</string>
 
+    <!-- [DEMO_STRINGS_START] Strip on formal dev -->
+    <!-- HTTP 终端日志与结果提示 -->
+    <string name="demo_http_get_url">HTTP GET → %1$s</string>
+    <string name="demo_http_post_url">HTTP POST → %1$s</string>
+    <string name="demo_http_put_url">HTTP PUT → %1$s</string>
+    <string name="demo_http_delete_url">HTTP DELETE → %1$s</string>
+    <string name="demo_http_upload_url">HTTP UPLOAD → %1$s</string>
+    <string name="demo_http_success_code">HTTP 请求成功 [%1$d]: %2$s</string>
+    <string name="demo_http_error_code">HTTP 请求异常 [%1$d]: %2$s</string>
+    <string name="demo_http_put_success">HTTP PUT 更新成功 [%1$d]</string>
+    <string name="demo_http_put_error">HTTP 更新异常 [%1$d]: %2$s</string>
+    <string name="demo_http_delete_success">HTTP DELETE 删除成功 [%1$d]</string>
+    <string name="demo_http_delete_error">HTTP 删除异常 [%1$d]: %2$s</string>
+    <string name="demo_http_upload_file_info">HTTP UPLOAD [文件] 名称: %1$s, 大小: %2$dB, 路径: %3$s</string>
+    <string name="demo_http_upload_success">HTTP 上传成功 [%1$d]</string>
+    <string name="demo_http_upload_error">HTTP 上传异常 [%1$d]: %2$s</string>
+    <string name="demo_http_download_prep">HTTP 下载准备启动流式传输...</string>
+    <string name="demo_http_download_target">HTTP 下载目标文件: %1$s, 路径: %2$s</string>
+    <string name="demo_http_download_ready">HTTP 下载准备中...</string>
+    <string name="demo_http_download_success">HTTP 下载成功！文件大小: %1$d 字节，已保存至: %2$s</string>
+    <string name="demo_http_download_error">HTTP 下载失败: %1$s</string>
+
+    <!-- MQTT/Redis/Socket 终端交互提示 -->
+    <string name="demo_mqtt_connecting">MQTT 正在连接 %1$s:%2$d...</string>
+    <string name="demo_mqtt_connected">MQTT 连接成功 ✅</string>
+    <string name="demo_mqtt_publish_log">MQTT PUBLISH → %1$s: %2$s</string>
+    <string name="demo_mqtt_publish_success">MQTT 发布成功 ✅</string>
+    <string name="demo_mqtt_publish_failed">MQTT 发布失败: %1$s</string>
+    <string name="demo_mqtt_subscribe_log">MQTT SUBSCRIBE → %1$s</string>
+    <string name="demo_mqtt_receive_data">MQTT 接收数据 ← %1$s</string>
+    <string name="demo_mqtt_subscribe_error">MQTT 订阅异常: %1$s</string>
+    <string name="demo_redis_connecting">Redis 正在连接 %1$s:%2$d...</string>
+    <string name="demo_redis_connected">Redis 连接成功 ✅</string>
+    <string name="demo_redis_set_log">Redis SET %1$s → %2$s</string>
+    <string name="demo_redis_set_result">Redis SET 写入结果: %1$s</string>
+    <string name="demo_redis_get_result">Redis GET 读取结果: %1$s</string>
+    <string name="demo_redis_op_error">Redis 操作异常: %1$s</string>
+    <string name="demo_socket_connecting">Socket 正在连接 %1$s:%2$d...</string>
+    <string name="demo_socket_connected">Socket 连接成功 ✅</string>
+    <string name="demo_socket_send_log">Socket SEND → %1$s</string>
+    <string name="demo_socket_send_failed">Socket 发送失败: %1$s</string>
+    <string name="demo_protocol_disabled_log">%1$s 协议已禁用: %2$s</string>
+
     <!-- 演示任务与弹窗标题 -->
     <string name="demo_task_handshake_title">安全握手与密钥分发</string>
     <string name="demo_task_firmware_verify_title">后台固件包校验</string>
@@ -238,12 +284,26 @@
     <string name="demo_log_non_blocking_task_done">测试【非阻塞式加载弹窗】正常完成</string>
     <string name="demo_log_percentage_task_start">测试【确定百分比进度弹窗】启动...</string>
     <string name="demo_log_percentage_task_done">测试【确定百分比进度弹窗】下载完成</string>
+    <string name="demo_progress_kb_format">%1$d KB / %2$d KB (%3$d%%)</string>
+    <string name="demo_progress_mb_format">%1$d MB / %2$d MB (%3$d%%)</string>
     <string name="demo_log_share_file">正在唤起系统分享: %1$s</string>
     <string name="demo_log_cache_cleared">已清空当前缓存区，释放: %1$d 字节</string>
     <string name="demo_log_crash_check">正在检查崩溃日志...</string>
     <string name="demo_log_crash_found">找到崩溃日志: %1$s (%2$d 字节)</string>
     <string name="demo_log_immersive">全屏沉浸式模式: %1$s</string>
     <string name="demo_log_long_test_triggered">已触发超长日志测试，请查看 Logcat [LongLogTest]</string>
+    <string name="demo_log_simulate_timeout">故意连接超时不可达 IP (%1$s:%2$d)...</string>
+    <string name="demo_protocol_switch_log">%1$s 协议开关: %2$s</string>
+    <string name="demo_cache_policy_switched">缓存存储策略已切换: %1$s</string>
+    <string name="demo_theme_mode_switched">显示模式已切换: %1$s</string>
+    <string name="demo_mode_blocking">阻塞式（禁止取消/防点击穿透）</string>
+    <string name="demo_mode_non_blocking">非阻塞式（可轻触外部关闭）</string>
+    <string name="demo_state_enabled">启用</string>
+    <string name="demo_state_disabled_silent">禁用 (后台静默执行)</string>
+    <string name="device_status_dot_format">● %1$s</string>
+    <string name="device_ip_desc_format">%1$s (%2$s)</string>
+    <string name="percent_value_format">%1$d%%</string>
+    <!-- [DEMO_STRINGS_END] -->
 
     <!-- 模板特性页面 -->
     <string name="template_feature_title">业务功能模板</string>

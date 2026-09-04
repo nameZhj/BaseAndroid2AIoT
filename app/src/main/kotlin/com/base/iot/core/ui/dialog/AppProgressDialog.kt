@@ -17,10 +17,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.base.iot.R
 import com.base.iot.ui.theme.AppTheme
 
 data class LoadingConfig(
@@ -76,7 +78,7 @@ fun AppProgressDialog(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = config.title ?: androidx.compose.ui.res.stringResource(com.base.iot.R.string.progress_default_title),
+                            text = config.title ?: stringResource(R.string.progress_default_title),
                             color = colors.textPrimary,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold,
@@ -95,8 +97,8 @@ fun AppProgressDialog(
                                 modifier = Modifier.size(12.dp)
                             )
                             Text(
-                                text = androidx.compose.ui.res.stringResource(
-                                    if (config.isBlocking) com.base.iot.R.string.progress_blocking_hint else com.base.iot.R.string.progress_non_blocking_hint
+                                text = stringResource(
+                                    if (config.isBlocking) R.string.progress_blocking_hint else R.string.progress_non_blocking_hint
                                 ),
                                 color = if (config.isBlocking) colors.accentAmber else colors.accentPrimary,
                                 fontSize = 11.sp,
@@ -115,7 +117,7 @@ fun AppProgressDialog(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
-                                contentDescription = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_cancel),
+                                contentDescription = stringResource(R.string.btn_cancel),
                                 tint = colors.textSecondary
                             )
                         }
@@ -143,12 +145,12 @@ fun AppProgressDialog(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = config.progressText ?: androidx.compose.ui.res.stringResource(com.base.iot.R.string.progress_completed_format, percentInt),
+                                text = config.progressText ?: stringResource(R.string.progress_completed_format, percentInt),
                                 color = colors.textSecondary,
                                 fontSize = 12.sp
                             )
                             Text(
-                                text = "$percentInt%",
+                                text = stringResource(R.string.percent_value_format, percentInt),
                                 color = colors.accentPrimary,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
@@ -169,7 +171,7 @@ fun AppProgressDialog(
                             modifier = Modifier.size(36.dp)
                         )
                         Text(
-                            text = config.message ?: androidx.compose.ui.res.stringResource(com.base.iot.R.string.progress_default_message),
+                            text = config.message ?: stringResource(R.string.progress_default_message),
                             color = colors.textSecondary,
                             fontSize = 14.sp,
                             lineHeight = 20.sp
@@ -192,7 +194,7 @@ fun AppProgressDialog(
                             contentColor = colors.textSecondary
                         )
                     ) {
-                        Text(text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.progress_cancel_action), fontSize = 13.sp)
+                        Text(text = stringResource(R.string.progress_cancel_action), fontSize = 13.sp)
                     }
                 }
             }

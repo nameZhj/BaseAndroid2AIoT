@@ -1,5 +1,7 @@
+// [DEMO_FILE] Reference demo only. Auto-purge on formal development.
 package com.base.iot.feature.demo.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -16,10 +18,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.base.iot.R
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.ui.theme.AppTheme
 
@@ -43,7 +47,7 @@ fun TerminalLogCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = colors.surface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, colors.cardBorder)
+        border = BorderStroke(1.dp, colors.cardBorder)
     ) {
         Column(
             modifier = Modifier
@@ -66,14 +70,14 @@ fun TerminalLogCard(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.terminal_title),
+                        text = stringResource(R.string.terminal_title),
                         color = colors.textPrimary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
                 AppButton(
-                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_clear),
+                    text = stringResource(R.string.btn_clear),
                     icon = Icons.Filled.ClearAll,
                     color = colors.textSecondary,
                     modifier = Modifier.height(30.dp),
@@ -93,7 +97,7 @@ fun TerminalLogCard(
             ) {
                 if (logs.isEmpty()) {
                     Text(
-                        text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.terminal_empty),
+                        text = stringResource(R.string.terminal_empty),
                         color = colors.terminalText.copy(alpha = 0.5f),
                         fontSize = 11.sp,
                         fontFamily = FontFamily.Monospace,

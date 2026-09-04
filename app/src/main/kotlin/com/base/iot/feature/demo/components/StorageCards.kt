@@ -1,17 +1,21 @@
+// [DEMO_FILE] Reference demo only. Auto-purge on formal development.
 package com.base.iot.feature.demo.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.base.iot.R
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +23,7 @@ import com.base.iot.core.storage.CacheLocationType
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.core.ui.components.AppCard
 import com.base.iot.core.ui.recycler.IotDeviceQuickAdapter
-import com.base.iot.feature.demo.DashboardUiState
-import com.base.iot.feature.demo.DashboardViewModel
+import com.base.iot.feature.demo.*
 import com.base.iot.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,19 +31,19 @@ import com.base.iot.ui.theme.AppTheme
 fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
     val colors = AppTheme.colors
 
-    AppCard(title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_card_title), icon = Icons.Filled.FolderZip, iconTint = colors.accentAmber) {
+    AppCard(title = stringResource(R.string.storage_card_title), icon = Icons.Filled.FolderZip, iconTint = colors.accentAmber) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            val policyName = androidx.compose.ui.res.stringResource(uiState.currentCacheType.titleRes)
-            val pendingText = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_init_pending)
+            val policyName = stringResource(uiState.currentCacheType.titleRes)
+            val pendingText = stringResource(R.string.storage_init_pending)
             Text(
-                text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_current_policy_prefix, policyName),
+                text = stringResource(R.string.storage_current_policy_prefix, policyName),
                 color = colors.textPrimary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = androidx.compose.ui.res.stringResource(
-                    com.base.iot.R.string.storage_path_prefix,
+                text = stringResource(
+                    R.string.storage_path_prefix,
                     uiState.currentCachePath.ifEmpty { pendingText }
                 ),
                 color = colors.textSecondary,
@@ -60,7 +63,7 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
                         onClick = { vm.setCacheLocationType(type) },
                         label = {
                             Text(
-                                text = androidx.compose.ui.res.stringResource(type.titleRes),
+                                text = stringResource(type.titleRes),
                                 fontSize = 11.sp
                             )
                         },
@@ -73,21 +76,21 @@ fun CacheManagementCard(uiState: DashboardUiState, vm: DashboardViewModel) {
             }
 
             Text(
-                text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_cached_files_count, uiState.cacheFilesCount),
+                text = stringResource(R.string.storage_cached_files_count, uiState.cacheFilesCount),
                 color = colors.textSecondary,
                 fontSize = 12.sp
             )
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 AppButton(
-                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.storage_btn_share_file),
+                    text = stringResource(R.string.storage_btn_share_file),
                     icon = Icons.Filled.Share,
                     color = colors.accentGreen,
                     modifier = Modifier.weight(1f),
                     onClick = vm::shareLatestDownloadedFile
                 )
                 AppButton(
-                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.btn_clear),
+                    text = stringResource(R.string.btn_clear),
                     icon = Icons.Filled.DeleteSweep,
                     color = colors.accentRed,
                     modifier = Modifier.weight(1f),
@@ -103,8 +106,8 @@ fun BrvahRecyclerCard(uiState: DashboardUiState) {
     val colors = AppTheme.colors
 
     AppCard(
-        title = androidx.compose.ui.res.stringResource(com.base.iot.R.string.brvah_card_title),
-        icon = Icons.Filled.ListAlt,
+        title = stringResource(R.string.brvah_card_title),
+        icon = Icons.AutoMirrored.Filled.ListAlt,
         iconTint = colors.accentCyan
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {

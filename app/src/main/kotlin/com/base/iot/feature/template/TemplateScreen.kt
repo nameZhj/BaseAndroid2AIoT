@@ -7,9 +7,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.base.iot.R
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.core.ui.components.AppCard
 import com.base.iot.core.ui.dialog.AppErrorDialog
@@ -32,9 +34,9 @@ fun TemplateScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            AppCard(title = androidx.compose.ui.res.stringResource(uiState.titleRes)) {
+            AppCard(title = stringResource(uiState.titleRes)) {
                 AppButton(
-                    text = androidx.compose.ui.res.stringResource(com.base.iot.R.string.template_execute_btn),
+                    text = stringResource(R.string.template_execute_btn),
                     icon = Icons.Filled.PlayArrow,
                     color = AppTheme.colors.accentPrimary,
                     onClick = viewModel::executeSampleTask
