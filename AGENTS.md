@@ -33,14 +33,19 @@ VERSION: 3.0 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
       - All IPs, ports, URLs, timeouts, retry counts, storage paths MUST reside in `AppConfig` (single authority).
 2.2 FORBID_INLINE_PACKAGE_PATHS:
     - ABSOLUTE_ZERO_TOLERANCE: Zero inline Fully Qualified Names (FQNs) anywhere in code bodies.
+    - TOP_LEVEL_IMPORTS_ONLY:
+      - 100% of symbol imports MUST be declared in the file header (between `package` statement and class/function declarations).
+      - NEVER import or inline package paths on-the-fly while coding inside functions, composables, or class bodies.
+      - Any required class, interface, annotation, extension function, or constant MUST be registered via `import` at the top of the file BEFORE being used.
     - FORBIDDEN:
       - Inline package paths in logic: `com.base.iot.R.string.xxx`, `com.base.iot.core.ui.theme.AppTheme.colors`.
       - Inline framework classes: `androidx.compose.ui.res.stringResource(...)`, `androidx.compose.foundation.layout.fillMaxSize()`.
       - Inline annotations: `@androidx.annotation.StringRes`, `@dagger.hilt.android.lifecycle.HiltViewModel`.
       - Inline utils / types: `kotlinx.coroutines.flow.update`, `android.widget.Toast.makeText(...)`.
     - MANDATORY:
-      - Header Imports: 100% of symbols MUST be declared via `import` statements at the top of the file (`import com.base.iot.R`, `import androidx.annotation.StringRes`).
+      - Header Imports: 100% of symbols MUST be declared via top-level `import` statements (`import com.base.iot.R`, `import androidx.annotation.StringRes`).
       - Code Body: ONLY use unqualified short symbol names (`R.string.xxx`, `stringResource(...)`, `@StringRes`).
+      - Name Collision: If colliding names exist, alias them at the header (`import foo.Bar as FooBar`), NEVER fall back to inline FQNs.
 2.3 TOKEN_ECONOMY_AND_FILE_GRANULARITY:
     - FILE_SIZE_LIMIT: 50~150 lines per Kotlin file. Files > 150 lines MUST be split.
     - VM_SPLIT: ViewModels split using same-package extension files (`fun MyViewModel.doSomething() = ...`).
@@ -261,7 +266,7 @@ Clone `feature/template/` -> `feature/<name>/`:
 - Pre-delivery self-audit:
   [ ] Git safety: Zero `git push` executed unless explicitly commanded.
   [ ] String hygiene: Zero hardcoded string literals in UI/VM/dialogs. 100% in strings.xml (zh & en). No scattered configs.
-  [ ] Import hygiene: Zero inline package paths / FQNs. All symbols strictly declared at file header.
+  [ ] Import hygiene: 100% symbols declared at file header before usage. Zero inline package paths / FQNs in code bodies.
   [ ] Token hygiene: Zero color hex, zero hardcoded endpoints/ports. 100% colors from `AppTheme.colors.*`.
   [ ] Module boundary: Zero protocol driver imports in `src/main/`. All new feature code strictly in `:app`.
   [ ] Dialog compliance: 100% Dialogs have a top-right plain text "关闭" button (NO icon). Adequate 48dp touch area.
