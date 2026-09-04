@@ -1,5 +1,29 @@
 # AGENT_DIRECTIVES: BaseAndroid2AIoT
-VERSION: 3.0 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
+VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
+
+## [0_CAPABILITY_ROUTING_INDEX]
+0.1 KEYWORD_TO_FILE_ROUTER (Zero Search Overhead | High-Efficiency Architectural Router):
+| 业务场景 / 需求关键字 | 核心目标路径 (Target Files / Packages) | 核心能力职责 |
+| :--- | :--- | :--- |
+| **HTTP / 上传下载 / 超时** | `core/.../network/HttpManager.kt` | 统一网络请求、1h 大文件流式传输 |
+| **MQTT / HiveMQ / 订阅发布** | `core/.../iot/MqttManager.kt` | 物联网消息推送、Topic 监听与心跳 |
+| **Redis / Jedis / 控制指令** | `core/.../iot/RedisManager.kt` | 内存高速指令通道与状态同步 |
+| **TCP Socket / 工业长连接** | `core/.../iot/SocketManager.kt` | 原始 TCP 通信、心跳与断线重连 |
+| **缓存路径 / SD卡 / 下载存储** | `core/.../storage/CacheLocationManager.kt` | DataStore 驱动的多存储路径动态切换 |
+| **系统分享 / 崩溃报告 / 沙箱** | `core/.../storage/FileShareManager.kt` | FileProvider 原生安全跨进程分享 |
+| **超长分段日志 / Logcat 防截断** | `core/.../diagnostics/Lg.kt` | 4000 字符自动分片输出与时序标记 |
+| **错误诊断 / 根因解析 / 报错弹窗** | `core/.../diagnostics/ErrorParser.kt` | 系统/网络/硬件多维故障画像分析 |
+| **主题日夜间 / 沉浸式系统栏** | `core/.../ui/theme/` & `MainActivity.kt` | WCAG AAA 设计系统、状态栏透明适配 |
+| **通用原子组件 / 弹窗体系** | `core/.../ui/components/` & `ui/dialog/` | AppCard, AppButton, AppProgressDialog 等 |
+| **新业务脚手架 (Scaffold)** | `app/.../feature/template/` | 业务克隆模板 (UiState, ViewModel, Screen) |
+| **演示业务 / 清退参考** | `app/.../feature/demo/` | [DEMO_ACTIVE] 完整双栏参考与自毁清退源 |
+
+0.2 ROUTER_MAINTENANCE_RULES (Prevent Token Tax & Write Amplification):
+    - TRIGGERS: Synchronously update this table ONLY when:
+      1. Creating a new business feature via template clone (`feature/<name>/`).
+      2. Adding a new infrastructure manager or protocol driver in `:core`.
+      3. Purging `feature/demo/` (remove demo router entry and add target feature).
+    - BYPASS: STRICTLY FORBIDDEN to update this table for bugfixes, UI tweaks, business logic updates, or strings.xml changes.
 
 ## [1_MODULE_AND_GIT_BOUNDARIES]
 1.1 GIT_SAFETY:
@@ -180,7 +204,8 @@ STATUS: DEMO_ACTIVE | TRIGGER: FORMAL_FEATURE_DEV -> AUTO_PURGE_ALL_DEMO
    - STEP 2: Remount `MainActivity.kt`: Replace `DashboardScreen()` with `feature.<name>.<Feature>Screen()`.
    - STEP 3: Delete demo folder: Remove `app/src/main/kotlin/com/base/iot/feature/demo/` completely.
    - STEP 4: Delete demo strings: Remove `app/src/main/res/values/demo_strings.xml` and `app/src/main/res/values-en/demo_strings.xml`.
-   - STEP 5: Validate clean build: Run `.\gradlew.bat compileDebugKotlin` (MUST be exit code 0).
+   - STEP 5: Update router: Remove demo entries from `[0_CAPABILITY_ROUTING_INDEX]` and register newly mounted feature.
+   - STEP 6: Validate clean build: Run `.\gradlew.bat compileDebugKotlin` (MUST be exit code 0).
 
 ## [7_TOPOLOGY]
 Multi-Module Architecture:
@@ -277,4 +302,5 @@ Clone `feature/template/` -> `feature/<name>/`:
   [ ] Paradigm hygiene: StateFlow collected via `collectAsStateWithLifecycle()`, zero Context/Activity leaks in VM.
   [ ] Thread hygiene: Background tasks & IO operations dispatched to `Dispatchers.IO`.
   [ ] Granularity: Every Kotlin file <= 150 lines.
+  [ ] Router hygiene: If created new feature or added `:core` manager, updated `[0_CAPABILITY_ROUTING_INDEX]`. Otherwise untouched.
   [ ] Demo hygiene: If in formal dev mode, zero demo files or DEMO_* constants remain.

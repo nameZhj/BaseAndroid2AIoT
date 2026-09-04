@@ -52,7 +52,7 @@
 
 ### 核心定位与特性
 - **Agent 指令友好**：全篇采用严谨的命令式规约（如 `ABSOLUTE_ZERO_TOLERANCE`、`MANDATORY_I18N`、`TOP_LEVEL_IMPORTS_ONLY`），剥离自然语言歧义与冗词，智能体理解与执行准确率达 100%。
-- **十项核心规范模块**：涵盖模块与 Git 边界、Code Hygiene & Token Economy (代码整洁度与上下文优化)、UI 布局防变形、Dialog 规范、UDF 响应式范式、Demo 自动化清理流水线 (Auto-Purge Pipeline)、模块拓扑、业务脚手架模板 (Feature Recipe)、基础设施矩阵 (Infra Matrix) 及交付自检清单。
+- **十一项核心规范模块**：涵盖架构能力路由索引、模块与 Git 边界、Code Hygiene & Token Economy (代码整洁度与上下文优化)、UI 布局防变形、Dialog 规范、UDF 响应式范式、Demo 自动化清理流水线 (Auto-Purge Pipeline)、模块拓扑、业务脚手架模板 (Feature Recipe)、基础设施矩阵 (Infra Matrix) 及交付自检清单。
 
 ### 为什么比常规项目更适合 Agent 开发？
 | 评估维度 | 常规 Android 项目 | BaseAndroid2AIoT (本项目) | 对 Agent 开发的决定性优势 |
