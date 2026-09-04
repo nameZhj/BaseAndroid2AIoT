@@ -1,7 +1,7 @@
 package com.base.iot.core.ui.dialog
 
 import android.content.Context
-import com.base.iot.R
+import com.base.iot.core.R
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.OnConfirmListener

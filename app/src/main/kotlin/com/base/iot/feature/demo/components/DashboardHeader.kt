@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.base.iot.R
 import com.base.iot.feature.demo.*
-import com.base.iot.ui.theme.AppTheme
+import com.base.iot.core.ui.theme.AppTheme
 
 @Composable
 fun DashboardHeader(

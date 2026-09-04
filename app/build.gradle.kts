@@ -7,12 +7,6 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-// ==================== 统一编译期协议裁剪执行器 (配置源: gradle.properties) ====================
-val isHttpCompiled: Boolean = (project.findProperty("iot.protocol.http.enabled") as? String)?.toBoolean() ?: true
-val isMqttCompiled: Boolean = (project.findProperty("iot.protocol.mqtt.enabled") as? String)?.toBoolean() ?: true
-val isRedisCompiled: Boolean = (project.findProperty("iot.protocol.redis.enabled") as? String)?.toBoolean() ?: true
-val isSocketCompiled: Boolean = (project.findProperty("iot.protocol.socket.enabled") as? String)?.toBoolean() ?: true
-
 android {
     namespace = "com.base.iot"
     compileSdk = 35
@@ -27,12 +21,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        // 注入编译期协议打包状态常量到 BuildConfig
-        buildConfigField("Boolean", "IS_HTTP_COMPILED", isHttpCompiled.toString())
-        buildConfigField("Boolean", "IS_MQTT_COMPILED", isMqttCompiled.toString())
-        buildConfigField("Boolean", "IS_REDIS_COMPILED", isRedisCompiled.toString())
-        buildConfigField("Boolean", "IS_SOCKET_COMPILED", isSocketCompiled.toString())
     }
 
     buildTypes {
@@ -66,18 +54,6 @@ android {
         buildConfig = true
     }
 
-    // ==================== 按需动态挂载源码集 ====================
-    sourceSets {
-        getByName("main") {
-            val protocolDirs = mutableListOf<String>()
-            protocolDirs.add(if (isHttpCompiled) "src/protocol_http/kotlin" else "src/protocol_http_stub/kotlin")
-            protocolDirs.add(if (isMqttCompiled) "src/protocol_mqtt/kotlin" else "src/protocol_mqtt_stub/kotlin")
-            protocolDirs.add(if (isRedisCompiled) "src/protocol_redis/kotlin" else "src/protocol_redis_stub/kotlin")
-            protocolDirs.add(if (isSocketCompiled) "src/protocol_socket/kotlin" else "src/protocol_socket_stub/kotlin")
-            kotlin.srcDirs(protocolDirs)
-        }
-    }
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -93,73 +69,22 @@ android {
 }
 
 dependencies {
-    // AndroidX Core
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.window)
-    implementation(libs.m3.window.size)
+    // 依赖纯净基础框架
+    implementation(project(":core"))
 
-    // Compose BOM
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.material.icons.extended)
-    implementation(libs.compose.animation)
+    // Compose Navigation & Hilt Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
 
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
 
-    // ==================== 条件依赖引入（核心：未开启则绝不打包进 APK） ====================
-
-    // HTTP 协议组件（开启时引入 Retrofit 与 OkHttp，关闭时不参与依赖解析）
-    if (isHttpCompiled) {
-        implementation(libs.retrofit)
-        implementation(libs.retrofit.converter.gson)
-        implementation(libs.okhttp)
-        implementation(libs.okhttp.logging)
-    }
-
-    // MQTT 协议组件（开启时引入 HiveMQ 及底层 Netty 约 15MB 依赖，关闭时彻底剔除）
-    if (isMqttCompiled) {
-        implementation(libs.hivemq.mqtt.client)
-    }
-
-    // Redis 协议组件（开启时引入 Jedis，关闭时彻底剔除）
-    if (isRedisCompiled) {
-        implementation(libs.jedis)
-    }
-
-    // Image Loading
-    implementation(libs.coil.compose)
-
-    // RecyclerView & BRVAH (GitHub 顶级通用列表适配器框架)
+    // RecyclerView & BRVAH (用于 Demo 列表)
     implementation(libs.androidx.recyclerview)
     implementation(libs.brvah)
 
-    // XPopup (GitHub 顶级弹窗库)
-    implementation(libs.xpopup)
-
-    // DataStore
-    implementation(libs.datastore.preferences)
-
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.core)
-
-    // Serialization
-    implementation(libs.kotlinx.serialization.json)
-
-    // Gson (通用序列化)
+    // Gson
     implementation(libs.gson)
 
     // Test

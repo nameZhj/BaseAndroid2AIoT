@@ -1,5 +1,5 @@
 // [DEMO_FILE] Reference demo only. Auto-purge on formal development.
-package com.base.iot.core.ui.recycler
+package com.base.iot.feature.demo.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.compose.ui.graphics.toArgb
 import androidx.recyclerview.widget.RecyclerView
 import com.base.iot.R
-import com.base.iot.ui.theme.DarkAppColors
-import com.base.iot.ui.theme.LightAppColors
+import com.base.iot.core.ui.theme.DarkAppColors
+import com.base.iot.core.ui.theme.LightAppColors
 import com.chad.library.adapter4.BaseQuickAdapter
 
 /**

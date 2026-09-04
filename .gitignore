@@ -17,11 +17,14 @@ gen/
 out/
 build/
 */build/
+**/build/
 app/build/
+core/build/
 
 # Gradle files
 .gradle/
 build/
+*.hprof
 
 # Local configuration file (sdk path, etc)
 local.properties

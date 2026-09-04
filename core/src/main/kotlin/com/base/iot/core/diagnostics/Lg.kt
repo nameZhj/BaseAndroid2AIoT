@@ -1,7 +1,7 @@
 package com.base.iot.core.diagnostics
 
 import android.util.Log
-import com.base.iot.BuildConfig
+import com.base.iot.core.BuildConfig
 
 object Lg {
     var isEnabled: Boolean = BuildConfig.ENABLE_LOG

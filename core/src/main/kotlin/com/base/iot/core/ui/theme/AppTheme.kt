@@ -1,4 +1,4 @@
-package com.base.iot.ui.theme
+package com.base.iot.core.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

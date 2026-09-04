@@ -7,7 +7,7 @@ import com.base.iot.core.config.IotProtocolSwitches
 import com.base.iot.core.diagnostics.ParsedError
 import com.base.iot.core.storage.CacheLocationType
 import com.base.iot.core.ui.dialog.LoadingConfig
-import com.base.iot.core.ui.recycler.IotDeviceItem
+import com.base.iot.feature.demo.adapter.IotDeviceItem
 import com.base.iot.core.ui.theme.ThemeMode
 import java.io.File
 

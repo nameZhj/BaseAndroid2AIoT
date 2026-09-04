@@ -12,7 +12,7 @@ import com.base.iot.core.iot.SocketConnectionState
 import com.base.iot.core.storage.CacheLocationManager
 import com.base.iot.core.storage.FileShareManager
 import com.base.iot.core.ui.dialog.LoadingConfig
-import com.base.iot.core.ui.recycler.IotDeviceItem
+import com.base.iot.feature.demo.adapter.IotDeviceItem
 import com.base.iot.core.ui.theme.ThemeManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope

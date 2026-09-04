@@ -51,7 +51,12 @@ VERSION: 2.0 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
    - SURGICAL_EDITS: Use `replace_file_content` / `multi_replace_file_content`. Avoid full file rewrites.
    - CONCISE_COMMENTS: High-signal architectural notes only. Zero decorative banners or redundant restatements.
 
-8. AUTO_PURGE_DEMO_ON_FORMAL_DEV:
+8. MODULE_BOUNDARY_AND_CODE_PLACEMENT:
+   - NEW_FEATURE_PLACEMENT: 100% of new business feature code, UI screens, ViewModels, and state models MUST be developed in `:app` (`app/src/main/kotlin/com/base/iot/feature/<name>/`).
+   - CORE_INTEGRITY_LOCK: DO NOT tamper with or modify existing base framework code in `:core` (`core/src/main/kotlin/com/base/iot/core/`) unless strictly necessary.
+   - CORE_EXTENSION_PERMISSION: Only when adding new infrastructure-level capabilities, global protocols, cross-feature shared utilities, or design system tokens, should code be added to `:core`.
+
+9. AUTO_PURGE_DEMO_ON_FORMAL_DEV:
    - TRIGGER: When user instructs formal/business development ("开始正式开发", "实现业务需求"), Agent MUST automatically delete demo files and purge demo mounts/configs.
    - PURGE_TARGETS: Everything indexed in `[DEMO_INDEX_AND_AUTO_PURGE]`.
    - ZERO_RESIDUE: Formal production releases MUST have zero demo code remnants.
@@ -59,7 +64,7 @@ VERSION: 2.0 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
 ## [DEMO_INDEX_AND_AUTO_PURGE]
 STATUS: DEMO_ACTIVE | TRIGGER: FORMAL_FEATURE_DEV -> AUTO_PURGE_ALL_DEMO
 1. DEMO_FILE_REGISTRY (Action: DELETE directory & files on formal dev):
-   - Package: `app/src/main/kotlin/com/base/iot/feature/demo/` (15 files):
+   - Package: `app/src/main/kotlin/com/base/iot/feature/demo/` (16 files):
      - `DashboardScreen.kt`: Demo dashboard UI entry
      - `DashboardPanes.kt`: Demo single/two pane layouts
      - `DashboardViewModel.kt`: Demo ViewModel core
@@ -68,6 +73,8 @@ STATUS: DEMO_ACTIVE | TRIGGER: FORMAL_FEATURE_DEV -> AUTO_PURGE_ALL_DEMO
      - `DashboardIotOps.kt`: Demo MQTT/Redis/Socket operations extension
      - `DashboardSettingsOps.kt`: Demo settings & dialog operations extension
      - `DashboardDiagnosticsOps.kt`: Demo crash & timeout diagnostics extension
+     - `DemoConfig.kt`: Demo-isolated endpoint & topic constants
+     - `adapter/IotDeviceQuickAdapter.kt`: Demo device list RecyclerView adapter
      - `components/DashboardHeader.kt`: Demo header card
      - `components/DiagnosticsAndSettingsCards.kt`: Demo diagnostics cards
      - `components/LoadingAndErrorDemoCard.kt`: Demo progress & error cards
@@ -75,36 +82,43 @@ STATUS: DEMO_ACTIVE | TRIGGER: FORMAL_FEATURE_DEV -> AUTO_PURGE_ALL_DEMO
      - `components/StorageCards.kt`: Demo storage & cache cards
      - `components/TerminalLogCard.kt`: Demo terminal log card
      - `components/UnifiedDialogDemoCard.kt`: Demo dialogs card
-   - Recycler Demo: `core/ui/recycler/IotDeviceQuickAdapter.kt` (used solely in demo StorageCards)
-2. DEMO_CODE_REGISTRY (Action: STRIP demo blocks on formal dev):
+   - Resource Bundles (Action: DELETE files on formal dev):
+     - `app/src/main/res/values/demo_strings.xml`
+     - `app/src/main/res/values-en/demo_strings.xml`
+2. DEMO_CODE_REGISTRY (Action: REMOUNT on formal dev):
    - Mount Point (`MainActivity.kt`):
      - Remove `import com.base.iot.feature.demo.DashboardScreen`
      - Replace `DashboardScreen()` with target feature screen (e.g. `<Feature>Screen()`)
-   - Config Authority (`core/config/AppConfig.kt`):
-     - Strip block `[DEMO_CONFIG_START]` -> `[DEMO_CONFIG_END]` (`DEMO_HTTP_*`, `DEMO_MQTT_*`, `DEMO_REDIS_*`, `DEMO_UNREACHABLE_*`)
-   - Resource Bundles (`res/values/strings.xml` & `res/values-en/strings.xml`):
-     - Strip block `[DEMO_STRINGS_START]` -> `[DEMO_STRINGS_END]`
 3. AUTO_PURGE_PIPELINE (Step-by-step agent execution):
    - STEP 1: Scaffold production feature: Clone `feature/template/` -> `feature/<name>/`.
    - STEP 2: Remount `MainActivity.kt`: Replace `DashboardScreen()` with `feature.<name>.<Feature>Screen()`.
    - STEP 3: Delete demo folder: Remove `app/src/main/kotlin/com/base/iot/feature/demo/` completely.
-   - STEP 4: Strip demo code blocks: Clean `AppConfig.kt` (`[DEMO_CONFIG_*]`) and `strings.xml` (`[DEMO_STRINGS_*]`).
+   - STEP 4: Delete demo strings: Remove `app/src/main/res/values/demo_strings.xml` and `app/src/main/res/values-en/demo_strings.xml`.
    - STEP 5: Validate clean build: Run `.\gradlew.bat compileDebugKotlin` (MUST be exit code 0).
 
 ## [TOPOLOGY]
-Root: `app/src/main/kotlin/com/base/iot/`
-- `core/base/`: `BaseViewModel.kt`, `UiContract.kt`
-- `core/config/`: `AppConfig.kt` (single config authority), `IotProtocolConfig.kt`
-- `core/iot/`: `IotHub.kt` (facade), `MqttManager.kt`, `RedisManager.kt`, `SocketManager.kt`
-- `core/network/`: `HttpManager.kt` (GET/POST/PUT/DELETE/Upload/Download abstractions)
-- `core/storage/`: `CacheLocationManager.kt`, `FileShareManager.kt`
-- `core/diagnostics/`: `Lg.kt`, `ErrorParser.kt`, `CrashHandler.kt`, `LogExporter.kt`
-- `core/ui/components/`: `AppCard.kt`, `AppButton.kt`, `AppSwitchRow.kt`
-- `core/ui/dialog/`: `AppProgressDialog.kt`, `AppErrorDialog.kt`, `AppConfirmDialog.kt`, `AppInputDialog.kt`, `AppBottomSheetDialog.kt`, `AppLoadingDialog.kt`
-- `core/ui/theme/`: `ThemeManager.kt`, `AppTheme.colors` (Dark/Light tokens)
-- `feature/template/`: Scaffold source. Clone for new features (`TemplateUiState.kt`, `TemplateViewModel.kt`, `TemplateScreen.kt`).
-- `feature/demo/`: Reference split implementation ([DEMO_ACTIVE], purge on formal dev).
-- MOUNT_POINT: `MainActivity.kt` -> `DashboardScreen()` ([DEMO_MOUNT_POINT], remount on formal dev)
+Multi-Module Architecture:
+1. `:core` (Android Library - `core/src/main/kotlin/com/base/iot/core/`):
+   - `base/`: `BaseViewModel.kt`, `UiContract.kt`
+   - `config/`: `AppConfig.kt` (single config authority, zero demo), `IotProtocolConfig.kt`
+   - `iot/`: `IotHub.kt` (facade), `MqttManager.kt`, `RedisManager.kt`, `SocketManager.kt`
+   - `network/`: `HttpManager.kt` (GET/POST/PUT/DELETE/Upload/Download abstractions)
+   - `storage/`: `CacheLocationManager.kt`, `FileShareManager.kt`
+   - `diagnostics/`: `Lg.kt`, `ErrorParser.kt`, `CrashHandler.kt`, `LogExporter.kt`
+   - `ui/components/`: `AppCard.kt`, `AppButton.kt`, `AppSwitchRow.kt`
+   - `ui/dialog/`: `AppProgressDialog.kt`, `AppErrorDialog.kt`, `AppConfirmDialog.kt`, `AppInputDialog.kt`, `AppBottomSheetDialog.kt`, `XPopupBridge.kt`
+   - `ui/theme/`: `ThemeManager.kt`, `AppTheme.kt` (`AppTheme.colors`, `DarkAppColors`, `LightAppColors`)
+   - `core/src/protocol_*/`: `protocol_http`, `protocol_mqtt`, `protocol_redis`, `protocol_socket` (real drivers & zero-dep stubs)
+   - `core/src/main/res/values/strings.xml`: Pure core framework string resources (zh & en)
+
+2. `:app` (Application - `app/src/main/kotlin/com/base/iot/`):
+   - `App.kt`: Application entry, crash handler installation
+   - `MainActivity.kt`: Single Activity, dynamic theme & system bars, Compose root
+   - `feature/template/`: Scaffold source. Clone for new features (`TemplateUiState.kt`, `TemplateViewModel.kt`, `TemplateScreen.kt`).
+   - `feature/demo/`: Reference split implementation ([DEMO_ACTIVE], purge on formal dev).
+   - `app/src/main/res/values/demo_strings.xml`: Demo string resources (zh & en).
+   - `app/src/main/res/values/strings.xml`: Application metadata and template strings.
+   - MOUNT_POINT: `MainActivity.kt` -> `DashboardScreen()` ([DEMO_MOUNT_POINT], remount on formal dev)
 
 ## [RECIPE: NEW_FEATURE]
 Clone `feature/template/` -> `feature/<name>/`:

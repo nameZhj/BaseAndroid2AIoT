@@ -23,7 +23,7 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
-import com.base.iot.R
+import com.base.iot.core.R
 
 /**
  * 通用 Compose 图片加载组件（基于 Coil）。

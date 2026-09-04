@@ -1,0 +1,116 @@
+<resources>
+    <string name="fileprovider_authority">${applicationId}.fileprovider</string>
+
+    <!-- Generic Actions & Prompts -->
+    <string name="btn_confirm">Confirm</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_close">Close</string>
+    <string name="btn_clear">Clear</string>
+    <string name="btn_i_know">Understood</string>
+    <string name="btn_share">Share</string>
+    <string name="loading">Loading...</string>
+    <string name="processing">Processing...</string>
+    <string name="input_hint_default">Please enter content</string>
+    <string name="image_load_failed">Failed to load image</string>
+
+    <!-- Error Dialog -->
+    <string name="error_dialog_title">Operation Exception</string>
+    <string name="error_root_cause_prefix">Root Cause: %1$s</string>
+    <string name="error_collapse_report">Collapse Diagnostic Report &amp; Stack</string>
+    <string name="error_expand_report">Expand Full Diagnostic Report &amp; Stack</string>
+    <string name="error_btn_share_report">Share Diagnostic Report</string>
+
+    <!-- Progress Dialog -->
+    <string name="progress_default_title">Processing...</string>
+    <string name="progress_blocking_hint">Blocking (Anti-concurrency &amp; Duplicate Protected)</string>
+    <string name="progress_non_blocking_hint">Non-blocking (Interruptible)</string>
+    <string name="progress_default_message">Synchronizing with edge device, please wait...</string>
+    <string name="progress_completed_format">%1$d%% Completed</string>
+    <string name="progress_cancel_action">Cancel Operation</string>
+    <string name="percent_value_format">%1$d%%</string>
+
+    <!-- Protocol Switches -->
+    <string name="protocol_switches_title">Protocol Switches</string>
+    <string name="protocol_compiled">Compiled</string>
+    <string name="protocol_not_compiled">Trimmed (Not Compiled)</string>
+    <string name="protocol_locked_on">Locked On</string>
+    <string name="protocol_connected">Connected</string>
+    <string name="protocol_disconnected">Disconnected</string>
+    <string name="protocol_http">HTTP</string>
+    <string name="protocol_mqtt">MQTT</string>
+    <string name="protocol_redis">Redis</string>
+    <string name="protocol_socket">Socket</string>
+
+    <!-- Theme Modes -->
+    <string name="theme_light">Light Mode</string>
+    <string name="theme_light_desc">Bright daytime mode with high-contrast visuals</string>
+    <string name="theme_dark">Dark Mode</string>
+    <string name="theme_dark_desc">Deep dark mode, eye-care and energy efficient</string>
+    <string name="theme_system">System Default</string>
+    <string name="theme_system_desc">Auto switch based on Android system dark/light mode</string>
+
+    <!-- Storage & Cache Locations -->
+    <string name="storage_loc_internal">Internal Private Cache</string>
+    <string name="storage_loc_internal_desc">App internal cache dir, auto cleared on uninstall, highest isolation</string>
+    <string name="storage_loc_external">External Private Cache</string>
+    <string name="storage_loc_external_desc">Located at Android/data/pkg/cache, spacious, recommended for large files</string>
+    <string name="storage_loc_downloads">System Downloads Directory</string>
+    <string name="storage_loc_downloads_desc">Located at Android/data/pkg/files/Downloads, easy to persist</string>
+
+    <!-- System Share -->
+    <string name="share_file_title">Share File</string>
+    <string name="share_files_title">Share Multiple Files</string>
+    <string name="share_report_title">Share Error Diagnostic Report</string>
+    <string name="share_file_body">File from BaseAndroid2AIoT terminal: %1$s (%2$d bytes)</string>
+    <string name="share_crash_logs_title">Share Log Files</string>
+    <string name="share_crash_logs_subject">IoT App Crash Logs</string>
+    <string name="share_crash_logs_body">The attachment contains %1$d crash log files, please assist in diagnosis.</string>
+
+    <!-- Diagnostics Report Generator -->
+    <string name="err_dns_fail">DNS Resolution Failed</string>
+    <string name="err_dns_fail_desc">Failed to resolve domain (%1$s), check internet connection or local DNS settings.</string>
+    <string name="err_conn_refused">Connection Refused</string>
+    <string name="err_conn_refused_desc">Failed to connect to host and port (%1$s), verify remote service is running and firewall allows traffic.</string>
+    <string name="err_timeout">Network Timeout</string>
+    <string name="err_timeout_desc">TCP handshake or read/write timeout (%1$s), high latency or node unresponsive.</string>
+    <string name="err_ssl_fail">SSL/TLS Certificate Verification Failed</string>
+    <string name="err_ssl_fail_desc">HTTPS/TLS handshake failed (%1$s), possibly untrusted self-signed cert or expired cert chain.</string>
+    <string name="err_protocol_disabled">Protocol Disabled</string>
+    <string name="err_protocol_disabled_desc">Requested protocol (%1$s) is disabled at compile-time or runtime.</string>
+    <string name="err_http_server">HTTP Server Error [HTTP %1$d]</string>
+    <string name="err_http_server_desc">Server returned error status code: %1$d %2$s</string>
+    <string name="err_unknown_runtime">System Runtime Exception (%1$s)</string>
+    <string name="err_unknown_runtime_desc">An unknown runtime exception occurred, inspect the diagnostic report for details.</string>
+
+    <string name="err_report_header">==================== IoT Terminal Error Report ====================</string>
+    <string name="err_report_time">■ Timestamp: %1$s</string>
+    <string name="err_report_category">■ Error Category: %1$s</string>
+    <string name="err_report_summary">■ Summary: %1$s</string>
+    <string name="err_report_advice">■ Actionable Advice: %1$s</string>
+    <string name="err_report_device_info">-------------------- Device &amp; Environment Info --------------------</string>
+    <string name="err_report_network">■ Current Network: %1$s</string>
+    <string name="err_report_hardware">■ Hardware Device: %1$s %2$s (%3$s)</string>
+    <string name="err_report_os">■ OS Version: Android %1$s (API %2$d)</string>
+    <string name="err_report_app_ver">■ App Version: %1$s (Code %2$d)</string>
+    <string name="err_report_stack">-------------------- Root Cause Exception Stacktrace --------------------</string>
+    <string name="err_report_footer">==================== End of Report ====================</string>
+
+    <!-- Network Diagnostics Status -->
+    <string name="net_status_wifi">WIFI Connected</string>
+    <string name="net_status_ethernet">Ethernet Connected</string>
+    <string name="net_status_cellular">Cellular Data Connected</string>
+    <string name="net_status_other">Other Network Connected</string>
+    <string name="net_status_offline">No Network Connection (Offline)</string>
+    <string name="net_status_unknown">Unknown Network Status</string>
+
+    <!-- IoT Operation Hints -->
+    <string name="op_http_get">HTTP GET in progress...</string>
+    <string name="op_http_post">HTTP POST in progress...</string>
+    <string name="op_http_put">HTTP PUT in progress...</string>
+    <string name="op_http_delete">HTTP DELETE in progress...</string>
+    <string name="op_http_upload">HTTP Multipart Uploading...</string>
+    <string name="op_http_download">HTTP Streaming Downloading...</string>
+    <string name="op_mqtt_connect">Connecting to MQTT Broker...</string>
+    <string name="op_redis_connect">Connecting to Redis Server...</string>
+    <string name="op_socket_connect">Establishing TCP Socket Connection...</string>
+</resources>

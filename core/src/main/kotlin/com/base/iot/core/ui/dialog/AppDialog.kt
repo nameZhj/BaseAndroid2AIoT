@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.base.iot.R
-import com.base.iot.ui.theme.AppTheme
+import com.base.iot.core.R
+import com.base.iot.core.ui.theme.AppTheme
 
 @Composable
 fun AppConfirmDialog(

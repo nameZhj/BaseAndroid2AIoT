@@ -1,0 +1,116 @@
+<resources>
+    <string name="fileprovider_authority">${applicationId}.fileprovider</string>
+
+    <!-- 通用操作与提示 -->
+    <string name="btn_confirm">确认</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_close">关闭</string>
+    <string name="btn_clear">清空</string>
+    <string name="btn_i_know">我知道了</string>
+    <string name="btn_share">分享</string>
+    <string name="loading">加载中...</string>
+    <string name="processing">正在处理中...</string>
+    <string name="input_hint_default">请输入内容</string>
+    <string name="image_load_failed">图片加载失败</string>
+
+    <!-- 异常与错误弹窗 -->
+    <string name="error_dialog_title">操作执行异常</string>
+    <string name="error_root_cause_prefix">根因: %1$s</string>
+    <string name="error_collapse_report">收起诊断报告与堆栈</string>
+    <string name="error_expand_report">展开完整诊断报告与堆栈</string>
+    <string name="error_btn_share_report">分享诊断报告</string>
+
+    <!-- 耗时进度弹窗 -->
+    <string name="progress_default_title">正在处理中...</string>
+    <string name="progress_blocking_hint">阻塞式（防并发防重复）</string>
+    <string name="progress_non_blocking_hint">非阻塞式（可随时中断）</string>
+    <string name="progress_default_message">正在与边缘设备同步，请稍候...</string>
+    <string name="progress_completed_format">已完成 %1$d%%</string>
+    <string name="progress_cancel_action">取消本次操作</string>
+    <string name="percent_value_format">%1$d%%</string>
+
+    <!-- 协议开关与状态 -->
+    <string name="protocol_switches_title">协议开关</string>
+    <string name="protocol_compiled">已编入</string>
+    <string name="protocol_not_compiled">未编译·已裁剪</string>
+    <string name="protocol_locked_on">常开锁定</string>
+    <string name="protocol_connected">已连接</string>
+    <string name="protocol_disconnected">未连接</string>
+    <string name="protocol_http">HTTP</string>
+    <string name="protocol_mqtt">MQTT</string>
+    <string name="protocol_redis">Redis</string>
+    <string name="protocol_socket">Socket</string>
+
+    <!-- 主题模式与描述 -->
+    <string name="theme_light">普通模式</string>
+    <string name="theme_light_desc">明亮日间模式，高对比度清爽视效</string>
+    <string name="theme_dark">夜间模式</string>
+    <string name="theme_dark_desc">深色极夜模式，沉浸护眼低功耗</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="theme_system_desc">根据 Android 系统深色/浅色模式自动切换</string>
+
+    <!-- 存储与缓存位置 -->
+    <string name="storage_loc_internal">内部私有缓存</string>
+    <string name="storage_loc_internal_desc">应用内部 cache 目录，卸载自动清除，隔离保护最高</string>
+    <string name="storage_loc_external">外部私有缓存</string>
+    <string name="storage_loc_external_desc">位于 Android/data/包名/cache，空间充裕，大文件推荐</string>
+    <string name="storage_loc_downloads">系统下载目录</string>
+    <string name="storage_loc_downloads_desc">位于 Android/data/包名/files/Downloads，易于持久保留</string>
+
+    <!-- 系统分享标题与描述 -->
+    <string name="share_file_title">分享文件</string>
+    <string name="share_files_title">批量分享文件</string>
+    <string name="share_report_title">分享错误诊断报告</string>
+    <string name="share_file_body">来自 BaseAndroid2AIoT 物联网终端的文件: %1$s (%2$d 字节)</string>
+    <string name="share_crash_logs_title">分享日志文件</string>
+    <string name="share_crash_logs_subject">IoT App 崩溃日志</string>
+    <string name="share_crash_logs_body">附件包含 %1$d 个崩溃日志文件，请协助排查问题。</string>
+
+    <!-- 诊断报告生成器 -->
+    <string name="err_dns_fail">DNS 解析失败</string>
+    <string name="err_dns_fail_desc">无法解析目标服务器域名 (%1$s)，请检查设备是否连接互联网或本地局域网 DNS 配置。</string>
+    <string name="err_conn_refused">连接被拒绝 (Connection Refused)</string>
+    <string name="err_conn_refused_desc">无法连接到目标主机与端口 (%1$s)，请确认远程服务已启动且工控防火墙已放行。</string>
+    <string name="err_timeout">网络请求超时 (Timeout)</string>
+    <string name="err_timeout_desc">TCP 握手或读写超时 (%1$s)，当前网络延迟过高或远程节点无响应。</string>
+    <string name="err_ssl_fail">SSL/TLS 证书校验失败</string>
+    <string name="err_ssl_fail_desc">HTTPS/TLS 安全握手未通过 (%1$s)，可能为自签名证书未加白或证书链过期。</string>
+    <string name="err_protocol_disabled">通信协议未就绪/已禁用</string>
+    <string name="err_protocol_disabled_desc">当前所请求的通信协议 (%1$s) 在编译期或运行时被配置为禁用状态。</string>
+    <string name="err_http_server">HTTP 服务端错误 [HTTP %1$d]</string>
+    <string name="err_http_server_desc">服务器返回异常状态码: %1$d %2$s</string>
+    <string name="err_unknown_runtime">系统执行异常 (%1$s)</string>
+    <string name="err_unknown_runtime_desc">发生未知运行时异常，请查阅完整堆栈报告。</string>
+
+    <string name="err_report_header">==================== 物联网终端错误诊断报告 ====================</string>
+    <string name="err_report_time">■ 发生时间: %1$s</string>
+    <string name="err_report_category">■ 错误类别: %1$s</string>
+    <string name="err_report_summary">■ 核心摘要: %1$s</string>
+    <string name="err_report_advice">■ 友好建议: %1$s</string>
+    <string name="err_report_device_info">-------------------- 设备与环境信息 --------------------</string>
+    <string name="err_report_network">■ 当前网络: %1$s</string>
+    <string name="err_report_hardware">■ 硬件设备: %1$s %2$s (%3$s)</string>
+    <string name="err_report_os">■ 系统版本: Android %1$s (API %2$d)</string>
+    <string name="err_report_app_ver">■ 应用版本: %1$s (Code %2$d)</string>
+    <string name="err_report_stack">-------------------- 根因异常调用堆栈 --------------------</string>
+    <string name="err_report_footer">==================== 报告结束 ====================</string>
+
+    <!-- 网络诊断状态 -->
+    <string name="net_status_wifi">WIFI 局域网已连接</string>
+    <string name="net_status_ethernet">有线以太网 (Ethernet) 已连接</string>
+    <string name="net_status_cellular">移动蜂窝数据已连接</string>
+    <string name="net_status_other">其他网络连接已接入</string>
+    <string name="net_status_offline">未连接任何网络 (离线)</string>
+    <string name="net_status_unknown">未知网络状态</string>
+
+    <!-- IoT 通信任务提示文案 -->
+    <string name="op_http_get">HTTP GET 请求中...</string>
+    <string name="op_http_post">HTTP POST 提交中...</string>
+    <string name="op_http_put">HTTP PUT 更新中...</string>
+    <string name="op_http_delete">HTTP DELETE 删除中...</string>
+    <string name="op_http_upload">HTTP Multipart 文件上传中...</string>
+    <string name="op_http_download">HTTP 流式文件下载中...</string>
+    <string name="op_mqtt_connect">正在连接 MQTT Broker...</string>
+    <string name="op_redis_connect">正在连接 Redis 服务器...</string>
+    <string name="op_socket_connect">正在建立 TCP Socket 工业长连接...</string>
+</resources>

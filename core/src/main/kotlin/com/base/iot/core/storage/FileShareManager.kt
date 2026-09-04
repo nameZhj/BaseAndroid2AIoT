@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
-import com.base.iot.R
+import com.base.iot.core.R
 import com.base.iot.core.diagnostics.Lg
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File

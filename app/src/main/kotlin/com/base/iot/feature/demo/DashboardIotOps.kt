@@ -18,7 +18,7 @@ fun DashboardViewModel.connectMqtt() = launchIotOperation(getString(R.string.op_
 }
 
 fun DashboardViewModel.mqttPublish() = viewModelScope.launch {
-    val topic = AppConfig.DEMO_MQTT_PUB_TOPIC
+    val topic = DemoConfig.DEMO_MQTT_PUB_TOPIC
     val payload = """{"msg":"hello","ts":${System.currentTimeMillis()}}"""
     appendLog(getString(R.string.demo_mqtt_publish_log, topic, payload))
     try {
@@ -32,7 +32,7 @@ fun DashboardViewModel.mqttPublish() = viewModelScope.launch {
 }
 
 fun DashboardViewModel.mqttSubscribeTest() = viewModelScope.launch {
-    val topic = AppConfig.DEMO_MQTT_SUB_TOPIC
+    val topic = DemoConfig.DEMO_MQTT_SUB_TOPIC
     appendLog(getString(R.string.demo_mqtt_subscribe_log, topic))
     try {
         iotHub.mqtt.subscribe(topic)
@@ -53,11 +53,11 @@ fun DashboardViewModel.connectRedis() = launchIotOperation(getString(R.string.op
 }
 
 fun DashboardViewModel.redisSendCommand() = viewModelScope.launch {
-    appendLog(getString(R.string.demo_redis_set_log, AppConfig.DEMO_REDIS_KEY, "hello_from_android"))
+    appendLog(getString(R.string.demo_redis_set_log, DemoConfig.DEMO_REDIS_KEY, "hello_from_android"))
     try {
-        val result = iotHub.redis.set(AppConfig.DEMO_REDIS_KEY, "hello_from_android", 60)
+        val result = iotHub.redis.set(DemoConfig.DEMO_REDIS_KEY, "hello_from_android", 60)
         appendLog(getString(R.string.demo_redis_set_result, result.toString()))
-        val value = iotHub.redis.get(AppConfig.DEMO_REDIS_KEY)
+        val value = iotHub.redis.get(DemoConfig.DEMO_REDIS_KEY)
         appendLog(getString(R.string.demo_redis_get_result, value.toString()))
     } catch (e: ProtocolDisabledException) {
         appendLog(getString(R.string.demo_protocol_disabled_log, "Redis", e.message ?: ""))

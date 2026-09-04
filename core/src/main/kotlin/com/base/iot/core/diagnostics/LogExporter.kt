@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
-import com.base.iot.R
+import com.base.iot.core.R
 import java.io.File
 
 object LogExporter {

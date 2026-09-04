@@ -3,7 +3,7 @@ package com.base.iot.core.base
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.base.iot.R
+import com.base.iot.core.R
 import com.base.iot.core.diagnostics.ErrorParser
 import com.base.iot.core.diagnostics.Lg
 import com.base.iot.core.diagnostics.ParsedError

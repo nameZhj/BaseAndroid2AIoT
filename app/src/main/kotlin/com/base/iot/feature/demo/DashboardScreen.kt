@@ -13,12 +13,11 @@ import androidx.compose.ui.unit.sp
 import com.base.iot.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.base.iot.core.config.AppConfig
 import com.base.iot.core.ui.AdaptiveContentLayout
 import com.base.iot.core.ui.SystemBarEffect
 import com.base.iot.core.ui.dialog.*
+import com.base.iot.core.ui.theme.AppTheme
 import com.base.iot.feature.demo.components.*
-import com.base.iot.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -75,7 +74,7 @@ fun DashboardScreen(
             visible = uiState.showInputDialog,
             title = stringResource(R.string.dialog_input_node_title),
             hint = stringResource(R.string.dialog_input_node_hint),
-            initialText = AppConfig.DEMO_DEFAULT_NODE_ID,
+            initialText = DemoConfig.DEMO_DEFAULT_NODE_ID,
             confirmText = stringResource(R.string.dialog_input_node_confirm),
             onConfirm = viewModel::onInputDialogConfirmed,
             onDismiss = { viewModel.setInputDialog(false) }

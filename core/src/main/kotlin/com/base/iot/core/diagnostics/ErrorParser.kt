@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import com.base.iot.R
+import com.base.iot.core.R
 import com.base.iot.core.config.ProtocolDisabledException
 import java.io.PrintWriter
 import java.io.StringWriter

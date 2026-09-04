@@ -22,9 +22,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.base.iot.core.storage.CacheLocationType
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.core.ui.components.AppCard
-import com.base.iot.core.ui.recycler.IotDeviceQuickAdapter
+import com.base.iot.core.ui.theme.AppTheme
 import com.base.iot.feature.demo.*
-import com.base.iot.ui.theme.AppTheme
+import com.base.iot.feature.demo.adapter.IotDeviceQuickAdapter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

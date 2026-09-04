@@ -14,7 +14,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 import androidx.annotation.StringRes
-import com.base.iot.R
+import com.base.iot.core.R
 
 /**
  * 主题显示模式枚举

@@ -3,7 +3,6 @@ package com.base.iot.feature.demo
 
 import androidx.lifecycle.viewModelScope
 import com.base.iot.R
-import com.base.iot.core.config.AppConfig
 import com.base.iot.core.config.ProtocolDisabledException
 import com.base.iot.core.diagnostics.CrashHandler
 import com.base.iot.core.diagnostics.Lg
@@ -55,10 +54,10 @@ fun DashboardViewModel.testPercentageProgress() = launchWithLoading(
 fun DashboardViewModel.testSimulateTimeoutError() = launchWithLoading(
     title = getString(R.string.demo_task_connect_gateway_title)
 ) {
-    appendLog(getString(R.string.demo_log_simulate_timeout, AppConfig.DEMO_UNREACHABLE_IP, AppConfig.DEMO_UNREACHABLE_PORT))
+    appendLog(getString(R.string.demo_log_simulate_timeout, DemoConfig.DEMO_UNREACHABLE_IP, DemoConfig.DEMO_UNREACHABLE_PORT))
     withContext(Dispatchers.IO) {
         val socket = Socket()
-        socket.connect(InetSocketAddress(AppConfig.DEMO_UNREACHABLE_IP, AppConfig.DEMO_UNREACHABLE_PORT), AppConfig.DEMO_TIMEOUT_MOCK_MS)
+        socket.connect(InetSocketAddress(DemoConfig.DEMO_UNREACHABLE_IP, DemoConfig.DEMO_UNREACHABLE_PORT), DemoConfig.DEMO_TIMEOUT_MOCK_MS)
         socket.close()
     }
 }

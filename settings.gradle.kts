@@ -23,3 +23,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "BaseAndroid2AIoT"
 include(":app")
+include(":core")

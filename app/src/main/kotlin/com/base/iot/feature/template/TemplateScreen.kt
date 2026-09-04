@@ -16,7 +16,7 @@ import com.base.iot.core.ui.components.AppButton
 import com.base.iot.core.ui.components.AppCard
 import com.base.iot.core.ui.dialog.AppErrorDialog
 import com.base.iot.core.ui.dialog.AppProgressDialog
-import com.base.iot.ui.theme.AppTheme
+import com.base.iot.core.ui.theme.AppTheme
 
 @Composable
 fun TemplateScreen(

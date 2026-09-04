@@ -12,7 +12,7 @@ import com.base.iot.core.ui.SystemBarManager
 import com.base.iot.core.ui.theme.ThemeManager
 import com.base.iot.core.ui.theme.ThemeMode
 import com.base.iot.feature.demo.DashboardScreen
-import com.base.iot.ui.theme.AppTheme
+import com.base.iot.core.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

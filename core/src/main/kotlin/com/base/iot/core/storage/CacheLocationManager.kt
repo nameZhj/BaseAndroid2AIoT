@@ -17,7 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 import androidx.annotation.StringRes
-import com.base.iot.R
+import com.base.iot.core.R
 
 /**
  * 缓存位置策略枚举

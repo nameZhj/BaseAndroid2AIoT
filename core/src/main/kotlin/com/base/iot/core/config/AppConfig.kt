@@ -23,20 +23,6 @@ object AppConfig {
     /** 大文件上传/下载独立超时通道：1 小时 */
     const val HTTP_FILE_TRANSFER_TIMEOUT_SEC = 3600L
 
-    // [DEMO_CONFIG_START] Strip on formal dev
-    const val DEMO_HTTP_GET_URL = "https://httpbin.org/get"
-    const val DEMO_HTTP_POST_URL = "https://httpbin.org/post"
-    const val DEMO_HTTP_PUT_URL = "https://httpbin.org/put"
-    const val DEMO_HTTP_DELETE_URL = "https://httpbin.org/delete"
-    const val DEMO_DOWNLOAD_URL = "http://speedtest.tele2.net/100KB.zip"
-    const val DEMO_MQTT_PUB_TOPIC = "iot/device/telemetry"
-    const val DEMO_MQTT_SUB_TOPIC = "iot/device/cmd"
-    const val DEMO_REDIS_KEY = "device:status"
-    const val DEMO_UNREACHABLE_IP = "10.255.255.1"
-    const val DEMO_UNREACHABLE_PORT = 80
-    const val DEMO_TIMEOUT_MOCK_MS = 1500
-    const val DEMO_DEFAULT_NODE_ID = "IOT_EDGE_DEV_ALPHA"
-    // [DEMO_CONFIG_END]
 
     const val MQTT_HOST = "broker.hivemq.com"
     const val MQTT_PORT = 1883

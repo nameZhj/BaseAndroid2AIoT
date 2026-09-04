@@ -18,7 +18,7 @@ import com.base.iot.R
 import com.base.iot.core.ui.components.AppButton
 import com.base.iot.core.ui.components.AppCard
 import com.base.iot.feature.demo.*
-import com.base.iot.ui.theme.AppTheme
+import com.base.iot.core.ui.theme.AppTheme
 
 @Composable
 fun DiagnosticsCard(vm: DashboardViewModel) {
