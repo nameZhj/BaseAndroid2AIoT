@@ -20,9 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -45,166 +46,72 @@ fun AppErrorDialog(
 
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            usePlatformDefaultWidth = false
-        )
+        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true, usePlatformDefaultWidth = false)
     ) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth(0.92f)
-                .wrapContentHeight()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth(0.92f).wrapContentHeight().padding(16.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = colors.surface),
             border = BorderStroke(1.dp, colors.cardBorder),
             elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
         ) {
             Column(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .verticalScroll(rememberScrollState()),
+                modifier = Modifier.padding(24.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(colors.accentRed.copy(alpha = 0.15f)),
-                        contentAlignment = Alignment.Center
+                    Row(
+                        modifier = Modifier.weight(1f, fill = false).padding(end = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.ErrorOutline,
-                            contentDescription = null,
-                            tint = colors.accentRed,
-                            modifier = Modifier.size(22.dp)
-                        )
+                        Box(
+                            modifier = Modifier.size(36.dp).clip(RoundedCornerShape(8.dp)).background(colors.accentRed.copy(alpha = 0.15f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.Filled.ErrorOutline, contentDescription = null, tint = colors.accentRed, modifier = Modifier.size(22.dp))
+                        }
+                        Column(modifier = Modifier.weight(1f, fill = false)) {
+                            Text(stringResource(R.string.error_dialog_title), color = colors.textPrimary, fontSize = 17.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(error.errorType, color = colors.accentRed, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
                     }
-
-                    Column {
-                        Text(
-                            text = stringResource(R.string.error_dialog_title),
-                            color = colors.textPrimary,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = error.errorType,
-                            color = colors.accentRed,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
-
-                Text(
-                    text = error.friendlyMessage,
-                    color = colors.textPrimary,
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp
-                )
-
-                Text(
-                    text = stringResource(R.string.error_root_cause_prefix, error.technicalSummary),
-                    color = colors.textSecondary,
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp
-                )
-
-                TextButton(
-                    onClick = { showStackDetails = !showStackDetails },
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Code,
-                        contentDescription = null,
-                        tint = colors.accentPrimary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(Modifier.width(6.dp))
-                    Text(
-                        text = stringResource(
-                            if (showStackDetails) R.string.error_collapse_report else R.string.error_expand_report
-                        ),
-                        color = colors.accentPrimary,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-
-                AnimatedVisibility(
-                    visible = showStackDetails,
-                    enter = expandVertically(),
-                    exit = shrinkVertically()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 240.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(colors.terminalBg)
-                            .padding(12.dp)
-                    ) {
-                        Text(
-                            text = error.fullDiagnosticReport,
-                            color = colors.terminalText,
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
-                            lineHeight = 15.sp,
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                                .horizontalScroll(rememberScrollState())
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    OutlinedButton(
+                    TextButton(
                         onClick = onDismiss,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(42.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        border = BorderStroke(1.dp, colors.cardBorder),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = colors.textSecondary
-                        )
+                        modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                     ) {
+                        Text(stringResource(R.string.btn_close), color = colors.textSecondary, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                    }
+                }
+
+                Text(text = error.friendlyMessage, color = colors.textPrimary, fontSize = 14.sp, lineHeight = 20.sp)
+                Text(text = stringResource(R.string.error_root_cause_prefix, error.technicalSummary), color = colors.textSecondary, fontSize = 12.sp, lineHeight = 16.sp)
+
+                TextButton(onClick = { showStackDetails = !showStackDetails }, contentPadding = PaddingValues(0.dp)) {
+                    Icon(Icons.Filled.Code, contentDescription = null, tint = colors.accentPrimary, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(stringResource(if (showStackDetails) R.string.error_collapse_report else R.string.error_expand_report), color = colors.accentPrimary, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                }
+
+                AnimatedVisibility(visible = showStackDetails, enter = expandVertically(), exit = shrinkVertically()) {
+                    Box(modifier = Modifier.fillMaxWidth().heightIn(max = 240.dp).clip(RoundedCornerShape(8.dp)).background(colors.terminalBg).padding(12.dp)) {
+                        Text(text = error.fullDiagnosticReport, color = colors.terminalText, fontSize = 11.sp, fontFamily = FontFamily.Monospace, lineHeight = 15.sp, modifier = Modifier.verticalScroll(rememberScrollState()).horizontalScroll(rememberScrollState()))
+                    }
+                }
+
+                Row(modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f).height(42.dp), shape = RoundedCornerShape(8.dp), border = BorderStroke(1.dp, colors.cardBorder), colors = ButtonDefaults.outlinedButtonColors(contentColor = colors.textSecondary)) {
                         Text(text = stringResource(R.string.btn_i_know), fontSize = 13.sp)
                     }
-
-                    Button(
-                        onClick = { onShareReport(error) },
-                        modifier = Modifier
-                            .weight(1.3f)
-                            .height(42.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colors.accentPrimary,
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Share,
-                            contentDescription = stringResource(R.string.error_btn_share_report),
-                            modifier = Modifier.size(16.dp)
-                        )
+                    Button(onClick = { onShareReport(error) }, modifier = Modifier.weight(1.3f).height(42.dp), shape = RoundedCornerShape(8.dp), colors = ButtonDefaults.buttonColors(containerColor = colors.accentPrimary, contentColor = Color.White)) {
+                        Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.error_btn_share_report), modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text(
-                            text = stringResource(R.string.error_btn_share_report),
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Text(text = stringResource(R.string.error_btn_share_report), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
