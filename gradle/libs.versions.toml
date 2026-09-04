@@ -52,6 +52,9 @@ xpopup = "2.10.0"
 # Gson
 gson = "2.11.0"
 
+# USB Serial
+usb-serial = "3.8.0"
+
 # Test
 junit = "4.13.2"
 junit-ext = "1.2.1"
@@ -117,6 +120,9 @@ xpopup = { group = "com.github.li-xiaojun", name = "XPopup", version.ref = "xpop
 
 # Gson
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
+# USB Serial
+usb-serial-android = { group = "com.github.mik3y", name = "usb-serial-for-android", version.ref = "usb-serial" }
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }

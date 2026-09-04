@@ -16,6 +16,8 @@ VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
 | **主题日夜间 / 沉浸式系统栏** | `core/.../ui/theme/` & `MainActivity.kt` | WCAG AAA 设计系统、状态栏透明适配 |
 | **通用原子组件 / 弹窗体系** | `core/.../ui/components/` & `ui/dialog/` | AppCard, AppButton, AppProgressDialog 等 |
 | **平板兼容 / Pad适配 / 双栏导航** | `core/.../ui/pad/` | Pad设备判定、弹窗防拉伸、主从双栏、侧边导航轨 |
+| **Pad自适应规格 / 操纵杆 / 双栏** | `core/.../ui/adaptive/` | 平板端尺寸规范 (PadSpec)、受限宽度修饰符与响应式双栏 |
+| **USB 串口 / 硬件直连 / CH340 / CDC** | `core/.../iot/SerialManager.kt` & `AndroidUsbSerialDriver.kt` | 本地 USB-Serial OTG 与远程 HTTP 串口双模通信、即插即用 |
 | **新业务脚手架 (Scaffold)** | `app/.../feature/template/` | 业务克隆模板 (UiState, ViewModel, Screen) |
 | **演示业务 / 清退参考** | `app/.../feature/demo/` | [DEMO_ACTIVE] 完整双栏参考与自毁清退源 |
 
@@ -218,12 +220,14 @@ Multi-Module Architecture:
 1. `:core` (Android Library - `core/src/main/kotlin/com/base/iot/core/`):
    - `base/`: `BaseViewModel.kt`, `UiContract.kt`
    - `config/`: `AppConfig.kt` (single config authority, zero demo), `IotProtocolConfig.kt`
-   - `iot/`: `IotHub.kt` (facade), `MqttManager.kt`, `RedisManager.kt`, `SocketManager.kt`
+   - `di/`: `SerialModule.kt` (Hilt 绑定 SerialManager 到 SerialManagerImpl)
+   - `iot/`: `IotHub.kt` (facade 包含 serial), `MqttManager.kt`, `RedisManager.kt`, `SocketManager.kt`, `SerialManager.kt`, `SerialManagerImpl.kt`, `AndroidUsbSerialDriver.kt`, `RemoteHttpSerialDriver.kt`, `UsbDeviceProber.kt`, `UsbReceiverHelper.kt`
    - `network/`: `HttpManager.kt` (GET/POST/PUT/DELETE/Upload/Download abstractions)
    - `storage/`: `CacheLocationManager.kt`, `FileShareManager.kt`
    - `diagnostics/`: `Lg.kt`, `ErrorParser.kt`, `CrashHandler.kt`, `LogExporter.kt`
    - `ui/components/`: `AppCard.kt`, `AppButton.kt`, `AppSwitchRow.kt`
    - `ui/dialog/`: `AppProgressDialog.kt`, `AppErrorDialog.kt`, `AppConfirmDialog.kt`, `AppInputDialog.kt`, `AppBottomSheetDialog.kt`, `AppLoadingDialog.kt`, `XPopupBridge.kt`
+   - `ui/adaptive/`: `PadSpec.kt`, `PadModifiers.kt`, `PadAdaptiveTwoPane.kt`
    - `ui/pad/`: `PadDeviceClassifier.kt`, `PadDialogModifiers.kt`, `PadMasterDetailLayout.kt`, `PadContentContainer.kt`, `PadNavigationScaffold.kt`
    - `ui/theme/`: `ThemeManager.kt`, `AppTheme.kt` (`AppTheme.colors`, `DarkAppColors`, `LightAppColors`)
    - `core/src/protocol_*/`: `protocol_http`, `protocol_mqtt`, `protocol_redis`, `protocol_socket` (real drivers & zero-dep stubs)
@@ -288,8 +292,10 @@ Clone `feature/template/` -> `feature/<name>/`:
 - `launchWithLoading(title, isBlocking)`: Standard async wrapper. `isBlocking=true` (anti-touch-through, non-cancelable), `false` (cancelable).
 - `ErrorParser.parse()` + `AppErrorDialog`: Root-cause diagnostics dialog (OS/Hardware/Network/Stacktrace + system share).
 - `iotHub.http`: HTTP large file transfer auto-timeout 1h (`HTTP_FILE_TRANSFER_TIMEOUT_SEC`), regular request 30s.
+- `iotHub.serial`: Local USB OTG (`AndroidUsbSerialDriver` for CH34x/CP210x/FTDI/PL2303/CDC) & remote HTTP bridge dual-mode auto-routing.
 - `CacheLocationManager`: Dynamic cache location switcher (internal/external/download), DataStore backed.
 - `FileShareManager`: FileProvider sandboxed cross-process sharing (files, logs, diagnostic text).
+- Pad adaptive: `rememberPadSpec()` + `PadAdaptiveTwoPane` + `PadMasterDetailLayout` + `padDialogBounds()`.
 - UI Primitives: `AppCard`, `AppButton`, `AppSwitchRow` (consume `AppTheme.colors.*`, built-in feedback).
 
 ## [10_VERIFICATION_AND_SELF_AUDIT]

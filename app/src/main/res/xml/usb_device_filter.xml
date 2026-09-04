@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- QinHeng CH340 / CH341 / CH347 (0x1A86 = 6790) -->
+    <usb-device vendor-id="6790" />
+    <!-- Silicon Labs CP210x (0x10C4 = 4292) -->
+    <usb-device vendor-id="4292" />
+    <!-- FTDI (0x0403 = 1027) -->
+    <usb-device vendor-id="1027" />
+    <!-- Prolific PL2303 (0x067B = 1659) -->
+    <usb-device vendor-id="1659" />
+    <!-- CDC/ACM Communication Devices (Class 2) -->
+    <usb-device class="2" />
+</resources>

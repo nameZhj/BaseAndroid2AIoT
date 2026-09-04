@@ -136,4 +136,7 @@ dependencies {
 
     // Serialization
     api(libs.kotlinx.serialization.json)
+
+    // USB Serial Hardware Driver
+    api(libs.usb.serial.android)
 }

@@ -23,6 +23,23 @@ object AppConfig {
     /** 大文件上传/下载独立超时通道：1 小时 */
     const val HTTP_FILE_TRANSFER_TIMEOUT_SEC = 3600L
 
+    // ==================== 串口与硬件通信配置 ====================
+    const val DEFAULT_ROBOT_ID = "A"
+    const val BROADCAST_TARGET_ALL = "ALL"
+    const val SERIAL_DEFAULT_BAUD = 9600
+    const val MOTION_LOOP_INTERVAL_MS = 75L
+    const val JOYSTICK_DEADZONE = 0.10f
+    const val SERIAL_POLL_INTERVAL_MS = 1000L
+
+    const val SERIAL_API_PORTS = "api/serial/ports"
+    const val SERIAL_API_AUTO_CONNECT = "api/serial/auto_connect"
+    const val SERIAL_API_CONNECT = "api/serial/connect"
+    const val SERIAL_API_SEND = "api/serial/send"
+    const val SERIAL_API_DISCONNECT = "api/serial/disconnect"
+    const val SERIAL_API_STATUS = "api/serial/status"
+    const val SERIAL_API_MESSAGES = "api/serial/messages"
+    const val SERIAL_API_DANCE_LIST = "api/serial/dance_list"
+    const val SERIAL_API_REFRESH_DANCE = "api/serial/refresh_dance_list"
 
     const val MQTT_HOST = "broker.hivemq.com"
     const val MQTT_PORT = 1883

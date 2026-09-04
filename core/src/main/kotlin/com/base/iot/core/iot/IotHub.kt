@@ -11,5 +11,6 @@ class IotHub @Inject constructor(
     val mqtt: MqttManager,
     val redis: RedisManager,
     val socket: SocketManager,
+    val serial: SerialManager,
     val config: IotProtocolConfig
 )
