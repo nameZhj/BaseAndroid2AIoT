@@ -30,6 +30,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.base.iot.core.R
 import com.base.iot.core.diagnostics.ParsedError
+import com.base.iot.core.ui.pad.padLargeDialogBounds
 import com.base.iot.core.ui.theme.AppTheme
 
 @Composable
@@ -49,7 +50,7 @@ fun AppErrorDialog(
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true, usePlatformDefaultWidth = false)
     ) {
         Card(
-            modifier = Modifier.fillMaxWidth(0.92f).wrapContentHeight().padding(16.dp),
+            modifier = Modifier.padLargeDialogBounds(phoneFraction = 0.92f).padding(16.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = colors.surface),
             border = BorderStroke(1.dp, colors.cardBorder),

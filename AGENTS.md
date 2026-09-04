@@ -15,6 +15,7 @@ VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
 | **错误诊断 / 根因解析 / 报错弹窗** | `core/.../diagnostics/ErrorParser.kt` | 系统/网络/硬件多维故障画像分析 |
 | **主题日夜间 / 沉浸式系统栏** | `core/.../ui/theme/` & `MainActivity.kt` | WCAG AAA 设计系统、状态栏透明适配 |
 | **通用原子组件 / 弹窗体系** | `core/.../ui/components/` & `ui/dialog/` | AppCard, AppButton, AppProgressDialog 等 |
+| **平板兼容 / Pad适配 / 双栏导航** | `core/.../ui/pad/` | Pad设备判定、弹窗防拉伸、主从双栏、侧边导航轨 |
 | **新业务脚手架 (Scaffold)** | `app/.../feature/template/` | 业务克隆模板 (UiState, ViewModel, Screen) |
 | **演示业务 / 清退参考** | `app/.../feature/demo/` | [DEMO_ACTIVE] 完整双栏参考与自毁清退源 |
 
@@ -111,6 +112,11 @@ VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
     - RESPONSIVE_AND_ADAPTIVE:
       - Compact (< 600dp): Single-pane vertical scroll (`LazyColumn` or `verticalScroll`).
       - Expanded (>= 600dp landscape): Two-pane (`AdaptiveContentLayout`), split-screen, or responsive grid.
+    - PAD_TABLET_ADAPTATION:
+      - Tablet detection uses `rememberPadDeviceClass()` (sw600dp/sw720dp).
+      - Dialogs MUST apply `Modifier.padDialogBounds()` to prevent full-width stretching on large screens.
+      - Large screen content containers should apply `padContentBounds()` to keep reading width centered.
+      - Tablet layouts should utilize `PadMasterDetailLayout` or `PadNavigationScaffold` (NavigationRail).
     - FEEDBACK_AND_A11Y:
       - 100% of clickable elements MUST provide immediate press/ripple visual feedback.
       - Decorative icons MUST set `contentDescription = null`. Functional icons MUST declare an `@StringRes` i18n description.
@@ -218,6 +224,7 @@ Multi-Module Architecture:
    - `diagnostics/`: `Lg.kt`, `ErrorParser.kt`, `CrashHandler.kt`, `LogExporter.kt`
    - `ui/components/`: `AppCard.kt`, `AppButton.kt`, `AppSwitchRow.kt`
    - `ui/dialog/`: `AppProgressDialog.kt`, `AppErrorDialog.kt`, `AppConfirmDialog.kt`, `AppInputDialog.kt`, `AppBottomSheetDialog.kt`, `AppLoadingDialog.kt`, `XPopupBridge.kt`
+   - `ui/pad/`: `PadDeviceClassifier.kt`, `PadDialogModifiers.kt`, `PadMasterDetailLayout.kt`, `PadContentContainer.kt`, `PadNavigationScaffold.kt`
    - `ui/theme/`: `ThemeManager.kt`, `AppTheme.kt` (`AppTheme.colors`, `DarkAppColors`, `LightAppColors`)
    - `core/src/protocol_*/`: `protocol_http`, `protocol_mqtt`, `protocol_redis`, `protocol_socket` (real drivers & zero-dep stubs)
    - `core/src/main/res/values/strings.xml`: Pure core framework string resources (zh & en)

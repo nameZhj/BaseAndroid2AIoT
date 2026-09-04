@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.base.iot.core.R
+import com.base.iot.core.ui.pad.padDialogBounds
 import com.base.iot.core.ui.theme.AppTheme
 
 data class LoadingConfig(
@@ -49,7 +50,7 @@ fun AppProgressDialog(config: LoadingConfig, onDismissRequest: () -> Unit = {}) 
         properties = DialogProperties(dismissOnBackPress = !config.isBlocking, dismissOnClickOutside = !config.isBlocking, usePlatformDefaultWidth = false)
     ) {
         Card(
-            modifier = Modifier.fillMaxWidth(0.86f).wrapContentHeight().padding(16.dp),
+            modifier = Modifier.padDialogBounds(phoneFraction = 0.86f).padding(16.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = colors.surface),
             border = BorderStroke(1.dp, colors.cardBorder),

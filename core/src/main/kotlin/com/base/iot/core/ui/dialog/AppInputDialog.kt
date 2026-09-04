@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.base.iot.core.R
+import com.base.iot.core.ui.pad.padDialogBounds
 import com.base.iot.core.ui.theme.AppTheme
 
 @Composable
@@ -44,8 +45,7 @@ fun AppInputDialog(
     ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .wrapContentHeight()
+                .padDialogBounds(phoneFraction = 0.9f)
                 .padding(16.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = colors.surface),
@@ -95,12 +95,9 @@ fun AppInputDialog(
                     singleLine = true,
                     shape = RoundedCornerShape(10.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = colors.textPrimary,
-                        unfocusedTextColor = colors.textPrimary,
-                        focusedBorderColor = colors.accentPrimary,
-                        unfocusedBorderColor = colors.cardBorder,
-                        focusedContainerColor = colors.surfaceVariant,
-                        unfocusedContainerColor = colors.surfaceVariant
+                        focusedTextColor = colors.textPrimary, unfocusedTextColor = colors.textPrimary,
+                        focusedBorderColor = colors.accentPrimary, unfocusedBorderColor = colors.cardBorder,
+                        focusedContainerColor = colors.surfaceVariant, unfocusedContainerColor = colors.surfaceVariant
                     ),
                     trailingIcon = {
                         if (textState.isNotEmpty()) {
@@ -126,26 +123,16 @@ fun AppInputDialog(
                             .height(44.dp),
                         shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(1.dp, colors.cardBorder),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = colors.textSecondary
-                        )
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = colors.textSecondary)
                     ) {
                         Text(text = cancelText, fontSize = 14.sp)
                     }
 
                     Button(
-                        onClick = {
-                            onConfirm(textState)
-                            onDismiss()
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(44.dp),
+                        onClick = { onConfirm(textState); onDismiss() },
+                        modifier = Modifier.weight(1f).height(44.dp),
                         shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colors.accentPrimary,
-                            contentColor = Color.White
-                        )
+                        colors = ButtonDefaults.buttonColors(containerColor = colors.accentPrimary, contentColor = Color.White)
                     ) {
                         Text(text = confirmText, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                     }

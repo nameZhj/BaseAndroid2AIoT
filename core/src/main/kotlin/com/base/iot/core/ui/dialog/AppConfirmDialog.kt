@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.base.iot.core.R
+import com.base.iot.core.ui.pad.padDialogBounds
 import com.base.iot.core.ui.theme.AppTheme
 
 @Composable
@@ -44,8 +45,7 @@ fun AppConfirmDialog(
 
         Card(
             modifier = Modifier
-                .fillMaxWidth(0.88f)
-                .wrapContentHeight()
+                .padDialogBounds(phoneFraction = 0.88f)
                 .padding(16.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = colors.surface),
