@@ -1,176 +1,55 @@
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+================================================================================
+           BASEANDROID2AIOT SOURCE CODE LICENSE & COMMERCIAL RIDER
+               代码使用许可协议与商业授权限制条款
+================================================================================
+Copyright (c) 2024-2026 BaseAndroid2AIoT Author / Contributors.
+All Rights Reserved. 版权所有，保留一切权利。
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+--------------------------------------------------------------------------------
+【重要声明 / CRITICAL NOTICE】
+--------------------------------------------------------------------------------
+本项目代码对个人学习、学术研究、非营利性技术交流完全免费开放。
+凡涉及任何形式的【商业用途】（包括但不限于商业销售、硬件量产搭载、收费运营、企业闭源集成交付等），
+【必须经过原作者的正式书面授权】。未经授权擅自商用均属侵犯版权行为，作者保留追究法律责任的权利。
 
-   1. Definitions.
+This software is freely available for personal study, academic research, and 
+non-commercial purposes. 
+ANY COMMERCIAL USE (including but not limited to commercial sales, embedding into 
+commercial hardware/AIoT devices, paid services, or enterprise proprietary delivery) 
+REQUIRES PRIOR EXPLICIT WRITTEN AUTHORIZATION FROM THE ORIGINAL AUTHOR.
+Unauthorized commercial use constitutes copyright infringement.
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+================================================================================
+                           详细许可条款 (TERMS AND CONDITIONS)
+================================================================================
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+1. 授予权利 (Grant of Non-Commercial Rights)
+   在遵守本协议各项条款的前提下，原作者在此授予任何个人或组织不可转让的、非排他性的免费许可：
+   - 仅限出于非商业目的（Non-Commercial Purpose）阅读、运行、编译、修改本项目源代码。
+   - 仅限在个人学习、开源分享、教学演示和学术研究环境中测试与评估本项目。
 
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
+2. 商业使用限制与强制授权 (Commercial Use Restrictions & Mandatory Authorization)
+   - 商业使用定义：指以营利为目的，或直接/间接产生商业利益的任何行为，包括但不限于：
+     (a) 将本项目代码或其编译产物（AAR、APK、JAR、SO、驱动桩等）直接或间接作为商业产品进行销售、分发、外包或出租；
+     (b) 将本项目集成到商业硬件设备（如车载中控、服务机器人、工业平板、智能网关、边缘计算终端等）中进行量产或运营；
+     (c) 基于本项目构建商业运营服务、云端协同平台或对外提供收费技术服务的系统；
+     (d) 作为企业商业闭源项目的基础框架使用并进行盈利性交付。
+   - 强制授权要求：任何实体或个人将本项目全部或部分代码用于商业用途前，必须取得原作者明确的书面商业授权许可（Written Commercial License）。
+   - 授权途径：商业授权请通过项目官方代码仓库或作者公开联系渠道进行申请与商务接洽。
 
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
+3. 衍生作品与再分发限制 (Derivative Works & Redistribution)
+   - 任何基于本项目创建的修改版本或衍生作品（Derivative Works），均受本协议条款约束。
+   - 分发源代码或二进制形式的修改版本时，必须完整保留本 LICENSE 文件及版权所有者的署名和版权声明。
+   - 未经原作者书面同意，任何被许可人均无权向第三方转授（Sublicense）商业使用许可。
 
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
+4. 第三方组件与开源依赖说明 (Third-Party Components)
+   - 本工程引入的第三方开源库（如 Android Jetpack、Retrofit、OkHttp、HiveMQ Client、Jedis、BRVAH、XPopup 等）仍受各自原生开源许可证管辖（详见 NOTICE 与 OPEN_SOURCE_LICENSES.md）。
+   - 本协议中的商业使用限制条款严格且仅适用于本项目作者拥有著作权的原生架构代码、驱动抽象、业务模块与设计资产。
 
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
+5. 免责声明 (Disclaimer of Warranty)
+   - 本软件按“现状”（AS-IS）提供，原作者不作任何明示或暗示的保证，包括但不限于对商用性、特定用途适用性及无缺陷的保证。
+   - 在适用法律允许的最大范围内，原作者在任何情况下均不对因使用或无法使用本软件所造成的任何直接、间接、附带或惩罚性损失承担法律责任。
 
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
-
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
-
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
-
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
-
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
-
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
-
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
-
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
-
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
-
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
-
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
-
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
-
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
-
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
-
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
-
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
-
-   END OF TERMS AND CONDITIONS
+================================================================================
+                           END OF LICENSE TERMS
+================================================================================
