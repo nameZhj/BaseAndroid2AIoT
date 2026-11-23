@@ -85,7 +85,8 @@ BaseAndroid2AIoT/
 ├── gradle/
 │   └── libs.versions.toml             # 统一 Version Catalog 依赖声明
 ├── gradle.properties                  # 编译期协议裁剪开关与构建优化
-├── AGENTS.md                          # ★ 面向 AI Agent 的最高权威指令集 (Agent Directives)
+├── AGENTS.md                          # Agent 总入口与任务路由
+├── .agent/skills/                     # 按任务加载的专项 Skill（布局、主题等）
 ├── core/                              # 基础框架模块 (Android Library，核心保护锁定)
 │   └── src/
 │       ├── main/

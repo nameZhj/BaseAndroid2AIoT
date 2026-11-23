@@ -92,7 +92,7 @@ VERSION: 3.2 | TARGET: LLM_AGENT | TASK_ROUTED: TRUE
 
 ## [3_UI_SPEC_AND_LAYOUT_STABILITY]
 - Default theme: Arctic Industrial. Optional accent: Electric Blue. Use `ThemeManager.setThemeAccent()` and `AppTheme.colors`; never duplicate palette values in feature code.
-3.1 THEME_WCAG_AAA:
+3.1 THEME_ACCESSIBILITY:
     - FORBIDDEN: Hardcoded color values (e.g. `Color(0x...)`, `#FFFFFF`).
     - MANDATORY: Consume `AppTheme.colors.*` (native Views: `palette.xxx.toArgb()`).
     - CONTRAST: Meet WCAG AA for normal text (4.5:1) and large text (3:1); target higher contrast for critical status and industrial outdoor use. Validate actual foreground/background pairs in both themes.
@@ -138,7 +138,7 @@ VERSION: 3.2 | TARGET: LLM_AGENT | TASK_ROUTED: TRUE
     - Every dialog MUST expose only the dismissal actions that make sense for its interaction.
     - Confirm dialogs must make Confirm and Cancel clear; blocking progress dialogs must not imply that an operation can be cancelled when it cannot.
     - Close placement and icon/text treatment follow the component layout and accessibility needs; do not force a top-right text button into every dialog.
-    - TOUCH_AND_HEATMAP_SAFETY: The close text button MUST have adequate touch target area (`Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)` or `contentPadding = PaddingValues(...)`).
+    - TOUCH_TARGET: Any visible dismissal action MUST retain a minimum 48dp touch target.
 4.2 TITLE_ROW_LAYOUT_STANDARD:
     - The Dialog header MUST use `Arrangement.SpaceBetween` and `Alignment.CenterVertically`:
       ```kotlin
