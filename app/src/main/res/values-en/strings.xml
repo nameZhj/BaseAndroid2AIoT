@@ -62,8 +62,5 @@
     <string name="robot_video_unavailable_title">Video Stream Not Connected</string>
     <string name="robot_video_unavailable_desc">Demo mode is active and no RTSP / WebRTC source is configured. The live feed will appear here after integration.</string>
     <string name="robot_sample_data_notice">This is an integration template. Device status, statistics, events and map overlays are sample data, not live telemetry.</string>
-    <string name="robot_map_marker_event_1">E-02</string>
-    <string name="robot_map_marker_event_2">E-03</string>
-    <string name="robot_map_marker_point_8">P-08</string>
     <string name="robot_map_marker_event_3">P-11</string>
 </resources>

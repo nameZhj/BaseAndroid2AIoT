@@ -62,8 +62,5 @@
     <string name="robot_video_unavailable_title">视频流未连接</string>
     <string name="robot_video_unavailable_desc">当前为演示模式，尚未配置 RTSP / WebRTC 视频源。接入视频流后此处显示实时画面。</string>
     <string name="robot_sample_data_notice">当前页面为业务接入样板；设备、统计、事件和地图均为演示数据，不代表真实设备遥测。</string>
-    <string name="robot_map_marker_event_1">E-02</string>
-    <string name="robot_map_marker_event_2">E-03</string>
-    <string name="robot_map_marker_point_8">P-08</string>
     <string name="robot_map_marker_event_3">P-11</string>
 </resources>
