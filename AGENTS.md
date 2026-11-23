@@ -5,6 +5,7 @@ VERSION: 3.2 | TARGET: LLM_AGENT | TASK_ROUTED: TRUE
 - Read this file first, then load only the Skill(s) relevant to the task.
 - Adaptive UI: `.agent/skills/adaptive-layout/SKILL.md`
 - Theme and components: `.agent/skills/theme-system/SKILL.md`
+- Robot dashboard, repository, map coordinates and device integration: `.agent/skills/robot-dashboard/SKILL.md`
 - Keep changes scoped; inspect callers before changing shared APIs.
 - Verify with the narrowest relevant tests, then run `compileDebugKotlin` when build access is available.
 
@@ -26,7 +27,7 @@ VERSION: 3.2 | TARGET: LLM_AGENT | TASK_ROUTED: TRUE
 | **Pad自适应规格 / 操纵杆 / 双栏** | `core/.../ui/adaptive/` | 平板端尺寸规范 (PadSpec)、受限宽度修饰符与响应式双栏 |
 | **USB 串口 / 硬件直连 / CH340 / CDC** | `core/.../iot/SerialManager.kt` & `AndroidUsbSerialDriver.kt` | 本地 USB-Serial OTG 与远程 HTTP 串口双模通信、即插即用 |
 | **新业务脚手架 (Scaffold)** | `app/.../feature/template/` | 业务克隆模板 (UiState, ViewModel, Screen) |
-| **机器人巡检 / 地图 / 任务 / 事件** | `app/.../feature/robot/` + `.agent/skills/robot-dashboard/SKILL.md` | Pad 优先的巡检 UI、显式样例数据边界与地图叠加视图 |
+| **机器人巡检 / 地图坐标 / 任务 / 事件** | `app/.../feature/robot/` + `.agent/skills/robot-dashboard/SKILL.md` | Repository -> ViewModel -> StateFlow；地图原点、旋转、分辨率和 viewport 坐标转换 |
 
 0.2 ROUTER_MAINTENANCE_RULES (Prevent Token Tax & Write Amplification):
     - TRIGGERS: Synchronously update this table ONLY when:
@@ -195,10 +196,13 @@ STATUS: ROBOT_DASHBOARD_ACTIVE
 - App mount point: `MainActivity.kt` -> `feature.robot.RobotDashboardScreen()`.
 - UI entry: `feature/robot/RobotDashboardScreen.kt`.
 - UI state and domain snapshots: `feature/robot/RobotDashboardModels.kt`.
+- Repository contract and demo binding: `feature/robot/RobotDashboardRepository.kt`, `SampleRobotDashboardRepository.kt`, `RobotDashboardModule.kt`.
+- Lifecycle-aware state holder: `feature/robot/RobotDashboardViewModel.kt`.
+- Testable occupancy-grid geometry: `feature/robot/RobotMapGeometry.kt` with world/image/viewport coordinate conversions and unit tests.
 - Map canvas and overlay primitives: `feature/robot/components/RobotMapCard.kt`.
 - Task scope routing: read `.agent/skills/robot-dashboard/SKILL.md` for map, device telemetry, missions, events, video and adaptive dashboard work.
 - SAMPLE_DATA_BOUNDARY: current device, mission, event, statistic and map values are sample-only. Never describe them as live telemetry or issue robot commands from sample data.
-- MAP_BOUNDARY: current Canvas is a schematic route/event overlay, not a PGM / PCD parser or SLAM renderer. Real map integration must preserve map resolution, origin, occupancy values and world-to-screen transforms.
+- MAP_BOUNDARY: current Canvas is a schematic route/event overlay, not a PGM / PCD parser or SLAM renderer. `OccupancyGridTransform` is only the tested coordinate foundation. Real map integration must preserve image encoding, occupancy thresholds, map resolution, origin pose, row orientation and use the same transform for every overlay.
 - VIDEO_BOUNDARY: the video entry is a disconnected-state placeholder. RTSP / WebRTC requires a dedicated stream provider and lifecycle-aware player surface.
 - `feature/template/` remains the clone source for new application features.
 

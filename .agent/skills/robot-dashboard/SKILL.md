@@ -4,17 +4,17 @@ Load this skill for robot, robot-dog, AGV, patrol, mission, map, telemetry, even
 
 ## Task entry points
 
-- Screen and adaptive composition: \`app/src/main/kotlin/com/base/iot/feature/robot/RobotDashboardScreen.kt\`
-- Immutable UI snapshots and sample state: \`RobotDashboardModels.kt\`
-- Map viewport and overlay drawing: \`components/RobotMapCard.kt\`
-- Global theme tokens: \`core/src/main/kotlin/com/base/iot/core/ui/theme/AppTheme.kt\`
-- Shared device transports: \`core/src/main/kotlin/com/base/iot/core/iot/IotHub.kt\` and the protocol manager interfaces below it
-- Main app mount: \`app/src/main/kotlin/com/base/iot/MainActivity.kt\`
+- Screen and adaptive composition: `app/src/main/kotlin/com/base/iot/feature/robot/RobotDashboardScreen.kt`
+- Immutable UI snapshots and sample state: `RobotDashboardModels.kt`
+- Map viewport and overlay drawing: `components/RobotMapCard.kt`
+- Global theme tokens: `core/src/main/kotlin/com/base/iot/core/ui/theme/AppTheme.kt`
+- Shared device transports: `core/src/main/kotlin/com/base/iot/core/iot/IotHub.kt` and the protocol manager interfaces below it
+- Main app mount: `app/src/main/kotlin/com/base/iot/MainActivity.kt`
 
 ## Data and safety boundaries
 
-- Keep robot business models, repositories, ViewModels and screens in \`:app\`; keep reusable transport abstractions and protocol drivers in \`:core\`.
-- UI consumes immutable state. Repository/transport updates flow into a ViewModel, then into Compose through lifecycle-aware StateFlow collection.
+- Keep robot business models, repositories, ViewModels and screens in `:app`; keep reusable transport abstractions and protocol drivers in `:core`.
+- UI consumes immutable state. Repository updates flow into `RobotDashboardViewModel`, then into Compose through `collectAsStateWithLifecycle()`. The current Hilt binding is `SampleRobotDashboardRepository`; replace the binding only when an actual device/API contract exists.
 - Sample data must remain explicitly labelled and must never be reported as live device telemetry.
 - Do not dispatch movement, mission, emergency-stop or actuator commands from sample state. Before adding control actions, require a resolved device identity, a connected session, command validation, explicit operator intent, timeout handling and a visible acknowledgement/error result.
 - Do not infer battery, localization, task completion, obstacle clearance or event resolution from missing values. Model unavailable, stale and disconnected states separately.
@@ -23,11 +23,13 @@ Load this skill for robot, robot-dog, AGV, patrol, mission, map, telemetry, even
 ## Map integration
 
 - The current Canvas is a schematic UI placeholder, not a PGM/PCD parser, SLAM renderer or navigation stack.
-- For occupancy grids, preserve resolution, origin pose, map dimensions, occupancy thresholds and row orientation. Define and test one world-to-screen transform shared by the map, robot pose, route, waypoint and event overlays.
+- `OccupancyGridTransform` converts world coordinates to top-left-origin image pixels and back. It accounts for map origin translation, origin yaw, cell resolution, row orientation and aspect-ratio-preserving viewport fitting.
+- Use the same transform for the map image, robot pose, route, waypoint and event overlays. Do not create separate ad-hoc coordinate formulas in UI components.
+- Validate origin offsets, rotated origins, row orientation, viewport letterboxing and round-trip conversion with unit tests.
 - For PCD/point-cloud views, parse and transform off the main thread, bound memory, decimate at an explicit quality level and cache by source/version.
 - Keep map aspect ratio and coordinate scaling consistent. Do not stretch the map to fill an arbitrary panel.
 - Distinguish map loading, invalid map, no localization, stale pose and live localization states.
-- Add tests for origin offsets, rotated origins, axis direction, pixel-to-world conversion and map resize.
+- The current Canvas remains a schematic placeholder. The coordinate transform is a tested foundation only; it does not imply that PGM/PCD parsing or SLAM has been implemented.
 
 ## Device, mission and event integration
 
@@ -52,4 +54,4 @@ Load this skill for robot, robot-dog, AGV, patrol, mission, map, telemetry, even
 - At Compact width, use one scrollable column. Keep controls at least 48dp and protect labels from pushing status/action elements away.
 - Review at 360x800, 600x960, 840x600, 1280x800 and in split-window widths around 600dp and 840dp.
 - Verify large font scales, long device IDs, long event descriptions, disconnected/stale states, empty event lists and map load failures.
-- Run \`./gradlew :app:compileDebugKotlin :app:assembleDebug :core:testDebugUnitTest :app:testDebugUnitTest\` before delivery.
+- Run `./gradlew :app:compileDebugKotlin :app:assembleDebug :core:testDebugUnitTest :app:testDebugUnitTest` before delivery.

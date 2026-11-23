@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,11 +39,19 @@ import com.base.iot.R
 import com.base.iot.core.R as CoreR
 import com.base.iot.core.ui.theme.AppTheme
 import com.base.iot.feature.robot.components.RobotMapCard
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun RobotDashboardScreen(
-    state: RobotDashboardUiState = RobotDashboardSampleData.state
+    viewModel: RobotDashboardViewModel = hiltViewModel()
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    RobotDashboardContent(state)
+}
+
+@Composable
+private fun RobotDashboardContent(state: RobotDashboardUiState) {
     var showVideoDialog by rememberSaveable { mutableStateOf(false) }
     val colors = AppTheme.colors
 
@@ -114,7 +121,7 @@ fun RobotDashboardScreen(
                         item { StatsCard(state.stats) }
                         item { EventsCard(state.events) }
                     }
-                    item { SampleDataNotice() }
+                    if (state.isSampleData) item { SampleDataNotice() }
                 }
             }
         }

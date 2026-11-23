@@ -63,7 +63,11 @@
 
 **当前阶段边界：** 地图是 Canvas 示意底图与路线/事件叠加层，尚未加载真实 PGM / PCD；设备、任务、事件和统计使用显式标记的样例数据；视频入口用于展示未接入状态，尚未连接 RTSP / WebRTC。页面不会把样例数据或未接入的控制能力伪装成实时功能。
 
-地图、遥测和任务数据应通过独立 Repository 接入；UI 只消费不可变 UiState。具体开发规则见 `.agent/skills/robot-dashboard/SKILL.md`。
+当前数据流已整理为 Hilt Repository -> RobotDashboardViewModel -> StateFlow -> Compose。默认 Hilt 绑定仍是 `SampleRobotDashboardRepository`，这是明确的演示数据源，不会连接真实设备。
+
+新增 `OccupancyGridTransform`，支持地图原点平移、原点旋转、分辨率、图像行方向，以及保持宽高比的 viewport 投影，并有坐标往返单元测试。它是 PGM/PCD 接入的坐标基础，不代表已经实现地图文件解析、SLAM 或点云渲染。
+
+真实设备协议、Topic、载荷和控制命令需要以设备端协议文档为准。具体开发规则见 `.agent/skills/robot-dashboard/SKILL.md`.
 
 ## 🤖 为 AI Agent 原生设计：AGENTS.md 与协同开发优势
 
