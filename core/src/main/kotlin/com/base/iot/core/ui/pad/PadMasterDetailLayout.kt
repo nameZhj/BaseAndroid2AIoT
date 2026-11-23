@@ -2,6 +2,7 @@ package com.base.iot.core.ui.pad
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,40 +23,19 @@ fun PadMasterDetailLayout(
     masterContent: @Composable () -> Unit,
     detailContent: @Composable () -> Unit
 ) {
-    val deviceClass = rememberPadDeviceClass()
-    val isPad = deviceClass.isPad
-
-    if (isPad) {
-        Row(modifier = modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .weight(masterWeight)
-                    .fillMaxHeight()
-            ) {
-                masterContent()
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        if (maxWidth >= 840.dp) {
+            Row(Modifier.fillMaxSize()) {
+                Box(Modifier.weight(masterWeight).fillMaxHeight()) { masterContent() }
+                Box(
+                    Modifier.width(dividerWidth).fillMaxHeight()
+                        .background(AppTheme.colors.cardBorder)
+                )
+                Box(Modifier.weight(detailWeight).fillMaxHeight()) { detailContent() }
             }
-
-            Box(
-                modifier = Modifier
-                    .width(dividerWidth)
-                    .fillMaxHeight()
-                    .background(AppTheme.colors.cardBorder)
-            )
-
-            Box(
-                modifier = Modifier
-                    .weight(detailWeight)
-                    .fillMaxHeight()
-            ) {
-                detailContent()
-            }
-        }
-    } else {
-        Box(modifier = modifier.fillMaxSize()) {
-            if (showDetailOnPhone) {
-                detailContent()
-            } else {
-                masterContent()
+        } else {
+            Box(Modifier.fillMaxSize()) {
+                if (showDetailOnPhone) detailContent() else masterContent()
             }
         }
     }

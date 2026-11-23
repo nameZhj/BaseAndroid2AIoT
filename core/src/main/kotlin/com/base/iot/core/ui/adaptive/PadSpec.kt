@@ -65,12 +65,12 @@ fun rememberPadSpec(): PadSpec {
             w >= 600 && sw < 600 -> DeviceType.FOLDABLE
             else -> DeviceType.PHONE
         }
-        val joystick = if (isTablet) 165.dp else 130.dp
-        val btnHeight = if (isTablet) 46.dp else 40.dp
-        val centerWidth = if (isTablet) 240.dp else 170.dp
+        val joystick = if (w >= 600) 165.dp else 130.dp
+        val btnHeight = if (w >= 600) 48.dp else 44.dp
+        val centerWidth = if (w >= 600) 240.dp else 170.dp
         val dialogMax = if (isTablet) 540.dp else 440.dp
         val sheetMax = 640.dp
-        val canShowCompanion = isTablet && w >= 960 && isLandscape
+        val canShowCompanion = w >= 840
 
         PadSpec(
             isTablet = isTablet,

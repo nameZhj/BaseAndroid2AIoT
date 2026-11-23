@@ -1,7 +1,10 @@
 package com.base.iot.core.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -10,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,37 +31,31 @@ fun AppButton(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    val isDark = AppTheme.colors.isDark
-    val bgAlpha = if (isDark) 0.16f else 0.12f
-    val borderAlpha = if (isDark) 0.35f else 0.45f
-
+    val contentColor = if (color.luminance() > 0.18f) Color.Black else Color.White
     Button(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.height(38.dp),
+        modifier = modifier.defaultMinSize(minWidth = 64.dp, minHeight = 48.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = color.copy(alpha = bgAlpha),
-            contentColor = color,
-            disabledContainerColor = Color.Gray.copy(alpha = 0.1f),
-            disabledContentColor = Color.Gray
+            containerColor = color,
+            contentColor = contentColor,
+            disabledContainerColor = AppTheme.colors.surfaceVariant,
+            disabledContentColor = AppTheme.colors.textTertiary
         ),
-        border = BorderStroke(1.dp, color.copy(alpha = borderAlpha)),
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+        border = BorderStroke(1.dp, AppTheme.colors.cardBorder),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
     ) {
         if (icon != null) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(15.dp)
-            )
-            Spacer(Modifier.width(6.dp))
+            Icon(imageVector = icon, contentDescription = null)
+            Spacer(Modifier.width(8.dp))
         }
         Text(
             text = text,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            maxLines = 1,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
     }

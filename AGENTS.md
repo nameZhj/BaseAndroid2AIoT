@@ -1,5 +1,12 @@
 # AGENT_DIRECTIVES: BaseAndroid2AIoT
-VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
+VERSION: 3.2 | TARGET: LLM_AGENT | TASK_ROUTED: TRUE
+
+## [0_AGENT_TASK_ROUTING]
+- Read this file first, then load only the Skill(s) relevant to the task.
+- Adaptive UI: `.agent/skills/adaptive-layout/SKILL.md`
+- Theme and components: `.agent/skills/theme-system/SKILL.md`
+- Keep changes scoped; inspect callers before changing shared APIs.
+- Verify with the narrowest relevant tests, then run `compileDebugKotlin` when build access is available.
 
 ## [0_CAPABILITY_ROUTING_INDEX]
 0.1 KEYWORD_TO_FILE_ROUTER (Zero Search Overhead | High-Efficiency Architectural Router):
@@ -31,7 +38,7 @@ VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
 ## [1_MODULE_AND_GIT_BOUNDARIES]
 1.1 GIT_SAFETY:
     - NEVER execute `git push` unless explicitly commanded by user in active prompt.
-    - All changes must remain local: Edit -> Local Compile -> Local Commit.
+    - Default to local changes. Push or update a remote branch only when the user explicitly requests it; direct-main edits require an explicit request and a verified base SHA.
 1.2 PROTOCOL_ISOLATION:
     - FORBIDDEN in `src/main/`: `import retrofit2.*`, `import okhttp3.*`, `import com.hivemq.*`, `import redis.clients.jedis.*`.
     - ROUTING: All networking MUST route via `IotHub` or abstract managers (`HttpManager`, `MqttManager`, `RedisManager`, `SocketManager`).
@@ -74,7 +81,7 @@ VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
       - Code Body: ONLY use unqualified short symbol names (`R.string.xxx`, `stringResource(...)`, `@StringRes`).
       - Name Collision: If colliding names exist, alias them at the header (`import foo.Bar as FooBar`), NEVER fall back to inline FQNs.
 2.3 TOKEN_ECONOMY_AND_FILE_GRANULARITY:
-    - FILE_SIZE_LIMIT: 50~150 lines per Kotlin file. Files > 150 lines MUST be split.
+    - FILE_GRANULARITY: Split files by cohesive responsibility and navigation cost. Do not split solely to satisfy a line-count target; files over 200 lines require a brief review for separable responsibilities.
     - VM_SPLIT: ViewModels split using same-package extension files (`fun MyViewModel.doSomething() = ...`).
     - SURGICAL_EDITS: Use `replace_file_content` / `multi_replace_file_content`. Avoid full file rewrites.
     - CONCISE_COMMENTS: High-signal architectural notes only. Zero decorative banners or redundant restatements.
@@ -84,13 +91,14 @@ VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
     - CHUNKING: Long logs (>4000 chars) MUST use `Lg` chunked logger.
 
 ## [3_UI_SPEC_AND_LAYOUT_STABILITY]
+- Default theme: Arctic Industrial. Optional accent: Electric Blue. Use `ThemeManager.setThemeAccent()` and `AppTheme.colors`; never duplicate palette values in feature code.
 3.1 THEME_WCAG_AAA:
     - FORBIDDEN: Hardcoded color values (e.g. `Color(0x...)`, `#FFFFFF`).
     - MANDATORY: Consume `AppTheme.colors.*` (native Views: `palette.xxx.toArgb()`).
-    - CONTRAST: Contrast ratio > 15:1 primary text, > 7:1 secondary text across both Light & Dark modes.
+    - CONTRAST: Meet WCAG AA for normal text (4.5:1) and large text (3:1); target higher contrast for critical status and industrial outdoor use. Validate actual foreground/background pairs in both themes.
 3.2 COMPONENT_ANTI_DISTORTION_AND_OVERLAP_PREVENTION:
     - ROW_WEIGHT_PROTECTION:
-      - Any variable-length or dynamic text inside a `Row` MUST declare `Modifier.weight(1f, fill = false)`.
+      - Dynamic text in a `Row` MUST have an explicit width strategy (weight, bounded width, wrapping, or ellipsis) appropriate to adjacent controls. Do not apply weight mechanically.
       - FORBIDDEN: Allowing expanding text to push adjacent buttons, icons, or switches off-screen or squeeze them to 0 width.
     - FIXED_COMPONENT_SIZE_INTEGRITY:
       - Buttons, switches, status badges, and action triggers in horizontal rows MUST define non-collapsible bounds (e.g. `Modifier.defaultMinSize(minWidth = ...)` or explicit fixed bounds).
@@ -112,10 +120,12 @@ VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
     - SCAFFOLD_AND_INSETS:
       - All top-level screens MUST consume `Scaffold(paddingValues)` or explicitly apply system insets to prevent status/navigation bar overlap.
     - RESPONSIVE_AND_ADAPTIVE:
-      - Compact (< 600dp): Single-pane vertical scroll (`LazyColumn` or `verticalScroll`).
-      - Expanded (>= 600dp landscape): Two-pane (`AdaptiveContentLayout`), split-screen, or responsive grid.
+      - Compact (< 600dp): Single-pane.
+      - Medium (600dp to < 840dp): single pane or a deliberately compact master-detail pattern.
+      - Expanded (>= 840dp): two-pane or responsive grid when the content benefits from it.
+      - Base the decision on the current app window, never orientation or physical device identity alone.
     - PAD_TABLET_ADAPTATION:
-      - Tablet detection uses `rememberPadDeviceClass()` (sw600dp/sw720dp).
+      - Layout classification uses `rememberPadDeviceClass()` from current app window width (Compact < 600dp, Medium < 840dp, Expanded >= 840dp). `smallestScreenWidthDp` MUST NOT decide active pane count.
       - Dialogs MUST apply `Modifier.padDialogBounds()` to prevent full-width stretching on large screens.
       - Large screen content containers should apply `padContentBounds()` to keep reading width centered.
       - Tablet layouts should utilize `PadMasterDetailLayout` or `PadNavigationScaffold` (NavigationRail).
@@ -124,9 +134,10 @@ VERSION: 3.1 | TARGET: LLM_AGENT | STRICT_MODE: TRUE | ZERO_DEVIATION
       - Decorative icons MUST set `contentDescription = null`. Functional icons MUST declare an `@StringRes` i18n description.
 
 ## [4_DIALOG_SPECIFICATION]
-4.1 MANDATORY_TOP_RIGHT_CLOSE_TEXT_BUTTON:
-    - ABSOLUTE_MANDATE: EVERY Dialog (Confirm, Input, Progress/Loading, Error, BottomSheet, Custom) MUST include a "Close" button at the top-right corner.
-    - TEXT_ONLY: NO ICON ALLOWED for the close action. ONLY plain text displaying "关闭" (bound to `stringResource(R.string.btn_close)`).
+4.1 DIALOG_DISMISSAL:
+    - Every dialog MUST expose only the dismissal actions that make sense for its interaction.
+    - Confirm dialogs must make Confirm and Cancel clear; blocking progress dialogs must not imply that an operation can be cancelled when it cannot.
+    - Close placement and icon/text treatment follow the component layout and accessibility needs; do not force a top-right text button into every dialog.
     - TOUCH_AND_HEATMAP_SAFETY: The close text button MUST have adequate touch target area (`Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)` or `contentPadding = PaddingValues(...)`).
 4.2 TITLE_ROW_LAYOUT_STANDARD:
     - The Dialog header MUST use `Arrangement.SpaceBetween` and `Alignment.CenterVertically`:

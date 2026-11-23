@@ -1,7 +1,6 @@
 package com.base.iot
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.hardware.usb.UsbManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.base.iot.core.iot.IotHub
@@ -18,6 +17,7 @@ import com.base.iot.core.ui.SystemBarManager
 import com.base.iot.core.ui.theme.AppTheme
 import com.base.iot.core.ui.theme.ThemeManager
 import com.base.iot.core.ui.theme.ThemeMode
+import com.base.iot.core.ui.theme.ThemeAccent
 import com.base.iot.feature.demo.DashboardScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -43,11 +43,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         handleUsbIntent(intent)
 
         setContent {
-            val themeMode by themeManager.themeModeFlow.collectAsState(initial = ThemeMode.DARK)
+            val themeMode by themeManager.themeModeFlow.collectAsStateWithLifecycle(initialValue = ThemeMode.DARK)
+            val themeAccent by themeManager.themeAccentFlow.collectAsStateWithLifecycle(initialValue = ThemeAccent.ARCTIC)
             val systemDark = isSystemInDarkTheme()
 
             val isDark = when (themeMode) {
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            AppTheme(darkTheme = isDark) {
+            AppTheme(darkTheme = isDark, accent = themeAccent) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = AppTheme.colors.background

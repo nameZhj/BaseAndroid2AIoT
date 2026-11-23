@@ -1,6 +1,6 @@
 [versions]
 # Gradle Plugin
-agp = "8.5.2"
+agp = "8.6.1"
 
 # Kotlin
 kotlin = "2.0.21"
