@@ -80,10 +80,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // RecyclerView & BRVAH (用于 Demo 列表)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.brvah)
-
     // Gson
     implementation(libs.gson)
 

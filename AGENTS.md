@@ -20,19 +20,19 @@ VERSION: 3.2 | TARGET: LLM_AGENT | TASK_ROUTED: TRUE
 | **系统分享 / 崩溃报告 / 沙箱** | `core/.../storage/FileShareManager.kt` | FileProvider 原生安全跨进程分享 |
 | **超长分段日志 / Logcat 防截断** | `core/.../diagnostics/Lg.kt` | 4000 字符自动分片输出与时序标记 |
 | **错误诊断 / 根因解析 / 报错弹窗** | `core/.../diagnostics/ErrorParser.kt` | 系统/网络/硬件多维故障画像分析 |
-| **主题日夜间 / 沉浸式系统栏** | `core/.../ui/theme/` & `MainActivity.kt` | WCAG AAA 设计系统、状态栏透明适配 |
+| **主题日夜间 / 沉浸式系统栏** | `core/.../ui/theme/` & `MainActivity.kt` | WCAG AA 基线、状态栏图标适配 |
 | **通用原子组件 / 弹窗体系** | `core/.../ui/components/` & `ui/dialog/` | AppCard, AppButton, AppProgressDialog 等 |
 | **平板兼容 / Pad适配 / 双栏导航** | `core/.../ui/pad/` | Pad设备判定、弹窗防拉伸、主从双栏、侧边导航轨 |
 | **Pad自适应规格 / 操纵杆 / 双栏** | `core/.../ui/adaptive/` | 平板端尺寸规范 (PadSpec)、受限宽度修饰符与响应式双栏 |
 | **USB 串口 / 硬件直连 / CH340 / CDC** | `core/.../iot/SerialManager.kt` & `AndroidUsbSerialDriver.kt` | 本地 USB-Serial OTG 与远程 HTTP 串口双模通信、即插即用 |
 | **新业务脚手架 (Scaffold)** | `app/.../feature/template/` | 业务克隆模板 (UiState, ViewModel, Screen) |
-| **演示业务 / 清退参考** | `app/.../feature/demo/` | [DEMO_ACTIVE] 完整双栏参考与自毁清退源 |
+| **机器人巡检 / 地图 / 任务 / 事件** | `app/.../feature/robot/` + `.agent/skills/robot-dashboard/SKILL.md` | Pad 优先的巡检 UI、显式样例数据边界与地图叠加视图 |
 
 0.2 ROUTER_MAINTENANCE_RULES (Prevent Token Tax & Write Amplification):
     - TRIGGERS: Synchronously update this table ONLY when:
       1. Creating a new business feature via template clone (`feature/<name>/`).
       2. Adding a new infrastructure manager or protocol driver in `:core`.
-      3. Purging `feature/demo/` (remove demo router entry and add target feature).
+      3. Promoting a production feature to the app mount point or removing an obsolete feature.
     - BYPASS: STRICTLY FORBIDDEN to update this table for bugfixes, UI tweaks, business logic updates, or strings.xml changes.
 
 ## [1_MODULE_AND_GIT_BOUNDARIES]
@@ -190,41 +190,17 @@ VERSION: 3.2 | TARGET: LLM_AGENT | TASK_ROUTED: TRUE
 5.6 STATE_IMMUTABILITY:
     - All `UiState` classes MUST be immutable `@Immutable data class` with `val` properties only. FORBIDDEN: Mutable collections (`ArrayList`, `mutableListOf()`) or `var` inside UiState.
 
-## [6_DEMO_INDEX_AND_AUTO_PURGE]
-STATUS: DEMO_ACTIVE | TRIGGER: FORMAL_FEATURE_DEV -> AUTO_PURGE_ALL_DEMO
-1. DEMO_FILE_REGISTRY (Action: DELETE directory & files on formal dev):
-   - Package: `app/src/main/kotlin/com/base/iot/feature/demo/` (16 files):
-     - `DashboardScreen.kt`: Demo dashboard UI entry
-     - `DashboardPanes.kt`: Demo single/two pane layouts
-     - `DashboardViewModel.kt`: Demo ViewModel core
-     - `DashboardUiState.kt`: Demo UI state & contract
-     - `DashboardHttpOps.kt`: Demo HTTP operations extension
-     - `DashboardIotOps.kt`: Demo MQTT/Redis/Socket operations extension
-     - `DashboardSettingsOps.kt`: Demo settings & dialog operations extension
-     - `DashboardDiagnosticsOps.kt`: Demo crash & timeout diagnostics extension
-     - `DemoConfig.kt`: Demo-isolated endpoint & topic constants
-     - `adapter/IotDeviceQuickAdapter.kt`: Demo device list RecyclerView adapter
-     - `components/DashboardHeader.kt`: Demo header card
-     - `components/DiagnosticsAndSettingsCards.kt`: Demo diagnostics cards
-     - `components/LoadingAndErrorDemoCard.kt`: Demo progress & error cards
-     - `components/ProtocolCards.kt`: Demo protocol switch cards
-     - `components/StorageCards.kt`: Demo storage & cache cards
-     - `components/TerminalLogCard.kt`: Demo terminal log card
-     - `components/UnifiedDialogDemoCard.kt`: Demo dialogs card
-   - Resource Bundles (Action: DELETE files on formal dev):
-     - `app/src/main/res/values/demo_strings.xml`
-     - `app/src/main/res/values-en/demo_strings.xml`
-2. DEMO_CODE_REGISTRY (Action: REMOUNT on formal dev):
-   - Mount Point (`MainActivity.kt`):
-     - Remove `import com.base.iot.feature.demo.DashboardScreen`
-     - Replace `DashboardScreen()` with target feature screen (e.g. `<Feature>Screen()`)
-3. AUTO_PURGE_PIPELINE (Step-by-step agent execution):
-   - STEP 1: Scaffold production feature: Clone `feature/template/` -> `feature/<name>/`.
-   - STEP 2: Remount `MainActivity.kt`: Replace `DashboardScreen()` with `feature.<name>.<Feature>Screen()`.
-   - STEP 3: Delete demo folder: Remove `app/src/main/kotlin/com/base/iot/feature/demo/` completely.
-   - STEP 4: Delete demo strings: Remove `app/src/main/res/values/demo_strings.xml` and `app/src/main/res/values-en/demo_strings.xml`.
-   - STEP 5: Update router: Remove demo entries from `[0_CAPABILITY_ROUTING_INDEX]` and register newly mounted feature.
-   - STEP 6: Validate clean build: Run `.\gradlew.bat compileDebugKotlin` (MUST be exit code 0).
+## [6_PRODUCTION_FEATURE_INDEX]
+STATUS: ROBOT_DASHBOARD_ACTIVE
+- App mount point: `MainActivity.kt` -> `feature.robot.RobotDashboardScreen()`.
+- UI entry: `feature/robot/RobotDashboardScreen.kt`.
+- UI state and domain snapshots: `feature/robot/RobotDashboardModels.kt`.
+- Map canvas and overlay primitives: `feature/robot/components/RobotMapCard.kt`.
+- Task scope routing: read `.agent/skills/robot-dashboard/SKILL.md` for map, device telemetry, missions, events, video and adaptive dashboard work.
+- SAMPLE_DATA_BOUNDARY: current device, mission, event, statistic and map values are sample-only. Never describe them as live telemetry or issue robot commands from sample data.
+- MAP_BOUNDARY: current Canvas is a schematic route/event overlay, not a PGM / PCD parser or SLAM renderer. Real map integration must preserve map resolution, origin, occupancy values and world-to-screen transforms.
+- VIDEO_BOUNDARY: the video entry is a disconnected-state placeholder. RTSP / WebRTC requires a dedicated stream provider and lifecycle-aware player surface.
+- `feature/template/` remains the clone source for new application features.
 
 ## [7_TOPOLOGY]
 Multi-Module Architecture:
@@ -248,10 +224,10 @@ Multi-Module Architecture:
    - `App.kt`: Application entry, crash handler installation
    - `MainActivity.kt`: Single Activity, dynamic theme & system bars, Compose root
    - `feature/template/`: Scaffold source. Clone for new features (`TemplateUiState.kt`, `TemplateViewModel.kt`, `TemplateScreen.kt`).
-   - `feature/demo/`: Reference split implementation ([DEMO_ACTIVE], purge on formal dev).
+   - `feature/robot/`: Active robot patrol dashboard.
    - `app/src/main/res/values/demo_strings.xml`: Demo string resources (zh & en).
    - `app/src/main/res/values/strings.xml`: Application metadata and template strings.
-   - MOUNT_POINT: `MainActivity.kt` -> `DashboardScreen()` ([DEMO_MOUNT_POINT], remount on formal dev)
+   - MOUNT_POINT: `MainActivity.kt` -> `RobotDashboardScreen()`
 
 ## [8_RECIPE: NEW_FEATURE]
 Clone `feature/template/` -> `feature/<name>/`:
@@ -327,4 +303,4 @@ Clone `feature/template/` -> `feature/<name>/`:
   [ ] Thread hygiene: Background tasks & IO operations dispatched to `Dispatchers.IO`.
   [ ] Granularity: Every Kotlin file <= 150 lines.
   [ ] Router hygiene: If created new feature or added `:core` manager, updated `[0_CAPABILITY_ROUTING_INDEX]`. Otherwise untouched.
-  [ ] Demo hygiene: If in formal dev mode, zero demo files or DEMO_* constants remain.
+  [ ] Feature mount: MainActivity mounts the active production screen; sample-only data is visibly identified.

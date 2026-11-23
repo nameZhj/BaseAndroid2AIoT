@@ -1,11 +1,69 @@
 <resources>
     <string name="app_name">BaseAndroid2AIoT</string>
-    <string name="app_desc">Enterprise Android IoT Rapid Development Framework</string>
+    <string name="app_desc">Android rapid development framework for robots and intelligent devices</string>
 
     <!-- Business Feature Template -->
     <string name="template_feature_title">Business Feature Template</string>
-    <string name="brvah_card_title">BRVAH 4 List Framework</string>
     <string name="template_execute_btn">Execute Sample Task</string>
     <string name="template_task_running">Executing task...</string>
     <string name="template_task_progress">Processing %1$d%%</string>
+
+    <!-- Robot Patrol Console -->
+    <string name="robot_dashboard_title">Robot Patrol Console</string>
+    <string name="robot_dashboard_subtitle">Device Health · Localization · Missions · Events</string>
+    <string name="robot_site_name">R&amp;D Campus · Zone A</string>
+    <string name="robot_demo_mode">Sample Data</string>
+    <string name="robot_map_title">Map &amp; Robot Localization</string>
+    <string name="robot_map_source_demo">Schematic view · Waiting for PGM / PCD</string>
+    <string name="robot_map_not_loaded">No real map loaded</string>
+    <string name="robot_map_legend_robot">Robot</string>
+    <string name="robot_map_legend_route">Route</string>
+    <string name="robot_map_legend_event">Events</string>
+    <string name="robot_map_marker_robot">R-01</string>
+    <string name="robot_map_marker_event_1">P-03</string>
+    <string name="robot_map_marker_event_2">P-07</string>
+    <string name="robot_map_marker_point_8">P-08</string>
+
+    <string name="robot_device_title">Device Status</string>
+    <string name="robot_device_name">Patrol Robot R-01</string>
+    <string name="robot_device_model">Differential Drive · LiDAR</string>
+    <string name="robot_device_online">Connected</string>
+    <string name="robot_device_offline">Offline</string>
+    <string name="robot_device_battery_value">Battery %1$d%%</string>
+    <string name="robot_device_signal_value">Signal %1$d%%</string>
+    <string name="robot_device_network_waiting">Network: Waiting for device</string>
+
+    <string name="robot_mission_title">Current Mission</string>
+    <string name="robot_mission_name">Zone A Routine Patrol</string>
+    <string name="robot_mission_waiting">Waiting for device</string>
+    <string name="robot_mission_waiting_desc">The robot is offline and no mission has been dispatched. Live progress appears after connection.</string>
+    <string name="robot_mission_progress">Waypoints %1$d / %2$d</string>
+    <string name="robot_mission_not_dispatched">Not dispatched</string>
+
+    <string name="robot_stats_title">Patrol Statistics</string>
+    <string name="robot_stats_patrols">Patrols Today</string>
+    <string name="robot_stats_points">Waypoints Completed</string>
+    <string name="robot_stats_resolved">Events Resolved</string>
+    <string name="robot_stats_coverage">Route Coverage</string>
+    <string name="robot_stats_percent">%1$d%%</string>
+
+    <string name="robot_events_title">Event Log</string>
+    <string name="robot_event_fire_lane">Fire Lane Obstructed</string>
+    <string name="robot_event_fire_lane_detail">Temporary objects detected in the lane</string>
+    <string name="robot_event_obstacle">Obstacle on Patrol Route</string>
+    <string name="robot_event_obstacle_detail">Obstacle marked for on-site review</string>
+    <string name="robot_event_sensor">Environmental Sensor Anomaly</string>
+    <string name="robot_event_sensor_detail">Sensor value exceeded the configured threshold</string>
+    <string name="robot_event_meta">%1$s · %2$s</string>
+    <string name="robot_event_resolved">Resolved</string>
+    <string name="robot_event_pending">Pending</string>
+
+    <string name="robot_video_button">Live Video</string>
+    <string name="robot_video_unavailable_title">Video Stream Not Connected</string>
+    <string name="robot_video_unavailable_desc">Demo mode is active and no RTSP / WebRTC source is configured. The live feed will appear here after integration.</string>
+    <string name="robot_sample_data_notice">This is an integration template. Device status, statistics, events and map overlays are sample data, not live telemetry.</string>
+    <string name="robot_map_marker_event_1">E-02</string>
+    <string name="robot_map_marker_event_2">E-03</string>
+    <string name="robot_map_marker_point_8">P-08</string>
+    <string name="robot_map_marker_event_3">P-11</string>
 </resources>

@@ -57,13 +57,21 @@
   - Expanded：840dp 及以上，可启用双栏。
 - Pad 分屏、自由窗口和旋转后，布局应随窗口尺寸变化重新计算。不要仅凭 `smallestScreenWidthDp` 决定当前窗口能否容纳双栏。
 
+## 🤖 机器人巡检控制台
+
+当前 App 入口为 `feature/robot/RobotDashboardScreen`，提供 Pad 优先的巡检控制台布局：中心地图视图、设备状态、当前任务、巡检统计、事件记录与视频预览入口。
+
+**当前阶段边界：** 地图是 Canvas 示意底图与路线/事件叠加层，尚未加载真实 PGM / PCD；设备、任务、事件和统计使用显式标记的样例数据；视频入口用于展示未接入状态，尚未连接 RTSP / WebRTC。页面不会把样例数据或未接入的控制能力伪装成实时功能。
+
+地图、遥测和任务数据应通过独立 Repository 接入；UI 只消费不可变 UiState。具体开发规则见 `.agent/skills/robot-dashboard/SKILL.md`。
+
 ## 🤖 为 AI Agent 原生设计：AGENTS.md 与协同开发优势
 
 本项目从底层即面向 **“AI 智能体结对编程 (Agentic Pair-Programming)”** 范式。根目录内置的 [`AGENTS.md`](AGENTS.md) 是专门面向 AI Coding Agent 设计的系统级开发指令集 (Agent Directives)。
 
 ### 核心定位与特性
 - **Agent 指令友好**：全篇采用严谨的命令式规约（如 `ABSOLUTE_ZERO_TOLERANCE`、`MANDATORY_I18N`、`TOP_LEVEL_IMPORTS_ONLY`），剥离自然语言歧义与冗词，减少歧义与无效上下文；具体执行仍以代码、构建和测试结果为准。
-- **十一项核心规范模块**：涵盖架构能力路由索引、模块与 Git 边界、Code Hygiene & Token Economy (代码整洁度与上下文优化)、UI 布局防变形、Dialog 规范、UDF 响应式范式、Demo 自动化清理流水线 (Auto-Purge Pipeline)、模块拓扑、业务脚手架模板 (Feature Recipe)、基础设施矩阵 (Infra Matrix) 及交付自检清单。
+- **十一项核心规范模块**：涵盖 Agent 任务路由、模块与 Git 边界、代码与 Token 优化、UI 布局稳定性、Dialog、UDF、机器人业务 Skill、模块拓扑、业务脚手架、基础设施矩阵及交付自检。
 
 ### 为什么比常规项目更适合 Agent 开发？
 | 评估维度 | 常规 Android 项目 | BaseAndroid2AIoT (本项目) | 对 Agent 开发的决定性优势 |
@@ -73,7 +81,7 @@
 | **新业务开发认知门槛** | 架构分层不清晰，目录与依赖注入模式不明确 | **模块边界明确锁定**（`:core` 锁定保护，新业务位于 `:app`），提供标准化 Scaffold 模板 | 结构确定，克隆模板即可完成标准业务三层（UiState / ViewModel / Screen）快速初始化 |
 | **代码规范与一致性** | 易产生字符串 Hardcoding 或在函数体内直接使用全限定名（FQNs） | **强制字符串资源抽取（strings.xml 中英文对齐）**，参数收敛于 `AppConfig`，**Top-Level Imports 强制置顶**（禁止函数体内使用 Inline FQNs） | 彻底杜绝硬编码 (Hardcoding) 与内联包路径 (Inline FQNs)，保障代码整洁度 (Code Hygiene) 与工程规范一致 |
 | **多窗口与 Pad 布局稳定性** | 缺乏小尺寸或工控横屏（高度 360~480dp）的尺寸约束，易发生文本挤压组件或内容溢出 | 按当前窗口宽度选择布局；交互控件保留足够触控区域；Dialog 根据交互语义提供关闭或取消操作 | 内置防御性布局机制，确保界面在不同分辨率与屏幕方向下渲染稳定、不形变、不遮挡 |
-| **演示资产与生产环境隔离** | Demo 代码与框架代码耦合，难以精准剔除残留的 Dead Code | **Demo 独立索引与自动化清理流水线 (Auto-Purge Pipeline)** | 执行预设流程即可实现 Demo 模块、路由挂载与资源的自动化剥离 |
+| **业务与框架边界** | 业务 UI 与基础设施容易混杂 | **机器人业务位于 `:app/feature/robot`，通信能力收敛于 `:core`** | Agent 可按任务加载业务 Skill 与底层协议实现 |
 | **交付验证与自主修复** | 缺乏标准化的确定性校验步骤，依赖人工反复排错 | 配置确定性编译命令 `.\gradlew.bat compileDebugKotlin` 与 **13 项自检清单** | Agent 在本地完成编译验证与自检闭环，降低人工排查与修复语法错误的成本 |
 
 ---
@@ -108,8 +116,8 @@ BaseAndroid2AIoT/
         ├── App.kt                     # 应用入口
         ├── MainActivity.kt            # 唯一宿主 Activity 与 Compose 挂载点
         └── feature/
-            ├── template/              # ★ 新业务开发脚手架模板 (克隆源)
-            └── demo/                  # 参考演示模块 ([DEMO_ACTIVE]，正式开发自动化清理)
+            ├── robot/                 # 当前主入口：机器人巡检控制台与 UI 状态模型
+            └── template/              # 新业务开发脚手架模板 (克隆源)
 ```
 
 ---

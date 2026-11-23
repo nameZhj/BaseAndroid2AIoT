@@ -1,11 +1,69 @@
 <resources>
     <string name="app_name">BaseAndroid2AIoT</string>
-    <string name="app_desc">企业级 Android IoT 快速开发脚手架</string>
+    <string name="app_desc">面向机器人与智能设备的 Android 快速开发框架</string>
 
     <!-- 业务功能模板 -->
     <string name="template_feature_title">业务功能模板</string>
-    <string name="brvah_card_title">BRVAH 4 列表框架</string>
     <string name="template_execute_btn">执行示例任务</string>
     <string name="template_task_running">正在执行任务...</string>
     <string name="template_task_progress">处理中 %1$d%%</string>
+
+    <!-- 机器人巡检控制台 -->
+    <string name="robot_dashboard_title">机器人巡检控制台</string>
+    <string name="robot_dashboard_subtitle">设备运行 · 地图定位 · 巡检任务 · 事件告警</string>
+    <string name="robot_site_name">研发园区 · A 区</string>
+    <string name="robot_demo_mode">演示数据</string>
+    <string name="robot_map_title">地图与机器人定位</string>
+    <string name="robot_map_source_demo">示意渲染 · 等待载入 PGM / PCD</string>
+    <string name="robot_map_not_loaded">未加载真实地图</string>
+    <string name="robot_map_legend_robot">机器人</string>
+    <string name="robot_map_legend_route">任务路线</string>
+    <string name="robot_map_legend_event">事件点</string>
+    <string name="robot_map_marker_robot">R-01</string>
+    <string name="robot_map_marker_event_1">P-03</string>
+    <string name="robot_map_marker_event_2">P-07</string>
+    <string name="robot_map_marker_point_8">P-08</string>
+
+    <string name="robot_device_title">设备状态</string>
+    <string name="robot_device_name">巡检机器人 R-01</string>
+    <string name="robot_device_model">差速底盘 · 激光雷达</string>
+    <string name="robot_device_online">已连接</string>
+    <string name="robot_device_offline">未连接</string>
+    <string name="robot_device_battery_value">电量 %1$d%%</string>
+    <string name="robot_device_signal_value">信号 %1$d%%</string>
+    <string name="robot_device_network_waiting">网络：等待设备接入</string>
+
+    <string name="robot_mission_title">当前任务</string>
+    <string name="robot_mission_name">A 区日常巡检</string>
+    <string name="robot_mission_waiting">等待设备接入</string>
+    <string name="robot_mission_waiting_desc">设备未连接，任务尚未下发。连接机器人后显示实时执行进度。</string>
+    <string name="robot_mission_progress">点位 %1$d / %2$d</string>
+    <string name="robot_mission_not_dispatched">未下发</string>
+
+    <string name="robot_stats_title">巡检统计</string>
+    <string name="robot_stats_patrols">今日巡检次数</string>
+    <string name="robot_stats_points">完成巡检点位</string>
+    <string name="robot_stats_resolved">已处理事件</string>
+    <string name="robot_stats_coverage">路线覆盖率</string>
+    <string name="robot_stats_percent">%1$d%%</string>
+
+    <string name="robot_events_title">事件记录</string>
+    <string name="robot_event_fire_lane">消防通道占用</string>
+    <string name="robot_event_fire_lane_detail">检测到通道内有临时堆放物</string>
+    <string name="robot_event_obstacle">巡检通道存在障碍物</string>
+    <string name="robot_event_obstacle_detail">障碍物已标记，等待现场复核</string>
+    <string name="robot_event_sensor">环境传感器状态异常</string>
+    <string name="robot_event_sensor_detail">传感器数据超出预设阈值</string>
+    <string name="robot_event_meta">%1$s · %2$s</string>
+    <string name="robot_event_resolved">已处理</string>
+    <string name="robot_event_pending">待核查</string>
+
+    <string name="robot_video_button">实时视频</string>
+    <string name="robot_video_unavailable_title">视频流未连接</string>
+    <string name="robot_video_unavailable_desc">当前为演示模式，尚未配置 RTSP / WebRTC 视频源。接入视频流后此处显示实时画面。</string>
+    <string name="robot_sample_data_notice">当前页面为业务接入样板；设备、统计、事件和地图均为演示数据，不代表真实设备遥测。</string>
+    <string name="robot_map_marker_event_1">E-02</string>
+    <string name="robot_map_marker_event_2">E-03</string>
+    <string name="robot_map_marker_point_8">P-08</string>
+    <string name="robot_map_marker_event_3">P-11</string>
 </resources>
